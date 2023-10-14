@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.WorklogManagement.Models
+namespace WorklogManagement.DataAccess.Models
 {
     [Table("Workload")]
     [Index("Name", Name = "UX_Workload_Name", IsUnique = true)]

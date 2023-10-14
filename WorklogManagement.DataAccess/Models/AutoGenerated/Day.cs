@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.WorklogManagement.Models
+namespace WorklogManagement.DataAccess.Models
 {
     [Table("Day")]
     [Index("Date", "IsMobile", Name = "UX_Day_Date_Mobile", IsUnique = true)]

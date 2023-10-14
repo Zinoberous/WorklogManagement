@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "WorklogManagement": "Server=lexnarf.dynv6.net;Database=WorklogManagement;User Id=Lex;Password=ej@px\\S##`$FR6hxr2DqC;TrustServerCertificate=true;"
+  }
+}

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.WorklogManagement", "DataAccess.WorklogManagement\DataAccess.WorklogManagement.csproj", "{BA018FC9-4469-4351-93EC-387DCADA393E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorklogManagement.DataAccess", "WorklogManagement.DataAccess\WorklogManagement.DataAccess.csproj", "{BA018FC9-4469-4351-93EC-387DCADA393E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.WorklogManagement", "API.WorklogManagement\API.WorklogManagement.csproj", "{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.API", "WorklogManagement.API\WorklogManagement.API.csproj", "{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

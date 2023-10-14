@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using DataAccess.WorklogManagement.Models;
+using WorklogManagement.DataAccess.Models;
 
-namespace DataAccess.WorklogManagement.Context
+namespace WorklogManagement.DataAccess.Context
 {
     public partial class WorklogManagementContext : DbContext
     {

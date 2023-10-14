@@ -1,7 +1,7 @@
-using DataAccess.WorklogManagement.Context;
+using WorklogManagement.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 
-Console.Title = "API.WorklogManagement";
+Console.Title = "WorklogManagement.API";
 
 var builder = WebApplication.CreateBuilder(args);
 

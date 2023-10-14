@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.WorklogManagement.Models
+namespace WorklogManagement.DataAccess.Models
 {
     [Table("Attachment")]
     [Index("WorklogId", "Name", Name = "UX_Attachment_Name", IsUnique = true)]

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.WorklogManagement.Controllers
+namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
