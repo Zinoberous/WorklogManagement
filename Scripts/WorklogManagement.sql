@@ -4,11 +4,12 @@
 USE [WorklogManagement]
 GO
 
-DROP TABLE	[Attachment],
+DROP TABLE	[WorklogAttachment],
 			[Worklog],
 			[Day],
 			[Workload],
-			[Comment],
+			[TicketAttachment],
+			[TicketComment],
 			[Ticket],
 			[Status]
 			--[Priority],
@@ -54,6 +55,7 @@ CREATE TABLE [Ticket]
 	-- [SprintId] INT NULL,
 	-- [PriorityId] INT NOT NULL,
 	[StatusId] INT NOT NULL,
+	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
 	-- CONSTRAINT FK_Ticket_SprintId_Sprint_Id FOREIGN KEY ([SprintId]) REFERENCES [Sprint] ([Id]),
@@ -63,14 +65,26 @@ CREATE TABLE [Ticket]
 )
 GO
 
-CREATE TABLE [Comment]
+CREATE TABLE [TicketComment]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[TicketId] INT NOT NULL,
-	[CreateAt] DATETIME NOT NULL,
-	[Comment] NVARCHAR(MAX) NULL,
-	CONSTRAINT PK_StatusHistory_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_StatusHistory_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
+	[Comment] NVARCHAR(MAX) NOT NULL,
+	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
+	CONSTRAINT PK_TicketComment_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_TicketComment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
+)
+GO
+
+CREATE TABLE [TicketAttachment]
+(
+	[Id] INT NOT NULL IDENTITY(1, 1),
+	[TicketId] INT NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/name
+	[Comment] NVARCHAR(MAX) NOT NULL
+	CONSTRAINT PK_TicketAttachment_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
+	CONSTRAINT UX_TicketAttachment_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
 )
 GO
 
@@ -110,15 +124,15 @@ CREATE TABLE [Worklog]
 )
 GO
 
-CREATE TABLE [Attachment]
+CREATE TABLE [WorklogAttachment]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[WorklogId] INT NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../yyyy-MM-dd/[office/mobile]/worklogId/name
 	[Comment] NVARCHAR(MAX) NOT NULL
-	CONSTRAINT PK_Attachment_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Attachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]),
-	CONSTRAINT UX_Attachment_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])
+	CONSTRAINT PK_WorklogAttachment_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_WorklogAttachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]),
+	CONSTRAINT UX_WorklogAttachment_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])
 )
 GO
 
@@ -198,8 +212,9 @@ GO
 --SELECT * FROM [Priority]
 SELECT * FROM [Status]
 SELECT * FROM [Ticket]
-SELECT * FROM [Comment]
+SELECT * FROM [TicketComment]
+SELECT * FROM [TicketAttachment]
 SELECT * FROM [Workload]
 SELECT * FROM [Day]
 SELECT * FROM [Worklog]
-SELECT * FROM [Attachment]
+SELECT * FROM [WorklogAttachment]
