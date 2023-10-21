@@ -1,7 +1,18 @@
-CREATE DATABASE [WorklogManagement]
-GO
+--CREATE DATABASE [WorklogManagement]
+--GO
 
 USE [WorklogManagement]
+GO
+
+DROP TABLE	[Attachment],
+			[Worklog],
+			[Day],
+			[Workload],
+			[Comment],
+			[Ticket],
+			[Status]
+			--[Priority],
+			--[Sprint],
 GO
 
 -- CREATE TABLE [Sprint]
@@ -52,27 +63,14 @@ CREATE TABLE [Ticket]
 )
 GO
 
--- CREATE TABLE [PriorityHistory]
--- (
--- 	[Id] INT NOT NULL IDENTITY(1, 1),
--- 	[TicketId] INT NOT NULL,
--- 	[PriorityId] INT NOT NULL,
--- 	[Comment] NVARCHAR(MAX) NULL,
--- 	CONSTRAINT PK_PriorityHistory_Id PRIMARY KEY ([Id]),
--- 	CONSTRAINT FK_PriorityHistory_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
--- 	CONSTRAINT FK_PriorityHistory_PriorityId_Priority_Id FOREIGN KEY ([PriorityId]) REFERENCES [Status] ([Id])
--- )
--- GO
-
-CREATE TABLE [StatusHistory]
+CREATE TABLE [Comment]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[TicketId] INT NOT NULL,
-	[StatusId] INT NOT NULL,
+	[CreateAt] DATETIME NOT NULL,
 	[Comment] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_StatusHistory_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_StatusHistory_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
-	CONSTRAINT FK_StatusHistory_StatusId_Status_Id FOREIGN KEY ([StatusId]) REFERENCES [Status] ([Id])
+	CONSTRAINT FK_StatusHistory_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
 )
 GO
 
@@ -155,13 +153,13 @@ VALUES
 	N'Todo'
 ),
 (
-	N'Blocked'
-),
-(
 	N'Running'
 ),
 (
 	N'Paused'
+),
+(
+	N'Blocked'
 ),
 (
 	N'Done'
@@ -195,3 +193,13 @@ VALUES
 	N'Very Low'
 )
 GO
+
+--SELECT * FROM [Sprint]
+--SELECT * FROM [Priority]
+SELECT * FROM [Status]
+SELECT * FROM [Ticket]
+SELECT * FROM [Comment]
+SELECT * FROM [Workload]
+SELECT * FROM [Day]
+SELECT * FROM [Worklog]
+SELECT * FROM [Attachment]
