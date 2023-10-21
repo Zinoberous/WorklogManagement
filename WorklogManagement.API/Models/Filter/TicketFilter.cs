@@ -9,6 +9,6 @@ namespace WorklogManagement.API.Models.Filter
         [StringLength(255)]
         public string? Title { get; set; } = null!;
 
-        public Enums.Status? Status { get; set; }
+        public int? StatusId { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace WorklogManagement.API.Controllers
                     (
                         (request.Filter.IsMobile == null || x.IsMobile == request.Filter.IsMobile) &&
                         (request.Filter.Date == null || x.Date == request.Filter.Date) &&
-                        (request.Filter.Workload == null || x.WorkloadId == (int)request.Filter.Workload)
+                        (request.Filter.WorkloadId == null || x.WorkloadId == request.Filter.WorkloadId)
                     )
                 );
 
@@ -102,7 +102,7 @@ namespace WorklogManagement.API.Controllers
                     (
                         (filter.IsMobile == null || x.IsMobile == filter.IsMobile) &&
                         (filter.Date == null || x.Date == filter.Date) &&
-                        (filter.Workload == null || x.WorkloadId == (int)filter.Workload)
+                        (filter.WorkloadId == null || x.WorkloadId == filter.WorkloadId)
                     )
                 );
 

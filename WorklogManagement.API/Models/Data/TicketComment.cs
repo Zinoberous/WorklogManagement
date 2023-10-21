@@ -5,7 +5,7 @@ using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
 {
-    public class TicketComment
+    public class TicketComment : IData
     {
         public int? Id { get; private set; }
 

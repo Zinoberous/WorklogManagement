@@ -1,5 +1,5 @@
-using WorklogManagement.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
+using WorklogManagement.DataAccess.Context;
 
 Console.Title = "WorklogManagement.API";
 

@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WorklogManagement.API.Models;
 using WorklogManagement.API.Models.Data;
+using WorklogManagement.API.Models.Filter;
 using WorklogManagement.DataAccess.Context;
+using static WorklogManagement.API.Helper.ReflectionHelper;
+using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Controllers
 {
@@ -21,16 +25,86 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet]
-        // TODO: sorting, paging, filtering
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromBody] GetRequest<WorklogAttachmentFilter>? request)
         {
-            var tickets = await _context.WorklogAttachments
-                .Include(x => x.Worklog)
-                .ThenInclude(x => x.Day)
-                .Select(x => new WorklogAttachment(x))
-                .ToListAsync();
+            request ??= new();
 
-            return Ok(tickets);
+            // filter
+
+            var items = _context.WorklogAttachments
+                .Where
+                (
+                    x =>
+                    request.Filter == default ||
+                    (
+                        (request.Filter.WorklogId == null || x.WorklogId == request.Filter.WorklogId) &&
+                        (request.Filter.Name == null || x.Name.Contains(request.Filter.Name, StringComparison.InvariantCultureIgnoreCase))
+                    )
+                );
+
+            var totalItems = items.Count();
+
+            // sorting
+
+            IOrderedQueryable<DB.WorklogAttachment>? orderedItems = null;
+
+            foreach (var sort in request.Sorting)
+            {
+                if (orderedItems == null)
+                {
+                    orderedItems = sort.Desc
+                        ? items.OrderByDescending(x => GetPropertyValueByName(x, sort.Column))
+                        : items.OrderBy(x => GetPropertyValueByName(x, sort.Column));
+                }
+                else
+                {
+                    orderedItems = sort.Desc
+                        ? orderedItems.ThenByDescending(x => GetPropertyValueByName(x, sort.Column))
+                        : orderedItems.ThenBy(x => GetPropertyValueByName(x, sort.Column));
+                }
+            }
+
+            items = orderedItems ?? items.OrderBy(x => x.Id);
+
+            // paging
+
+            var page = request.PageSize == 0 ? items : items
+                .Skip((int)(request.Page * request.PageSize))
+                .Take((int)request.PageSize);
+
+            // result
+
+            GetResult<WorklogAttachment, WorklogAttachmentFilter> result = new()
+            {
+                Sorting = request.Sorting,
+                PageSize = request.PageSize,
+                Page = request.Page,
+                Filter = request.Filter,
+                TotalItems = (uint)totalItems,
+                TotalPages = request.PageSize == 0 ? 1 : (uint)(totalItems / request.PageSize),
+                Data = await page
+                    .Select(x => new WorklogAttachment(x))
+                    .ToListAsync()
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("single")]
+        public async Task<IActionResult> Get([FromBody] WorklogAttachmentFilter? filter)
+        {
+            var attachment = await _context.WorklogAttachments
+                .SingleAsync
+                (
+                    x =>
+                    filter == null ||
+                    (
+                        (filter.WorklogId == null || x.WorklogId == filter.WorklogId) &&
+                        (filter.Name == null || x.Name.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase))
+                    )
+                );
+
+            return Ok(new WorklogAttachment(attachment));
         }
 
         [HttpGet("{id}")]

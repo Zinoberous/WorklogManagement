@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WorklogManagement.API.Models;
+using WorklogManagement.API.Models.Data;
 using WorklogManagement.DataAccess.Context;
 
 namespace WorklogManagement.API.Controllers

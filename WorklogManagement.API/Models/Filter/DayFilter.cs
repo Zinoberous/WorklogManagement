@@ -6,6 +6,6 @@
 
         public bool? IsMobile { get; set; }
 
-        public Enums.Workload? Workload { get; set; }
+        public int? WorkloadId { get; set; }
     }
 }

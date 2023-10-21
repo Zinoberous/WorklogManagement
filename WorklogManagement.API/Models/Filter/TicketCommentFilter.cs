@@ -2,6 +2,6 @@
 {
     public class TicketCommentFilter : IFilter
     {
-        public int TicketId { get; set; }
+        public int? TicketId { get; set; }
     }
 }
