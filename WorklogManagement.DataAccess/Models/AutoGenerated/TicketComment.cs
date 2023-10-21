@@ -6,20 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WorklogManagement.DataAccess.Models
 {
-    [Table("StatusHistory")]
-    public partial class StatusHistory
+    [Table("TicketComment")]
+    public partial class TicketComment
     {
         [Key]
         public int Id { get; set; }
         public int TicketId { get; set; }
-        public int StatusId { get; set; }
-        public string? Comment { get; set; }
+        public string Comment { get; set; } = null!;
+        [Column(TypeName = "datetime")]
+        public DateTime CreatedAt { get; set; }
 
-        [ForeignKey("StatusId")]
-        [InverseProperty("StatusHistories")]
-        public virtual Status Status { get; set; } = null!;
         [ForeignKey("TicketId")]
-        [InverseProperty("StatusHistories")]
+        [InverseProperty("TicketComments")]
         public virtual Ticket Ticket { get; set; } = null!;
     }
 }

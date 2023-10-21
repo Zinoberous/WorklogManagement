@@ -41,7 +41,7 @@ services.AddDbContext<WorklogManagementContext>
 (
     options =>
     {
-        options.UseSqlServer(config.GetConnectionString("WorklogManagemen")!);
+        options.UseSqlServer(config.GetConnectionString("WorklogManagement")!);
     }
 );
 

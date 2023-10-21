@@ -12,7 +12,6 @@ namespace WorklogManagement.DataAccess.Models
     {
         public Status()
         {
-            StatusHistories = new HashSet<StatusHistory>();
             Tickets = new HashSet<Ticket>();
         }
 
@@ -21,8 +20,6 @@ namespace WorklogManagement.DataAccess.Models
         [StringLength(255)]
         public string Name { get; set; } = null!;
 
-        [InverseProperty("Status")]
-        public virtual ICollection<StatusHistory> StatusHistories { get; set; }
         [InverseProperty("Status")]
         public virtual ICollection<Ticket> Tickets { get; set; }
     }

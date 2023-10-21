@@ -11,7 +11,7 @@ namespace WorklogManagement.DataAccess.Models
     {
         public Worklog()
         {
-            Attachments = new HashSet<Attachment>();
+            WorklogAttachments = new HashSet<WorklogAttachment>();
         }
 
         [Key]
@@ -29,6 +29,6 @@ namespace WorklogManagement.DataAccess.Models
         [InverseProperty("Worklogs")]
         public virtual Ticket Ticket { get; set; } = null!;
         [InverseProperty("Worklog")]
-        public virtual ICollection<Attachment> Attachments { get; set; }
+        public virtual ICollection<WorklogAttachment> WorklogAttachments { get; set; }
     }
 }

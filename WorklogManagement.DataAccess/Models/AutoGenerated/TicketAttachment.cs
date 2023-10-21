@@ -6,19 +6,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WorklogManagement.DataAccess.Models
 {
-    [Table("Attachment")]
-    [Index("WorklogId", "Name", Name = "UX_Attachment_Name", IsUnique = true)]
-    public partial class Attachment
+    [Table("TicketAttachment")]
+    [Index("TicketId", "Name", Name = "UX_TicketAttachment_Name", IsUnique = true)]
+    public partial class TicketAttachment
     {
         [Key]
         public int Id { get; set; }
-        public int WorklogId { get; set; }
+        public int TicketId { get; set; }
         [StringLength(255)]
         public string Name { get; set; } = null!;
         public string Comment { get; set; } = null!;
 
-        [ForeignKey("WorklogId")]
-        [InverseProperty("Attachments")]
-        public virtual Worklog Worklog { get; set; } = null!;
+        [ForeignKey("TicketId")]
+        [InverseProperty("TicketAttachments")]
+        public virtual Ticket Ticket { get; set; } = null!;
     }
 }

@@ -17,46 +17,23 @@ namespace WorklogManagement.DataAccess.Context
         {
         }
 
-        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
         public virtual DbSet<Day> Days { get; set; } = null!;
         public virtual DbSet<Status> Statuses { get; set; } = null!;
-        public virtual DbSet<StatusHistory> StatusHistories { get; set; } = null!;
         public virtual DbSet<Ticket> Tickets { get; set; } = null!;
+        public virtual DbSet<TicketAttachment> TicketAttachments { get; set; } = null!;
+        public virtual DbSet<TicketComment> TicketComments { get; set; } = null!;
         public virtual DbSet<Workload> Workloads { get; set; } = null!;
         public virtual DbSet<Worklog> Worklogs { get; set; } = null!;
+        public virtual DbSet<WorklogAttachment> WorklogAttachments { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Attachment>(entity =>
-            {
-                entity.HasOne(d => d.Worklog)
-                    .WithMany(p => p.Attachments)
-                    .HasForeignKey(d => d.WorklogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Attachment_WorklogId_Worklog_Id");
-            });
-
             modelBuilder.Entity<Day>(entity =>
             {
                 entity.HasOne(d => d.Workload)
                     .WithMany(p => p.Days)
                     .HasForeignKey(d => d.WorkloadId)
                     .HasConstraintName("FK_Day_WorkloadId_Workload_Id");
-            });
-
-            modelBuilder.Entity<StatusHistory>(entity =>
-            {
-                entity.HasOne(d => d.Status)
-                    .WithMany(p => p.StatusHistories)
-                    .HasForeignKey(d => d.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_StatusHistory_StatusId_Status_Id");
-
-                entity.HasOne(d => d.Ticket)
-                    .WithMany(p => p.StatusHistories)
-                    .HasForeignKey(d => d.TicketId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_StatusHistory_TicketId_Ticket_Id");
             });
 
             modelBuilder.Entity<Ticket>(entity =>
@@ -73,6 +50,24 @@ namespace WorklogManagement.DataAccess.Context
                     .HasConstraintName("FK_Ticket_StatusId_Status_Id");
             });
 
+            modelBuilder.Entity<TicketAttachment>(entity =>
+            {
+                entity.HasOne(d => d.Ticket)
+                    .WithMany(p => p.TicketAttachments)
+                    .HasForeignKey(d => d.TicketId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TicketAttachment_TicketId_Ticket_Id");
+            });
+
+            modelBuilder.Entity<TicketComment>(entity =>
+            {
+                entity.HasOne(d => d.Ticket)
+                    .WithMany(p => p.TicketComments)
+                    .HasForeignKey(d => d.TicketId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TicketComment_TicketId_Ticket_Id");
+            });
+
             modelBuilder.Entity<Worklog>(entity =>
             {
                 entity.HasOne(d => d.Day)
@@ -86,6 +81,15 @@ namespace WorklogManagement.DataAccess.Context
                     .HasForeignKey(d => d.TicketId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Worklog_TicketId_Ticket_Id");
+            });
+
+            modelBuilder.Entity<WorklogAttachment>(entity =>
+            {
+                entity.HasOne(d => d.Worklog)
+                    .WithMany(p => p.WorklogAttachments)
+                    .HasForeignKey(d => d.WorklogId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_WorklogAttachment_WorklogId_Worklog_Id");
             });
 
             OnModelCreatingPartial(modelBuilder);
