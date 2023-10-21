@@ -37,6 +37,8 @@ namespace WorklogManagement.API.Controllers
             return Ok(new Day(await _context.Days.SingleAsync(x => x.Id == id)));
         }
 
+        // TODO: get day by date
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Day day)
         {

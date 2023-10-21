@@ -17,13 +17,21 @@ namespace WorklogManagement.API.Models
 
         public string Comment { get; set; } = null!;
 
+        public string Directory { get; set; }
+
+        public byte[] Data { get; set; }
+
+        private static readonly string _basedir = Path.Combine("var", "www", "html", "_res", "WorklogManagement", "Attachments", "Worklogs");
+
         [JsonConstructor]
-        public WorklogAttachment(int? id, int worklogId, string name, string comment)
+        public WorklogAttachment(int? id, int worklogId, string name, string comment, string directory, byte[] data)
         {
             Id = id;
             WorklogId = worklogId;
             Name = name;
             Comment = comment;
+            Directory = directory;
+            Data = data;
         }
 
         public WorklogAttachment(DB.WorklogAttachment attachment)
@@ -32,11 +40,19 @@ namespace WorklogManagement.API.Models
             WorklogId = attachment.WorklogId;
             Name = attachment.Name;
             Comment = attachment.Comment;
+
+            Directory = Path.Combine(_basedir, $"{attachment.Worklog.Day.Date:yyyy-MM-dd}-{(attachment.Worklog.Day.IsMobile ? "mobile" : "office")}", WorklogId.ToString()!);
+            Data = File.ReadAllBytes(Path.Combine(Directory, Name));
         }
 
         public static async Task<WorklogAttachment> GetAsync(int id, WorklogManagementContext context)
         {
-            return new(await context.WorklogAttachments.SingleAsync(x => x.Id == id));
+            var attachment = await context.WorklogAttachments
+                .Include(x => x.Worklog)
+                .ThenInclude(x => x.Day)
+                .SingleAsync(x => x.Id == id);
+
+            return new(attachment);
         }
 
         public async Task SaveAsync(WorklogManagementContext context)
@@ -45,6 +61,8 @@ namespace WorklogManagement.API.Models
 
             if (Id == default)
             {
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
+
                 attachment = new()
                 {
                     WorklogId = WorklogId,
@@ -61,6 +79,12 @@ namespace WorklogManagement.API.Models
             else
             {
                 attachment = await context.WorklogAttachments.SingleAsync(x => x.Id == Id);
+
+                // alte Datei löschen
+                File.Delete(Path.Combine(Directory, attachment.Name));
+
+                // neue Datei speichern
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
 
                 attachment.WorklogId = WorklogId;
                 attachment.Name = Name;

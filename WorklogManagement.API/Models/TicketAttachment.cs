@@ -17,13 +17,21 @@ namespace WorklogManagement.API.Models
 
         public string Comment { get; set; } = null!;
 
+        public string Directory { get; set; }
+
+        public byte[] Data { get; set; }
+
+        private static readonly string _basedir = Path.Combine("var", "www", "html", "_res", "WorklogManagement", "Attachments", "Tickets");
+
         [JsonConstructor]
-        public TicketAttachment(int? id, int ticketId, string name, string comment)
+        public TicketAttachment(int? id, int ticketId, string name, string comment, string directory, byte[] data)
         {
             Id = id;
             TicketId = ticketId;
             Name = name;
             Comment = comment;
+            Directory = directory;
+            Data = data;
         }
 
         public TicketAttachment(DB.TicketAttachment attachment)
@@ -32,6 +40,9 @@ namespace WorklogManagement.API.Models
             TicketId = attachment.TicketId;
             Name = attachment.Name;
             Comment = attachment.Comment;
+
+            Directory = Path.Combine(_basedir, TicketId.ToString()!);
+            Data = File.ReadAllBytes(Path.Combine(Directory!, Name));
         }
 
         public static async Task<TicketAttachment> GetAsync(int id, WorklogManagementContext context)
@@ -45,6 +56,8 @@ namespace WorklogManagement.API.Models
 
             if (Id == default)
             {
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
+
                 attachment = new()
                 {
                     TicketId = TicketId,
@@ -61,6 +74,12 @@ namespace WorklogManagement.API.Models
             else
             {
                 attachment = await context.TicketAttachments.SingleAsync(x => x.Id == Id);
+
+                // alte Datei löschen
+                File.Delete(Path.Combine(Directory, attachment.Name));
+
+                // neue Datei speichern
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
 
                 attachment.TicketId = TicketId;
                 attachment.Name = Name;

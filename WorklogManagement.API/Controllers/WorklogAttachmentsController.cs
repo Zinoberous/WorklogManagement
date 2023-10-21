@@ -25,6 +25,8 @@ namespace WorklogManagement.API.Controllers
         public async Task<IActionResult> Get()
         {
             var tickets = await _context.WorklogAttachments
+                .Include(x => x.Worklog)
+                .ThenInclude(x => x.Day)
                 .Select(x => new WorklogAttachment(x))
                 .ToListAsync();
 
@@ -34,7 +36,12 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(new WorklogAttachment(await _context.WorklogAttachments.SingleAsync(x => x.Id == id)));
+            var attachment = await _context.WorklogAttachments
+                .Include(x => x.Worklog)
+                .ThenInclude(x => x.Day)
+                .SingleAsync(x => x.Id == id);
+
+            return Ok(new WorklogAttachment(attachment));
         }
 
         [HttpPost]
