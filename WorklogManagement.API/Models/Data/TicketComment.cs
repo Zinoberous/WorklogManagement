@@ -7,7 +7,11 @@ namespace WorklogManagement.API.Models.Data
 {
     public class TicketComment : IData
     {
+        // TODO: uri self
+
         public int? Id { get; private set; }
+
+        // TODO: uri ticket
 
         public int TicketId { get; set; }
 

@@ -7,9 +7,15 @@ namespace WorklogManagement.API.Models.Data
 {
     public partial class Worklog : IData
     {
+        // TODO: uri self
+
         public int? Id { get; private set; }
 
+        // TODO: uri day
+
         public int DayId { get; set; }
+
+        // TODO: uri ticket
 
         public int TicketId { get; set; }
 
@@ -18,6 +24,8 @@ namespace WorklogManagement.API.Models.Data
         public TimeSpan TimeSpent { get; set; }
 
         public string? TimeSpentComment { get; set; }
+
+        // TODO: uri attachments
 
         [JsonConstructor]
         public Worklog(int? id, int dayId, int ticketId, string? description, TimeSpan timeSpent, string? timeSpentComment)

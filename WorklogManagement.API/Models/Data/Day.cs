@@ -7,6 +7,8 @@ namespace WorklogManagement.API.Models.Data
 {
     public class Day : IData
     {
+        // TODO: uri self
+
         public int? Id { get; private set; }
 
         public DateTime Date { get; set; }

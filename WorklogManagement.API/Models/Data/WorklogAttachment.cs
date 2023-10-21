@@ -8,7 +8,11 @@ namespace WorklogManagement.API.Models.Data
 {
     public class WorklogAttachment : IData
     {
+        // TODO: uri self
+
         public int? Id { get; private set; }
+
+        // TODO: uri worklog
 
         public int WorklogId { get; set; }
 

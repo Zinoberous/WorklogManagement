@@ -8,7 +8,11 @@ namespace WorklogManagement.API.Models.Data
 {
     public class Ticket : IData
     {
+        // TODO: uri self
+
         public int? Id { get; private set; }
+
+        // TODO: uri ref
 
         public int? RefId { get; set; }
 
@@ -20,6 +24,10 @@ namespace WorklogManagement.API.Models.Data
         public Enums.Status Status { get; set; }
 
         public DateTime? CreatedAt { get; private set; }
+
+        // TODO: uri attachments
+
+        // TODO: uri comments
 
         [JsonConstructor]
         public Ticket(int? id, int? refId, string title, string? description, Enums.Status status, DateTime? createdAt)
