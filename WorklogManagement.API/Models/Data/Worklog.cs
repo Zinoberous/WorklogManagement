@@ -9,20 +9,26 @@ namespace WorklogManagement.API.Models.Data
     {
         // TODO: uri self
 
+        [JsonPropertyName("id")]
         public int? Id { get; private set; }
 
         // TODO: uri day
 
+        [JsonPropertyName("dayId")]
         public int DayId { get; set; }
 
         // TODO: uri ticket
 
+        [JsonPropertyName("ticketId")]
         public int TicketId { get; set; }
 
+        [JsonPropertyName("description")]
         public string? Description { get; set; }
 
+        [JsonPropertyName("timeSpent")]
         public TimeSpan TimeSpent { get; set; }
 
+        [JsonPropertyName("timeSpentComment")]
         public string? TimeSpentComment { get; set; }
 
         // TODO: uri attachments

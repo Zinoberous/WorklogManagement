@@ -4,6 +4,7 @@ using WorklogManagement.API.Models;
 using WorklogManagement.API.Models.Data;
 using WorklogManagement.API.Models.Filter;
 using WorklogManagement.DataAccess.Context;
+using static WorklogManagement.API.Helper.RequestHelper;
 using static WorklogManagement.API.Helper.ReflectionHelper;
 using DB = WorklogManagement.DataAccess.Models;
 
@@ -25,8 +26,10 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromBody] GetRequest<DayFilter>? request)
+        public async Task<IActionResult> Get()
         {
+            var request = await GetBodyAsync<GetRequest<DayFilter>>(HttpContext.Request);
+
             request ??= new();
 
             // filter
@@ -92,8 +95,10 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("single")]
-        public async Task<IActionResult> Get([FromBody] DayFilter? filter)
+        public async Task<IActionResult> GetSingle()
         {
+            var filter = await GetBodyAsync<DayFilter>(HttpContext.Request);
+
             var day = await _context.Days
                 .SingleAsync
                 (
@@ -110,7 +115,7 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             return Ok(new Day(await _context.Days.SingleAsync(x => x.Id == id)));
         }

@@ -9,14 +9,19 @@ namespace WorklogManagement.API.Models.Data
     {
         // TODO: uri self
 
+        [JsonPropertyName("id")]
         public int? Id { get; private set; }
 
+        [JsonPropertyName("date")]
         public DateTime Date { get; set; }
 
+        [JsonPropertyName("isMobile")]
         public bool IsMobile { get; set; }
 
+        [JsonPropertyName("workload")]
         public Enums.Workload Workload { get; set; }
 
+        [JsonPropertyName("workloadComment")]
         public string? WorkloadComment { get; set; }
 
         [JsonConstructor]

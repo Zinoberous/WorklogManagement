@@ -10,19 +10,25 @@ namespace WorklogManagement.API.Models.Data
     {
         // TODO: uri self
 
+        [JsonPropertyName("id")]
         public int? Id { get; private set; }
 
         // TODO: uri ticket
 
+        [JsonPropertyName("ticketId")]
         public int TicketId { get; set; }
 
-        [StringLength(255)]
+        [JsonPropertyName("name")]
+        [MaxLength(255)]
         public string Name { get; set; } = null!;
 
+        [JsonPropertyName("comment")]
         public string Comment { get; set; } = null!;
 
+        [JsonPropertyName("directory")]
         public string Directory { get; set; }
 
+        [JsonPropertyName("data")]
         public byte[] Data { get; set; }
 
         private static readonly string _basedir = Path.Combine("var", "www", "html", "_res", "WorklogManagement", "Attachments", "Tickets");

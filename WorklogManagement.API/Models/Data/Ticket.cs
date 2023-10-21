@@ -10,19 +10,25 @@ namespace WorklogManagement.API.Models.Data
     {
         // TODO: uri self
 
+        [JsonPropertyName("id")]
         public int? Id { get; private set; }
 
         // TODO: uri ref
 
+        [JsonPropertyName("refId")]
         public int? RefId { get; set; }
 
-        [StringLength(255)]
+        [JsonPropertyName("title")]
+        [MaxLength(255)]
         public string Title { get; set; } = null!;
 
+        [JsonPropertyName("description")]
         public string? Description { get; set; }
 
+        [JsonPropertyName("status")]
         public Enums.Status Status { get; set; }
 
+        [JsonPropertyName("createdAt")]
         public DateTime? CreatedAt { get; private set; }
 
         // TODO: uri attachments
