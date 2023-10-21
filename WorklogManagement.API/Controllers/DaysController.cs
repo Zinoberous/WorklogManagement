@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Models;
+using WorklogManagement.API.Models.Data;
+using WorklogManagement.API.Models.Filter;
 using WorklogManagement.DataAccess.Context;
+using static WorklogManagement.API.Helper.ReflectionHelper;
+using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Controllers
 {
@@ -21,14 +25,88 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet]
-        // TODO: sorting, paging, filtering
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromBody] GetRequest<DayFilter>? request)
         {
-            var tickets = await _context.Days
-                .Select(x => new Day(x))
-                .ToListAsync();
+            request ??= new();
 
-            return Ok(tickets);
+            // filter
+
+            var items = _context.Days
+                .Where
+                (
+                    x =>
+                    request.Filter == default ||
+                    (
+                        (request.Filter.IsMobile == null || x.IsMobile == request.Filter.IsMobile) &&
+                        (request.Filter.Date == null || x.Date == request.Filter.Date) &&
+                        (request.Filter.Workload == null || x.WorkloadId == (int)request.Filter.Workload)
+                    )
+                );
+
+            var totalItems = items.Count();
+
+            // sorting
+
+            IOrderedQueryable<DB.Day>? orderedItems = null;
+
+            foreach (var sort in request.Sorting)
+            {
+                if (orderedItems == null)
+                {
+                    orderedItems = sort.Desc
+                        ? items.OrderByDescending(x => GetPropertyValueByName(x, sort.Column))
+                        : items.OrderBy(x => GetPropertyValueByName(x, sort.Column));
+                }
+                else
+                {
+                    orderedItems = sort.Desc
+                        ? orderedItems.ThenByDescending(x => GetPropertyValueByName(x, sort.Column))
+                        : orderedItems.ThenBy(x => GetPropertyValueByName(x, sort.Column));
+                }
+            }
+
+            items = orderedItems ?? items.OrderBy(x => x.Id);
+
+            // paging
+
+            var page = request.PageSize == 0 ? items : items
+                .Skip((int)(request.Page * request.PageSize))
+                .Take((int)request.PageSize);
+
+            // result
+
+            GetResult<Day, DayFilter> result = new()
+            {
+                Sorting = request.Sorting,
+                PageSize = request.PageSize,
+                Page = request.Page,
+                Filter = request.Filter,
+                TotalItems = (uint)totalItems,
+                TotalPages = request.PageSize == 0 ? 1 : (uint)(totalItems / request.PageSize),
+                Data = await page
+                    .Select(x => new Day(x))
+                    .ToListAsync()
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("single")]
+        public async Task<IActionResult> Get([FromBody] DayFilter? filter)
+        {
+            var day = await _context.Days
+                .SingleAsync
+                (
+                    x =>
+                    filter == null ||
+                    (
+                        (filter.IsMobile == null || x.IsMobile == filter.IsMobile) &&
+                        (filter.Date == null || x.Date == filter.Date) &&
+                        (filter.Workload == null || x.WorkloadId == (int)filter.Workload)
+                    )
+                );
+
+            return Ok(new Day(day));
         }
 
         [HttpGet("{id}")]
@@ -36,8 +114,6 @@ namespace WorklogManagement.API.Controllers
         {
             return Ok(new Day(await _context.Days.SingleAsync(x => x.Id == id)));
         }
-
-        // TODO: get day by date
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Day day)

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DB = WorklogManagement.DataAccess.Models;
 
-namespace WorklogManagement.API.Models
+namespace WorklogManagement.API.Models.Data
 {
-    public class Workload
+    public class Workload : IData
     {
         public int Id { get; }
 

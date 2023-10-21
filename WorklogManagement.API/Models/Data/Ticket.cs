@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 using WorklogManagement.DataAccess.Context;
 using DB = WorklogManagement.DataAccess.Models;
 
-namespace WorklogManagement.API.Models
+namespace WorklogManagement.API.Models.Data
 {
-    public class Ticket
+    public class Ticket : IData
     {
         public int? Id { get; private set; }
 
@@ -44,7 +44,10 @@ namespace WorklogManagement.API.Models
 
         public static async Task<Ticket> GetAsync(int id, WorklogManagementContext context)
         {
-            return new(await context.Tickets.SingleAsync(x => x.Id == id));
+            var ticket = await context.Tickets
+                .SingleAsync(x => x.Id == id);
+
+            return new(ticket);
         }
 
         public async Task SaveAsync(WorklogManagementContext context)

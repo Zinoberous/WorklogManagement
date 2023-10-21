@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using WorklogManagement.DataAccess.Context;
 using DB = WorklogManagement.DataAccess.Models;
 
-namespace WorklogManagement.API.Models
+namespace WorklogManagement.API.Models.Data
 {
     public class TicketComment
     {

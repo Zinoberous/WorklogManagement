@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using DB = WorklogManagement.DataAccess.Models;
 
-namespace WorklogManagement.API.Models
+namespace WorklogManagement.API.Models.Data
 {
-    public class Status
+    public class Status : IData
     {
         public int Id { get; }
 

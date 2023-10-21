@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 using WorklogManagement.DataAccess.Context;
 using DB = WorklogManagement.DataAccess.Models;
 
-namespace WorklogManagement.API.Models
+namespace WorklogManagement.API.Models.Data
 {
-    public partial class Worklog
+    public partial class Worklog : IData
     {
         public int? Id { get; private set; }
 
@@ -70,7 +70,11 @@ namespace WorklogManagement.API.Models
             {
                 worklog = await context.Worklogs.SingleAsync(x => x.Id == Id);
 
-                
+                worklog.DayId = DayId;
+                worklog.TicketId = TicketId;
+                worklog.Description = Description;
+                worklog.TimeSpent = TimeSpent;
+                worklog.TimeSpentComment = TimeSpentComment;
 
                 await context.SaveChangesAsync();
             }
