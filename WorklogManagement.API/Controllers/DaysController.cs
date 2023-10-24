@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WorklogManagement.API.Models;
+using WorklogManagement.API.Helper;
+using WorklogManagement.API.Implements;
 using WorklogManagement.API.Models.Data;
-using WorklogManagement.API.Models.Filter;
 using WorklogManagement.DataAccess.Context;
-using static WorklogManagement.API.Helper.RequestHelper;
-using static WorklogManagement.API.Helper.ReflectionHelper;
-using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Controllers
 {
@@ -26,92 +23,20 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] DaysQuery query)
         {
-            var request = await GetBodyAsync<GetRequest<DayFilter>>(HttpContext.Request);
-
-            request ??= new();
-
-            // filter
-
-            var items = _context.Days
-                .Where
-                (
-                    x =>
-                    request.Filter == default ||
-                    (
-                        (request.Filter.IsMobile == null || x.IsMobile == request.Filter.IsMobile) &&
-                        (request.Filter.Date == null || x.Date == request.Filter.Date) &&
-                        (request.Filter.WorkloadId == null || x.WorkloadId == request.Filter.WorkloadId)
-                    )
-                );
-
-            var totalItems = items.Count();
-
-            // sorting
-
-            IOrderedQueryable<DB.Day>? orderedItems = null;
-
-            foreach (var sort in request.Sorting)
-            {
-                if (orderedItems == null)
-                {
-                    orderedItems = sort.Desc
-                        ? items.OrderByDescending(x => GetPropertyValueByName(x, sort.Column))
-                        : items.OrderBy(x => GetPropertyValueByName(x, sort.Column));
-                }
-                else
-                {
-                    orderedItems = sort.Desc
-                        ? orderedItems.ThenByDescending(x => GetPropertyValueByName(x, sort.Column))
-                        : orderedItems.ThenBy(x => GetPropertyValueByName(x, sort.Column));
-                }
-            }
-
-            items = orderedItems ?? items.OrderBy(x => x.Id);
-
-            // paging
-
-            var page = request.PageSize == 0 ? items : items
-                .Skip((int)(request.Page * request.PageSize))
-                .Take((int)request.PageSize);
-
-            // result
-
-            GetResult<Day, DayFilter> result = new()
-            {
-                Sorting = request.Sorting,
-                PageSize = request.PageSize,
-                Page = request.Page,
-                Filter = request.Filter,
-                TotalItems = (uint)totalItems,
-                TotalPages = request.PageSize == 0 ? 1 : (uint)(totalItems / request.PageSize),
-                Data = await page
-                    .Select(x => new Day(x))
-                    .ToListAsync()
-            };
+            var result = await RequestHelper.GetAsync
+            (
+                _context.Days,
+                query,
+                x => new Day(x),
+                x =>
+                    (query.IsMobile == null || x.IsMobile == query.IsMobile) &&
+                    (query.Date == null || x.Date == query.Date) &&
+                    (query.WorkloadId == null || x.WorkloadId == query.WorkloadId)
+            );
 
             return Ok(result);
-        }
-
-        [HttpGet("single")]
-        public async Task<IActionResult> GetSingle()
-        {
-            var filter = await GetBodyAsync<DayFilter>(HttpContext.Request);
-
-            var day = await _context.Days
-                .SingleAsync
-                (
-                    x =>
-                    filter == null ||
-                    (
-                        (filter.IsMobile == null || x.IsMobile == filter.IsMobile) &&
-                        (filter.Date == null || x.Date == filter.Date) &&
-                        (filter.WorkloadId == null || x.WorkloadId == filter.WorkloadId)
-                    )
-                );
-
-            return Ok(new Day(day));
         }
 
         [HttpGet("{id}")]
