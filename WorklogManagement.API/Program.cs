@@ -22,6 +22,7 @@ services.AddCors
             builder =>
             {
                 builder.SetIsOriginAllowed(_ => true);
+                builder.AllowCredentials();
                 builder.AllowAnyHeader();
                 builder.AllowAnyMethod();
             }
