@@ -44,7 +44,14 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(new Day(await _context.Days.SingleAsync(x => x.Id == id)));
+            var day = await _context.Days.SingleOrDefaultAsync(x => x.Id == id);
+
+            if (day is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new Day(day));
         }
 
         [HttpGet("{date}/{location}")]
@@ -59,7 +66,14 @@ namespace WorklogManagement.API.Controllers
 
             var isMobile = location == "mobile";
 
-            return Ok(new Day(await _context.Days.SingleAsync(x => x.Date == DateTime.Parse(date).Date && x.IsMobile == isMobile)));
+            var day = await _context.Days.SingleOrDefaultAsync(x => x.Date == DateTime.Parse(date).Date && x.IsMobile == isMobile);
+
+            if (day is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new Day(day));
         }
 
         [HttpPost]
