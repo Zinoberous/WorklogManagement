@@ -20,12 +20,12 @@ namespace WorklogManagement.API.Models
         
         // TODO: uri? previous page
 
-        public IEnumerable<TData> Data { get; }
+        public IEnumerable<TData> Items { get; }
 
-        public Result(TQuery query, IEnumerable<TData> data, uint totalItems)
+        public Result(TQuery query, IEnumerable<TData> items, uint totalItems)
         {
             Query = query;
-            Data = data;
+            Items = items;
 
             TotalItems = totalItems;
             TotalPages = query.PageSize == 0 ? 1 : (uint)Math.Ceiling((double)TotalItems / query.PageSize);

@@ -33,6 +33,8 @@ namespace WorklogManagement.API.Controllers
                 x =>
                     (query.IsMobile == null || x.IsMobile == query.IsMobile) &&
                     (query.Date == null || x.Date == query.Date) &&
+                    (query.From == null || x.Date >= query.From) &&
+                    (query.To == null || x.Date <= query.To) &&
                     (query.WorkloadId == null || x.WorkloadId == query.WorkloadId)
             );
 
@@ -43,6 +45,21 @@ namespace WorklogManagement.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             return Ok(new Day(await _context.Days.SingleAsync(x => x.Id == id)));
+        }
+
+        [HttpGet("{date}/{location}")]
+        public async Task<IActionResult> GetByDate(string date, string location)
+        {
+            location = location.ToLower();
+
+            if (location != "office" && location != "mobile")
+            {
+                return BadRequest("Ungültiger Einsatzort. Gültige Werte sind 'office' und 'mobile'.");
+            }
+
+            var isMobile = location == "mobile";
+
+            return Ok(new Day(await _context.Days.SingleAsync(x => x.Date == DateTime.Parse(date).Date && x.IsMobile == isMobile)));
         }
 
         [HttpPost]

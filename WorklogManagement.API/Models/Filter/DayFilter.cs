@@ -7,6 +7,12 @@ namespace WorklogManagement.API.Models.Filter
         [JsonPropertyName("date")]
         public DateTime? Date { get; set; }
 
+        [JsonPropertyName("from")]
+        public DateTime? From { get; set; }
+
+        [JsonPropertyName("to")]
+        public DateTime? To { get; set; }
+
         [JsonPropertyName("isMobile")]
         public bool? IsMobile { get; set; }
 

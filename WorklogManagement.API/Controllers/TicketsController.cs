@@ -33,7 +33,7 @@ namespace WorklogManagement.API.Controllers
                 x =>
                     (query.RefId == null || x.RefId == query.RefId) &&
                     (query.Title == null || x.Title.Contains(query.Title, StringComparison.InvariantCultureIgnoreCase)) &&
-                    (query.StatusId == null || x.StatusId == query.StatusId)
+                    (query.StatusEnum == null || query.StatusEnum.Contains((Enums.Status)x.StatusId))
             );
 
             return Ok(result);

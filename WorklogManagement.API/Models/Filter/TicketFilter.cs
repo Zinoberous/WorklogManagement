@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using WorklogManagement.API.Enums;
 
 namespace WorklogManagement.API.Models.Filter
 {
@@ -12,7 +13,9 @@ namespace WorklogManagement.API.Models.Filter
         [StringLength(255)]
         public string? Title { get; set; } = null!;
 
-        [JsonPropertyName("statusId")]
-        public int? StatusId { get; set; }
+        [JsonPropertyName("status")]
+        public IEnumerable<string>? Status { get; set; }
+
+        internal IEnumerable<Status>? StatusEnum => Status?.Select(x => Enum.Parse<Status>(x));
     }
 }
