@@ -31,7 +31,11 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("data")]
         public byte[] Data { get; set; }
 
+#if DEBUG
+        private static readonly string _basedir = Path.Combine(".", "Attachments", "Tickets");
+#else
         private static readonly string _basedir = Path.Combine("var", "www", "html", "_res", "WorklogManagement", "Attachments", "Tickets");
+#endif
 
         [JsonConstructor]
         public TicketAttachment(int? id, int ticketId, string name, string comment, string directory, byte[] data)

@@ -8,17 +8,17 @@ namespace WorklogManagement.API.Models
     {
         public TQuery Query { get; }
 
-        public uint TotalItems { get; }
-
-        public uint TotalPages { get; }
-
         // TODO: uri first page
 
         // TODO: uri last page
 
         // TODO: uri? next page
-        
+
         // TODO: uri? previous page
+
+        public uint TotalPages { get; }
+
+        public uint TotalItems { get; }
 
         public IEnumerable<TData> Items { get; }
 
