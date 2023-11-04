@@ -39,7 +39,7 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var attachment = await _context.WorklogAttachments
                 .Include(x => x.Worklog)

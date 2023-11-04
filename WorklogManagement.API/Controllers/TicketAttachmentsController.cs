@@ -39,7 +39,7 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             return Ok(new TicketAttachment(await _context.TicketAttachments.SingleAsync(x => x.Id == id)));
         }

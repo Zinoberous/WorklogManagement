@@ -14,11 +14,5 @@ namespace WorklogManagement.API.Controllers
             _logger = logger;
             _config = config;
         }
-
-        [HttpPost("auth")]
-        public IActionResult Auth()
-        {
-            return Ok();
-        }
     }
 }

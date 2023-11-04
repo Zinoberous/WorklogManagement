@@ -38,7 +38,7 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             return Ok(new TicketComment(await _context.TicketComments.SingleAsync(x => x.Id == id)));
         }
