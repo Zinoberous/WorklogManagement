@@ -26,7 +26,7 @@ namespace WorklogManagement.API.Models.Data
         public string? Description { get; set; }
 
         [JsonPropertyName("timeSpent")]
-        public TimeSpan TimeSpent { get; set; }
+        public int TimeSpentSeconds { get; set; }
 
         [JsonPropertyName("timeSpentComment")]
         public string? TimeSpentComment { get; set; }
@@ -34,13 +34,13 @@ namespace WorklogManagement.API.Models.Data
         // TODO: uri attachments
 
         [JsonConstructor]
-        public Worklog(int? id, int dayId, int ticketId, string? description, TimeSpan timeSpent, string? timeSpentComment)
+        public Worklog(int? id, int dayId, int ticketId, string? description, int timeSpentSeconds, string? timeSpentComment)
         {
             Id = id;
             DayId = dayId;
             TicketId = ticketId;
             Description = description;
-            TimeSpent = timeSpent;
+            TimeSpentSeconds = timeSpentSeconds;
             TimeSpentComment = timeSpentComment;
         }
 
@@ -50,7 +50,7 @@ namespace WorklogManagement.API.Models.Data
             DayId = worklog.DayId;
             TicketId = worklog.TicketId;
             Description = worklog.Description;
-            TimeSpent = worklog.TimeSpent;
+            TimeSpentSeconds = (int)worklog.TimeSpent.TotalSeconds;
             TimeSpentComment = worklog.TimeSpentComment;
         }
 
@@ -70,7 +70,7 @@ namespace WorklogManagement.API.Models.Data
                     DayId = DayId,
                     TicketId = TicketId,
                     Description = Description,
-                    TimeSpent = TimeSpent,
+                    TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds),
                     TimeSpentComment = TimeSpentComment,
                 };
 
@@ -87,7 +87,7 @@ namespace WorklogManagement.API.Models.Data
                 worklog.DayId = DayId;
                 worklog.TicketId = TicketId;
                 worklog.Description = Description;
-                worklog.TimeSpent = TimeSpent;
+                worklog.TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds);
                 worklog.TimeSpentComment = TimeSpentComment;
 
                 await context.SaveChangesAsync();
