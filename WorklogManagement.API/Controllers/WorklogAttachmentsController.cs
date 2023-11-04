@@ -60,11 +60,7 @@ namespace WorklogManagement.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var attachment = await _context.WorklogAttachments.SingleAsync(x => x.Id == id);
-
-            _context.WorklogAttachments.Remove(attachment);
-
-            await _context.SaveChangesAsync();
+            await WorklogAttachment.DeleteAsync(_context, id);
 
             return Ok();
         }

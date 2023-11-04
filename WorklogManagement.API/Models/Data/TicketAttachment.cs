@@ -102,5 +102,18 @@ namespace WorklogManagement.API.Models.Data
                 await context.SaveChangesAsync();
             }
         }
+
+        public static async Task DeleteAsync(WorklogManagementContext context, int id)
+        {
+            var attachment = await context.TicketAttachments.SingleAsync(x => x.Id == id);
+
+            context.TicketAttachments.Remove(attachment);
+
+            await context.SaveChangesAsync();
+
+            TicketAttachment ticketAttachment = new(attachment);
+
+            File.Delete(Path.Combine(ticketAttachment.Directory, ticketAttachment.Name));
+        }
     }
 }

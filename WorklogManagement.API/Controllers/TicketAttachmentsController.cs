@@ -55,11 +55,7 @@ namespace WorklogManagement.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var attachment = await _context.TicketAttachments.SingleAsync(x => x.Id == id);
-
-            _context.TicketAttachments.Remove(attachment);
-
-            await _context.SaveChangesAsync();
+            await TicketAttachment.DeleteAsync(_context, id);
 
             return Ok();
         }
