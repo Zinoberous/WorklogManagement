@@ -32,7 +32,7 @@ namespace WorklogManagement.API.Controllers
                 x => new WorklogAttachment(x),
                 x =>
                     (query.WorklogId == null || x.WorklogId == query.WorklogId) &&
-                    (query.Name == null || x.Name.Contains(query.Name, StringComparison.InvariantCultureIgnoreCase))
+                    (query.Name == null || x.Name.Contains(query.Name))
             );
 
             return Ok(result);

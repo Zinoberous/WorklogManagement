@@ -32,7 +32,7 @@ namespace WorklogManagement.API.Controllers
                 x => new TicketAttachment(x),
                 x =>
                     (query.TicketId == null || x.TicketId == query.TicketId) &&
-                    (query.Name == null || x.Name.Contains(query.Name, StringComparison.InvariantCultureIgnoreCase))
+                    (query.Name == null || x.Name.Contains(query.Name))
             );
 
             return Ok(result);
