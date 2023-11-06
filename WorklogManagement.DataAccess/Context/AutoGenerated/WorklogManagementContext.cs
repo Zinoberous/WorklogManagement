@@ -19,6 +19,7 @@ namespace WorklogManagement.DataAccess.Context
         public virtual DbSet<Ticket> Tickets { get; set; } = null!;
         public virtual DbSet<TicketAttachment> TicketAttachments { get; set; } = null!;
         public virtual DbSet<TicketComment> TicketComments { get; set; } = null!;
+        public virtual DbSet<TicketCommentAttachment> TicketCommentAttachments { get; set; } = null!;
         public virtual DbSet<Workload> Workloads { get; set; } = null!;
         public virtual DbSet<Worklog> Worklogs { get; set; } = null!;
         public virtual DbSet<WorklogAttachment> WorklogAttachments { get; set; } = null!;
@@ -63,6 +64,15 @@ namespace WorklogManagement.DataAccess.Context
                     .HasForeignKey(d => d.TicketId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TicketComment_TicketId_Ticket_Id");
+            });
+
+            modelBuilder.Entity<TicketCommentAttachment>(entity =>
+            {
+                entity.HasOne(d => d.TicketComment)
+                    .WithMany(p => p.TicketCommentAttachments)
+                    .HasForeignKey(d => d.TicketCommentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id");
             });
 
             modelBuilder.Entity<Worklog>(entity =>

@@ -55,8 +55,8 @@ namespace WorklogManagement.API.Models.Data
             Name = attachment.Name;
             Comment = attachment.Comment;
 
-            Directory = Path.Combine(_basedir, TicketId.ToString()!);
-            Data = File.ReadAllBytes(Path.Combine(Directory!, Name));
+            Directory = Path.Combine(_basedir, TicketId.ToString());
+            Data = File.ReadAllBytes(Path.Combine(Directory, Name));
         }
 
         public static async Task<TicketAttachment> GetAsync(int id, WorklogManagementContext context)

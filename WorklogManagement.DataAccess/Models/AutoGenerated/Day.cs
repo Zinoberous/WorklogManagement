@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WorklogManagement.DataAccess.Models
 {
     [Table("Day")]
-    [Index("Date", "IsMobile", Name = "UX_Day_Date_Mobile", IsUnique = true)]
+    [Index("Date", "IsMobile", Name = "UX_Day_Date_IsMobile", IsUnique = true)]
     public partial class Day
     {
         public Day()

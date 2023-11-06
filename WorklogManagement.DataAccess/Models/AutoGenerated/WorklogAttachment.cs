@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WorklogManagement.DataAccess.Models
 {
     [Table("WorklogAttachment")]
-    [Index("WorklogId", "Name", Name = "UX_WorklogAttachment_Name", IsUnique = true)]
+    [Index("WorklogId", "Name", Name = "UX_WorklogAttachment_WorklogId_Name", IsUnique = true)]
     public partial class WorklogAttachment
     {
         [Key]

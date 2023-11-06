@@ -8,8 +8,9 @@ DROP TABLE	[WorklogAttachment],
 			[Worklog],
 			[Day],
 			[Workload],
-			[TicketAttachment],
+			[TicketCommentAttachment],
 			[TicketComment],
+			[TicketAttachment],
 			[Ticket],
 			[Status]
 			--[Priority],
@@ -65,6 +66,18 @@ CREATE TABLE [Ticket]
 )
 GO
 
+CREATE TABLE [TicketAttachment]
+(
+	[Id] INT NOT NULL IDENTITY(1, 1),
+	[TicketId] INT NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/name
+	[Comment] NVARCHAR(MAX) NOT NULL
+	CONSTRAINT PK_TicketAttachment_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
+	CONSTRAINT UX_TicketAttachment_TicketId_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
+)
+GO
+
 CREATE TABLE [TicketComment]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
@@ -76,15 +89,15 @@ CREATE TABLE [TicketComment]
 )
 GO
 
-CREATE TABLE [TicketAttachment]
+CREATE TABLE [TicketCommentAttachment]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
-	[TicketId] INT NOT NULL,
-	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/name
+	[TicketCommentId] INT NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/ticketCommentId/name
 	[Comment] NVARCHAR(MAX) NOT NULL
-	CONSTRAINT PK_TicketAttachment_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
-	CONSTRAINT UX_TicketAttachment_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
+	CONSTRAINT PK_TicketCommentAttachment_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]),
+	CONSTRAINT UX_TicketCommentAttachment_TicketCommentId_Name UNIQUE NONCLUSTERED ([TicketCommentId], [Name])
 )
 GO
 
@@ -106,7 +119,7 @@ CREATE TABLE [Day]
 	[WorkloadComment] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_Day_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_Day_WorkloadId_Workload_Id FOREIGN KEY ([WorkloadId]) REFERENCES [Workload] ([Id]),
-	CONSTRAINT UX_Day_Date_Mobile UNIQUE NONCLUSTERED ([Date], [IsMobile])
+	CONSTRAINT UX_Day_Date_IsMobile UNIQUE NONCLUSTERED ([Date], [IsMobile])
 )
 GO
 
@@ -132,7 +145,7 @@ CREATE TABLE [WorklogAttachment]
 	[Comment] NVARCHAR(MAX) NOT NULL
 	CONSTRAINT PK_WorklogAttachment_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_WorklogAttachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]),
-	CONSTRAINT UX_WorklogAttachment_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])
+	CONSTRAINT UX_WorklogAttachment_WorklogId_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])
 )
 GO
 
