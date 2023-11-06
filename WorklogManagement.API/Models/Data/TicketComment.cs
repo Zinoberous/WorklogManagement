@@ -17,18 +17,18 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("ticketId")]
         public int TicketId { get; set; }
 
-        [JsonPropertyName("comment")]
-        public string Comment { get; set; } = null!;
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = null!;
 
         [JsonPropertyName("createdAt")]
         public DateTime? CreatedAt { get; private set; }
 
         [JsonConstructor]
-        public TicketComment(int? id, int ticketId, string comment, DateTime? createdAt)
+        public TicketComment(int? id, int ticketId, string description, DateTime? createdAt)
         {
             Id = id;
             TicketId = ticketId;
-            Comment = comment;
+            Description = description;
             CreatedAt = createdAt;
         }
 
@@ -36,7 +36,7 @@ namespace WorklogManagement.API.Models.Data
         {
             Id = comment.Id;
             TicketId = comment.TicketId;
-            Comment = comment.Comment;
+            Description = comment.Description;
             CreatedAt = comment.CreatedAt;
         }
 
@@ -54,7 +54,7 @@ namespace WorklogManagement.API.Models.Data
                 comment = new()
                 {
                     TicketId = TicketId,
-                    Comment = Comment,
+                    Description = Description,
                 };
 
                 await context.TicketComments.AddAsync(comment);
@@ -69,7 +69,7 @@ namespace WorklogManagement.API.Models.Data
                 comment = await context.TicketComments.SingleAsync(x => x.Id == Id);
 
                 comment.TicketId = TicketId;
-                comment.Comment = Comment;
+                comment.Description = Description;
 
                 await context.SaveChangesAsync();
             }

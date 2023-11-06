@@ -14,7 +14,7 @@ namespace WorklogManagement.DataAccess.Models
         [Key]
         public int Id { get; set; }
         public int TicketId { get; set; }
-        public string Comment { get; set; } = null!;
+        public string Description { get; set; } = null!;
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
 
