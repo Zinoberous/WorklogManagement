@@ -55,7 +55,7 @@ namespace WorklogManagement.API.Models.Data
             Name = attachment.Name;
             Comment = attachment.Comment;
 
-            Directory = Path.Combine(_basedir, $"{attachment.Worklog.Day.Date:yyyy-MM-dd}-{(attachment.Worklog.Day.IsMobile ? "mobile" : "office")}", WorklogId.ToString());
+            Directory = Path.Combine(_basedir, $"{attachment.Worklog.Date:yyyy-MM-dd}", WorklogId.ToString());
             Data = File.ReadAllBytes(Path.Combine(Directory, Name));
         }
 
@@ -63,7 +63,6 @@ namespace WorklogManagement.API.Models.Data
         {
             var attachment = await context.WorklogAttachments
                 .Include(x => x.Worklog)
-                .ThenInclude(x => x.Day)
                 .SingleAsync(x => x.Id == id);
 
             return new(attachment);

@@ -7,13 +7,13 @@ namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WorkloadsController : ControllerBase
+    public class TicketStatusController : ControllerBase
     {
         private readonly ILogger<MainController> _logger;
         private readonly IConfiguration _config;
         private readonly WorklogManagementContext _context;
 
-        public WorkloadsController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
+        public TicketStatusController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
         {
             _logger = logger;
             _config = config;
@@ -23,12 +23,12 @@ namespace WorklogManagement.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var workloads = await _context.Workloads
+            var status = await _context.TicketStatuses
                 .OrderBy(x => x.Id)
-                .Select(x => new Workload(x))
+                .Select(x => new TicketStatus(x))
                 .ToListAsync();
 
-            return Ok(workloads);
+            return Ok(status);
         }
     }
 }

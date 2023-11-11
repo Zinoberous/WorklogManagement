@@ -14,8 +14,8 @@ namespace WorklogManagement.API.Models.Data
 
         // TODO: uri day
 
-        [JsonPropertyName("dayId")]
-        public int DayId { get; set; }
+        [JsonPropertyName("date")]
+        public DateTime Date { get; set; }
 
         // TODO: uri ticket
 
@@ -28,30 +28,25 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("timeSpent")]
         public int TimeSpentSeconds { get; set; }
 
-        [JsonPropertyName("timeSpentComment")]
-        public string? TimeSpentComment { get; set; }
-
         // TODO: uri attachments
 
         [JsonConstructor]
-        public Worklog(int? id, int dayId, int ticketId, string? description, int timeSpentSeconds, string? timeSpentComment)
+        public Worklog(int? id, DateTime date, int ticketId, string? description, int timeSpentSeconds)
         {
             Id = id;
-            DayId = dayId;
+            Date = date;
             TicketId = ticketId;
             Description = description;
             TimeSpentSeconds = timeSpentSeconds;
-            TimeSpentComment = timeSpentComment;
         }
 
         public Worklog(DB.Worklog worklog)
         {
             Id = worklog.Id;
-            DayId = worklog.DayId;
+            Date = worklog.Date;
             TicketId = worklog.TicketId;
             Description = worklog.Description;
             TimeSpentSeconds = (int)worklog.TimeSpent.TotalSeconds;
-            TimeSpentComment = worklog.TimeSpentComment;
         }
 
         public static async Task<Worklog> GetAsync(int id, WorklogManagementContext context)
@@ -67,11 +62,10 @@ namespace WorklogManagement.API.Models.Data
             {
                 worklog = new()
                 {
-                    DayId = DayId,
+                    Date = Date,
                     TicketId = TicketId,
                     Description = Description,
                     TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds),
-                    TimeSpentComment = TimeSpentComment,
                 };
 
                 await context.Worklogs.AddAsync(worklog);
@@ -84,11 +78,10 @@ namespace WorklogManagement.API.Models.Data
             {
                 worklog = await context.Worklogs.SingleAsync(x => x.Id == Id);
 
-                worklog.DayId = DayId;
+                worklog.Date = Date;
                 worklog.TicketId = TicketId;
                 worklog.Description = Description;
                 worklog.TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds);
-                worklog.TimeSpentComment = TimeSpentComment;
 
                 await context.SaveChangesAsync();
             }

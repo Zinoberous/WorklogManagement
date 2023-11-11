@@ -16,6 +16,6 @@ namespace WorklogManagement.API.Models.Filter
         [JsonPropertyName("status")]
         public IEnumerable<string>? Status { get; set; }
 
-        internal IEnumerable<Status>? StatusEnum => Status?.Select(x => Enum.Parse<Status>(x));
+        internal IEnumerable<TicketStatus>? StatusEnum => Status?.Select(x => Enum.Parse<TicketStatus>(x));
     }
 }

@@ -9,13 +9,13 @@ namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DaysController : ControllerBase
+    public class CalendarEntriesController : ControllerBase
     {
         private readonly ILogger<MainController> _logger;
         private readonly IConfiguration _config;
         private readonly WorklogManagementContext _context;
 
-        public DaysController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
+        public CalendarEntriesController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
         {
             _logger = logger;
             _config = config;
@@ -23,19 +23,18 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] DaysQuery query)
+        public async Task<IActionResult> Get([FromQuery] CalendarEntryQuery query)
         {
             var result = await RequestHelper.GetAsync
             (
-                _context.Days,
+                _context.CalendarEntries,
                 query,
-                x => new Day(x),
+                x => new CalendarEntry(x),
                 x =>
-                    (query.IsMobile == null || x.IsMobile == query.IsMobile) &&
                     (query.Date == null || x.Date == query.Date) &&
                     (query.From == null || x.Date >= query.From) &&
                     (query.To == null || x.Date <= query.To) &&
-                    (query.WorkloadId == null || x.WorkloadId == query.WorkloadId)
+                    (query.CalendarEntryTypeEnum == null || x.CalendarEntryTypeId == (int)query.CalendarEntryTypeEnum)
             );
 
             return Ok(result);
@@ -44,40 +43,18 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var day = await _context.Days.SingleOrDefaultAsync(x => x.Id == id);
+            var day = await _context.CalendarEntries.SingleOrDefaultAsync(x => x.Id == id);
 
             if (day is null)
             {
                 return NotFound();
             }
 
-            return Ok(new Day(day));
-        }
-
-        [HttpGet("{date}/{location}")]
-        public async Task<IActionResult> GetByDate(string date, string location)
-        {
-            location = location.ToLower();
-
-            if (location != "office" && location != "mobile")
-            {
-                return BadRequest("Ungültiger Einsatzort. Gültige Werte sind 'office' und 'mobile'.");
-            }
-
-            var isMobile = location == "mobile";
-
-            var day = await _context.Days.SingleOrDefaultAsync(x => x.Date == DateTime.Parse(date).Date && x.IsMobile == isMobile);
-
-            if (day is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(new Day(day));
+            return Ok(new CalendarEntry(day));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Day day)
+        public async Task<IActionResult> Post([FromBody] CalendarEntry day)
         {
             await day.SaveAsync(_context);
 
@@ -87,9 +64,9 @@ namespace WorklogManagement.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var day = await _context.Days.SingleAsync(x => x.Id == id);
+            var day = await _context.CalendarEntries.SingleAsync(x => x.Id == id);
 
-            _context.Days.Remove(day);
+            _context.CalendarEntries.Remove(day);
 
             await _context.SaveChangesAsync();
 

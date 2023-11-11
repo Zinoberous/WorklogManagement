@@ -9,13 +9,13 @@ namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TicketCommentsController : ControllerBase
+    public class TicketsStatusLogsController : ControllerBase
     {
         private readonly ILogger<MainController> _logger;
         private readonly IConfiguration _config;
         private readonly WorklogManagementContext _context;
 
-        public TicketCommentsController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
+        public TicketsStatusLogsController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
         {
             _logger = logger;
             _config = config;
@@ -23,15 +23,15 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] TicketCommentsQuery query)
+        public async Task<IActionResult> Get([FromQuery] TicketStatusLogQuery query)
         {
             var result = await RequestHelper.GetAsync
             (
-                _context.TicketComments,
+                _context.TicketStatusLogs,
                 query,
-                x => new TicketComment(x),
+                x => new TicketStatusLog(x),
                 x =>
-                    (query.TicketId == null || x.TicketId == query.TicketId)
+                    query.TicketId == null || x.TicketId == query.TicketId
             );
 
             return Ok(result);
@@ -40,23 +40,26 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(new TicketComment(await _context.TicketComments.SingleAsync(x => x.Id == id)));
+            var ticket = await _context.Tickets
+                .SingleAsync(x => x.Id == id);
+
+            return Ok(new Ticket(ticket));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TicketComment comment)
+        public async Task<IActionResult> Post([FromBody] Ticket ticket)
         {
-            await comment.SaveAsync(_context);
+            await ticket.SaveAsync(_context);
 
-            return Ok(comment);
+            return Ok(ticket);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var comment = await _context.TicketComments.SingleAsync(x => x.Id == id);
+            var ticket = await _context.Tickets.SingleAsync(x => x.Id == id);
 
-            _context.TicketComments.Remove(comment);
+            _context.Tickets.Remove(ticket);
 
             await _context.SaveChangesAsync();
 

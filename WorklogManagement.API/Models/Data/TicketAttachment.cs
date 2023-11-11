@@ -25,11 +25,10 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("comment")]
         public string Comment { get; set; } = null!;
 
-        [JsonPropertyName("directory")]
-        public string Directory { get; set; }
-
         [JsonPropertyName("data")]
         public byte[] Data { get; set; }
+
+        private string Directory => Path.Combine(_basedir, TicketId.ToString());
 
 #if DEBUG
         private static readonly string _basedir = Path.Combine(".", "Attachments", "Tickets");
@@ -38,13 +37,12 @@ namespace WorklogManagement.API.Models.Data
 #endif
 
         [JsonConstructor]
-        public TicketAttachment(int? id, int ticketId, string name, string comment, string directory, byte[] data)
+        public TicketAttachment(int? id, int ticketId, string name, string comment, byte[] data)
         {
             Id = id;
             TicketId = ticketId;
             Name = name;
             Comment = comment;
-            Directory = directory;
             Data = data;
         }
 
@@ -54,8 +52,6 @@ namespace WorklogManagement.API.Models.Data
             TicketId = attachment.TicketId;
             Name = attachment.Name;
             Comment = attachment.Comment;
-
-            Directory = Path.Combine(_basedir, TicketId.ToString());
             Data = File.ReadAllBytes(Path.Combine(Directory, Name));
         }
 

@@ -31,8 +31,7 @@ namespace WorklogManagement.API.Controllers
                 query,
                 x => new TicketAttachment(x),
                 x =>
-                    (query.TicketId == null || x.TicketId == query.TicketId) &&
-                    (query.Name == null || x.Name.Contains(query.Name))
+                    query.TicketId == null || x.TicketId == query.TicketId
             );
 
             return Ok(result);

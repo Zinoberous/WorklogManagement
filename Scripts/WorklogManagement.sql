@@ -6,44 +6,54 @@ GO
 
 DROP TABLE	[WorklogAttachment],
 			[Worklog],
-			[Day],
-			[Workload],
-			[TicketCommentAttachment],
-			[TicketComment],
+			[TicketStatusLog],
+			-- [TicketCommentAttachment],
+			-- [TicketComment],
 			[TicketAttachment],
 			[Ticket],
-			[Status]
-			--[Priority],
-			--[Sprint],
+			[TicketStatus],
+			--[TicketPriority],
+			[CalendarEntry],
+			[CalendarEntryType]
 GO
 
--- CREATE TABLE [Sprint]
--- (
--- 	[Id] INT NOT NULL IDENTITY(1, 1),
--- 	[Title] NVARCHAR(255) NOT NULL,
--- 	[Description] NVARCHAR(MAX) NULL,
--- 	[StartAt] DATE NOT NULL,
--- 	[EndAt] DATE NOT NULL,
--- 	CONSTRAINT PK_Sprint_Id PRIMARY KEY ([Id]),
--- 	CONSTRAINT UX_Sprint_Title UNIQUE NONCLUSTERED ([Title])
--- )
--- GO
-
--- CREATE TABLE [Priority]
--- (
--- 	[Id] INT NOT NULL IDENTITY(1, 1),
--- 	[Name] NVARCHAR(255) NOT NULL,
--- 	CONSTRAINT PK_Priority_Id PRIMARY KEY ([Id]),
--- 	CONSTRAINT UX_Priority_Name UNIQUE NONCLUSTERED ([Name])
--- )
--- GO
-
-CREATE TABLE [Status]
+CREATE TABLE [CalendarEntryType]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[Name] NVARCHAR(255) NOT NULL,
-	CONSTRAINT PK_Status_Id PRIMARY KEY ([Id]),
-	CONSTRAINT UX_Status_Name UNIQUE NONCLUSTERED ([Name])
+	CONSTRAINT PK_CalendarEntryType_Id PRIMARY KEY ([Id]),
+	CONSTRAINT UX_CalendarEntryType_Name UNIQUE NONCLUSTERED ([Name])
+)
+GO
+
+CREATE TABLE [CalendarEntry]
+(
+	[Id] INT NOT NULL IDENTITY(1, 1),
+	[Date] DATE NOT NULL,
+	[Duration] TIME NOT NULL,
+	[CalendarEntryTypeId] INT NOT NULL,
+	[Note] NVARCHAR(MAX) NULL,
+	CONSTRAINT PK_Day_Id PRIMARY KEY ([Id]),
+	CONSTRAINT UX_Day_Date_CalendarEntryType_CalendarEntryTypeId FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]),
+	CONSTRAINT UX_Day_Date_CalendarEntryTypeId UNIQUE NONCLUSTERED ([Date], [CalendarEntryTypeId])
+)
+GO
+
+-- CREATE TABLE [TicketPriority]
+-- (
+-- 	[Id] INT NOT NULL IDENTITY(1, 1),
+-- 	[Name] NVARCHAR(255) NOT NULL,
+-- 	CONSTRAINT PK_TicketPriority_Id PRIMARY KEY ([Id]),
+-- 	CONSTRAINT UX_TicketPriority_Name UNIQUE NONCLUSTERED ([Name])
+-- )
+-- GO
+
+CREATE TABLE [TicketStatus]
+(
+	[Id] INT NOT NULL IDENTITY(1, 1),
+	[Name] NVARCHAR(255) NOT NULL,
+	CONSTRAINT PK_TicketStatus_Id PRIMARY KEY ([Id]),
+	CONSTRAINT UX_TicketStatus_Name UNIQUE NONCLUSTERED ([Name])
 )
 GO
 
@@ -53,15 +63,13 @@ CREATE TABLE [Ticket]
 	[RefId] INT NULL, -- definiert dieses Ticket als Subticket oder Nachfolger
 	[Title] NVARCHAR(255) NOT NULL,
 	[Description] NVARCHAR(MAX) NULL,
-	-- [SprintId] INT NULL,
-	-- [PriorityId] INT NOT NULL,
-	[StatusId] INT NOT NULL,
+	-- [TicketPriorityId] INT NOT NULL,
+	[TicketStatusId] INT NOT NULL,
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
-	-- CONSTRAINT FK_Ticket_SprintId_Sprint_Id FOREIGN KEY ([SprintId]) REFERENCES [Sprint] ([Id]),
-	-- CONSTRAINT FK_Ticket_PriorityId_Priority_Id FOREIGN KEY ([PriorityId]) REFERENCES [Priority] ([Id]),
-	CONSTRAINT FK_Ticket_StatusId_Status_Id FOREIGN KEY ([StatusId]) REFERENCES [Status] ([Id]),
+	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]),
+	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]),
 	CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
 )
 GO
@@ -78,61 +86,50 @@ CREATE TABLE [TicketAttachment]
 )
 GO
 
-CREATE TABLE [TicketComment]
+-- CREATE TABLE [TicketComment]
+-- (
+-- 	[Id] INT NOT NULL IDENTITY(1, 1),
+-- 	[TicketId] INT NOT NULL,
+-- 	[Comment] NVARCHAR(MAX) NOT NULL,
+-- 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
+-- 	CONSTRAINT PK_TicketComment_Id PRIMARY KEY ([Id]),
+-- 	CONSTRAINT FK_TicketComment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
+-- )
+-- GO
+
+-- CREATE TABLE [TicketCommentAttachment]
+-- (
+-- 	[Id] INT NOT NULL IDENTITY(1, 1),
+-- 	[TicketCommentId] INT NOT NULL,
+-- 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/ticketCommentId/name
+-- 	[Comment] NVARCHAR(MAX) NOT NULL
+-- 	CONSTRAINT PK_TicketCommentAttachment_Id PRIMARY KEY ([Id]),
+-- 	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]),
+-- 	CONSTRAINT UX_TicketCommentAttachment_TicketCommentId_Name UNIQUE NONCLUSTERED ([TicketCommentId], [Name])
+-- )
+-- GO
+
+CREATE TABLE [TicketStatusLog]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[TicketId] INT NOT NULL,
-	[Comment] NVARCHAR(MAX) NOT NULL,
-	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
-	CONSTRAINT PK_TicketComment_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_TicketComment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
-)
-GO
-
-CREATE TABLE [TicketCommentAttachment]
-(
-	[Id] INT NOT NULL IDENTITY(1, 1),
-	[TicketCommentId] INT NOT NULL,
-	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/ticketCommentId/name
-	[Comment] NVARCHAR(MAX) NOT NULL
-	CONSTRAINT PK_TicketCommentAttachment_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]),
-	CONSTRAINT UX_TicketCommentAttachment_TicketCommentId_Name UNIQUE NONCLUSTERED ([TicketCommentId], [Name])
-)
-GO
-
-CREATE TABLE [Workload]
-(
-	[Id] INT NOT NULL IDENTITY(1, 1),
-	[Name] NVARCHAR(255) NOT NULL,
-	CONSTRAINT PK_Workload_Id PRIMARY KEY ([Id]),
-	CONSTRAINT UX_Workload_Name UNIQUE NONCLUSTERED ([Name])
-)
-GO
-
-CREATE TABLE [Day]
-(
-	[Id] INT NOT NULL IDENTITY(1, 1),
-	[Date] DATE NOT NULL,
-	[IsMobile] BIT NOT NULL,
-	[WorkloadId] INT NULL, -- NULL für Einträge außerhalb der Arbeit (Wochende, Urlaub, Feiertage, ...)
-	[WorkloadComment] NVARCHAR(MAX) NULL,
-	CONSTRAINT PK_Day_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Day_WorkloadId_Workload_Id FOREIGN KEY ([WorkloadId]) REFERENCES [Workload] ([Id]),
-	CONSTRAINT UX_Day_Date_IsMobile UNIQUE NONCLUSTERED ([Date], [IsMobile])
+	[TicketStatusId] INT NOT NULL,
+	[StartedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
+	[Note] NVARCHAR(MAX) NULL,
+	CONSTRAINT PK_TicketStatusLog_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
+	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]),
 )
 GO
 
 CREATE TABLE [Worklog]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
-	[DayId] INT NOT NULL,
+	[Date] DATE NOT NULL,
 	[TicketId] INT NOT NULL,
 	[Description] NVARCHAR(MAX) NULL,
 	[TimeSpent] TIME NOT NULL,
-	[TimeSpentComment] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_Worklog_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Worklog_DayId_Day_Id FOREIGN KEY ([DayId]) REFERENCES [Day] ([Id]),
 	CONSTRAINT FK_Worklog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
 )
 GO
@@ -149,7 +146,34 @@ CREATE TABLE [WorklogAttachment]
 )
 GO
 
--- INSERT [Priority]
+INSERT [CalendarEntryType]
+(
+	[Name]
+)
+VALUES
+(
+	N'WorkTime' -- Pflichtarbeitszeit ...
+),
+(
+	N'Office' -- ... davon im Büro
+),
+(
+	N'Mobile' -- ... davon im Homeoffice
+),
+(
+	N'Holiday'
+),
+(
+	N'Vacation'
+),
+(
+	N'TimeCompensation'
+),
+(
+	N'Ill'
+)
+
+-- INSERT [TicketPriority]
 -- (
 -- 	[Name]
 -- )
@@ -171,7 +195,7 @@ GO
 -- )
 -- GO
 
-INSERT [Status]
+INSERT [TicketStatus]
 (
 	[Name]
 )
@@ -199,35 +223,14 @@ VALUES
 )
 GO
 
-INSERT [Workload]
-(
-	[Name]
-)
-VALUES
-(
-	N'Very High'
-),
-(
-	N'High'
-),
-(
-	N'Medium'
-),
-(
-	N'Low'
-),
-(
-	N'Very Low'
-)
-GO
-
---SELECT * FROM [Sprint]
---SELECT * FROM [Priority]
-SELECT * FROM [Status]
+SELECT * FROM [CalendarEntry]
+SELECT * FROM [CalendarEntryType]
+--SELECT * FROM [TicketPriority]
+SELECT * FROM [TicketStatus]
 SELECT * FROM [Ticket]
-SELECT * FROM [TicketComment]
 SELECT * FROM [TicketAttachment]
-SELECT * FROM [Workload]
-SELECT * FROM [Day]
+-- SELECT * FROM [TicketComment]
+-- SELECT * FROM [TicketCommentAttachment]
+SELECT * FROM [TicketStatusLog]
 SELECT * FROM [Worklog]
 SELECT * FROM [WorklogAttachment]

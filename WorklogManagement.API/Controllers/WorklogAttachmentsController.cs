@@ -31,8 +31,7 @@ namespace WorklogManagement.API.Controllers
                 query,
                 x => new WorklogAttachment(x),
                 x =>
-                    (query.WorklogId == null || x.WorklogId == query.WorklogId) &&
-                    (query.Name == null || x.Name.Contains(query.Name))
+                    query.WorklogId == null || x.WorklogId == query.WorklogId
             );
 
             return Ok(result);
@@ -43,7 +42,6 @@ namespace WorklogManagement.API.Controllers
         {
             var attachment = await _context.WorklogAttachments
                 .Include(x => x.Worklog)
-                .ThenInclude(x => x.Day)
                 .SingleAsync(x => x.Id == id);
 
             return Ok(new WorklogAttachment(attachment));

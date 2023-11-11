@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Text.Json;
 using WorklogManagement.API.Interfaces;
 using WorklogManagement.API.Models;
 

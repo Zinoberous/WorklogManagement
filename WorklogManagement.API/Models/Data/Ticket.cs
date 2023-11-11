@@ -26,17 +26,17 @@ namespace WorklogManagement.API.Models.Data
         public string? Description { get; set; }
 
         [JsonPropertyName("status")]
-        public Enums.Status Status { get; set; }
+        public Enums.TicketStatus Status { get; set; }
 
         [JsonPropertyName("createdAt")]
         public DateTime? CreatedAt { get; private set; }
 
         // TODO: uri attachments
 
-        // TODO: uri comments
+        // TODO: uri worklogs
 
         [JsonConstructor]
-        public Ticket(int? id, int? refId, string title, string? description, Enums.Status status, DateTime? createdAt)
+        public Ticket(int? id, int? refId, string title, string? description, Enums.TicketStatus status, DateTime? createdAt)
         {
             Id = id;
             RefId = refId;
@@ -52,7 +52,7 @@ namespace WorklogManagement.API.Models.Data
             RefId = ticket.RefId;
             Title = ticket.Title;
             Description = ticket.Description;
-            Status = (Enums.Status)ticket.StatusId;
+            Status = (Enums.TicketStatus)ticket.TicketStatusId;
             CreatedAt = ticket.CreatedAt;
         }
 
@@ -75,7 +75,7 @@ namespace WorklogManagement.API.Models.Data
                     RefId = RefId,
                     Title = Title,
                     Description = Description,
-                    StatusId = (int)Status,
+                    TicketStatusId = (int)Status,
                 };
 
                 await context.Tickets.AddAsync(ticket);
@@ -92,7 +92,7 @@ namespace WorklogManagement.API.Models.Data
                 ticket.RefId = RefId;
                 ticket.Title = Title;
                 ticket.Description = Description;
-                ticket.StatusId = (int)Status;
+                ticket.TicketStatusId = (int)Status;
 
                 await context.SaveChangesAsync();
             }

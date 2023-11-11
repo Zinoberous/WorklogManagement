@@ -31,7 +31,7 @@ namespace WorklogManagement.API.Controllers
                 query,
                 x => new Worklog(x),
                 x =>
-                    (query.DayId == null || x.DayId == query.DayId) &&
+                    (query.Date == null || x.Date == query.Date) &&
                     (query.TicketId == null || x.TicketId == query.TicketId)
             );
 

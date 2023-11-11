@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace WorklogManagement.API.Models.Filter
 {
@@ -7,9 +6,5 @@ namespace WorklogManagement.API.Models.Filter
     {
         [JsonPropertyName("ticketId")]
         public int? TicketId { get; set; }
-
-        [JsonPropertyName("name")]
-        [StringLength(255)]
-        public string? Name { get; set; } = null!;
     }
 }

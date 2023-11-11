@@ -1,6 +1,6 @@
 ﻿namespace WorklogManagement.API.Enums
 {
-    public enum Status
+    public enum TicketStatus
     {
         Todo = 1,
         Running = 2,

@@ -4,7 +4,7 @@ using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
 {
-    public class Status : IData
+    public class CalendarEntryType : IData
     {
         [JsonPropertyName("id")]
         public int Id { get; }
@@ -13,10 +13,10 @@ namespace WorklogManagement.API.Models.Data
         [MaxLength(255)]
         public string Name { get; }
 
-        public Status(DB.Status status)
+        public CalendarEntryType(DB.CalendarEntryType calendarEntryType)
         {
-            Id = status.Id;
-            Name = status.Name;
+            Id = calendarEntryType.Id;
+            Name = calendarEntryType.Name;
         }
     }
 }

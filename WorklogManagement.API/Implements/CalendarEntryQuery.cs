@@ -3,7 +3,7 @@ using WorklogManagement.API.Models.Filter;
 
 namespace WorklogManagement.API.Implements
 {
-    public class TicketCommentAttachmentsQuery : TicketCommentAttachmentFilter, IQuery
+    public class CalendarEntryQuery : CalendarEntryFilter, IQuery
     {
         public string Sort { get; set; } = "Id";
         public uint PageSize { get; set; } = 0;

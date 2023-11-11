@@ -4,7 +4,7 @@ using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
 {
-    public class Workload : IData
+    public class TicketStatus : IData
     {
         [JsonPropertyName("id")]
         public int Id { get; }
@@ -13,10 +13,10 @@ namespace WorklogManagement.API.Models.Data
         [MaxLength(255)]
         public string Name { get; }
 
-        public Workload(DB.Workload workload)
+        public TicketStatus(DB.TicketStatus status)
         {
-            Id = workload.Id;
-            Name = workload.Name;
+            Id = status.Id;
+            Name = status.Name;
         }
     }
 }

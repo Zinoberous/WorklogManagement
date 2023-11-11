@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorklogManagement.DataAccess.Models
 {
-    [Table("Status")]
-    [Index("Name", Name = "UX_Status_Name", IsUnique = true)]
-    public partial class Status
+    [Table("TicketStatus")]
+    [Index("Name", Name = "UX_TicketStatus_Name", IsUnique = true)]
+    public partial class TicketStatus
     {
-        public Status()
+        public TicketStatus()
         {
+            TicketStatusLogs = new HashSet<TicketStatusLog>();
             Tickets = new HashSet<Ticket>();
         }
 
@@ -18,7 +19,9 @@ namespace WorklogManagement.DataAccess.Models
         [StringLength(255)]
         public string Name { get; set; } = null!;
 
-        [InverseProperty("Status")]
+        [InverseProperty("TicketStatus")]
+        public virtual ICollection<TicketStatusLog> TicketStatusLogs { get; set; }
+        [InverseProperty("TicketStatus")]
         public virtual ICollection<Ticket> Tickets { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace WorklogManagement.DataAccess.Models
         {
             InverseRef = new HashSet<Ticket>();
             TicketAttachments = new HashSet<TicketAttachment>();
-            TicketComments = new HashSet<TicketComment>();
+            TicketStatusLogs = new HashSet<TicketStatusLog>();
             Worklogs = new HashSet<Worklog>();
         }
 
@@ -22,22 +22,22 @@ namespace WorklogManagement.DataAccess.Models
         [StringLength(255)]
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
-        public int StatusId { get; set; }
+        public int TicketStatusId { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
 
         [ForeignKey("RefId")]
         [InverseProperty("InverseRef")]
         public virtual Ticket? Ref { get; set; }
-        [ForeignKey("StatusId")]
+        [ForeignKey("TicketStatusId")]
         [InverseProperty("Tickets")]
-        public virtual Status Status { get; set; } = null!;
+        public virtual TicketStatus TicketStatus { get; set; } = null!;
         [InverseProperty("Ref")]
         public virtual ICollection<Ticket> InverseRef { get; set; }
         [InverseProperty("Ticket")]
         public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }
         [InverseProperty("Ticket")]
-        public virtual ICollection<TicketComment> TicketComments { get; set; }
+        public virtual ICollection<TicketStatusLog> TicketStatusLogs { get; set; }
         [InverseProperty("Ticket")]
         public virtual ICollection<Worklog> Worklogs { get; set; }
     }

@@ -14,38 +14,40 @@ namespace WorklogManagement.DataAccess.Context
         {
         }
 
-        public virtual DbSet<Day> Days { get; set; } = null!;
-        public virtual DbSet<Status> Statuses { get; set; } = null!;
+        public virtual DbSet<CalendarEntry> CalendarEntries { get; set; } = null!;
+        public virtual DbSet<CalendarEntryType> CalendarEntryTypes { get; set; } = null!;
         public virtual DbSet<Ticket> Tickets { get; set; } = null!;
         public virtual DbSet<TicketAttachment> TicketAttachments { get; set; } = null!;
-        public virtual DbSet<TicketComment> TicketComments { get; set; } = null!;
-        public virtual DbSet<TicketCommentAttachment> TicketCommentAttachments { get; set; } = null!;
-        public virtual DbSet<Workload> Workloads { get; set; } = null!;
+        public virtual DbSet<TicketStatus> TicketStatuses { get; set; } = null!;
+        public virtual DbSet<TicketStatusLog> TicketStatusLogs { get; set; } = null!;
         public virtual DbSet<Worklog> Worklogs { get; set; } = null!;
         public virtual DbSet<WorklogAttachment> WorklogAttachments { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Day>(entity =>
+            modelBuilder.Entity<CalendarEntry>(entity =>
             {
-                entity.HasOne(d => d.Workload)
-                    .WithMany(p => p.Days)
-                    .HasForeignKey(d => d.WorkloadId)
-                    .HasConstraintName("FK_Day_WorkloadId_Workload_Id");
+                entity.HasOne(d => d.CalendarEntryType)
+                    .WithMany(p => p.CalendarEntries)
+                    .HasForeignKey(d => d.CalendarEntryTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("UX_Day_Date_CalendarEntryType_CalendarEntryTypeId");
             });
 
             modelBuilder.Entity<Ticket>(entity =>
             {
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+
                 entity.HasOne(d => d.Ref)
                     .WithMany(p => p.InverseRef)
                     .HasForeignKey(d => d.RefId)
                     .HasConstraintName("FK_Ticket_RefId_Ticket_Id");
 
-                entity.HasOne(d => d.Status)
+                entity.HasOne(d => d.TicketStatus)
                     .WithMany(p => p.Tickets)
-                    .HasForeignKey(d => d.StatusId)
+                    .HasForeignKey(d => d.TicketStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Ticket_StatusId_Status_Id");
+                    .HasConstraintName("FK_Ticket_TicketStatusId_TicketStatus_Id");
             });
 
             modelBuilder.Entity<TicketAttachment>(entity =>
@@ -57,32 +59,24 @@ namespace WorklogManagement.DataAccess.Context
                     .HasConstraintName("FK_TicketAttachment_TicketId_Ticket_Id");
             });
 
-            modelBuilder.Entity<TicketComment>(entity =>
+            modelBuilder.Entity<TicketStatusLog>(entity =>
             {
-                entity.HasOne(d => d.Ticket)
-                    .WithMany(p => p.TicketComments)
-                    .HasForeignKey(d => d.TicketId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TicketComment_TicketId_Ticket_Id");
-            });
+                entity.Property(e => e.StartedAt).HasDefaultValueSql("(getutcdate())");
 
-            modelBuilder.Entity<TicketCommentAttachment>(entity =>
-            {
-                entity.HasOne(d => d.TicketComment)
-                    .WithMany(p => p.TicketCommentAttachments)
-                    .HasForeignKey(d => d.TicketCommentId)
+                entity.HasOne(d => d.Ticket)
+                    .WithMany(p => p.TicketStatusLogs)
+                    .HasForeignKey(d => d.TicketId)
+                    .HasConstraintName("FK_TicketStatusLog_TicketId_Ticket_Id");
+
+                entity.HasOne(d => d.TicketStatus)
+                    .WithMany(p => p.TicketStatusLogs)
+                    .HasForeignKey(d => d.TicketStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id");
+                    .HasConstraintName("FK_TicketStatusLog_TicketStatusId_TicketStatus_Id");
             });
 
             modelBuilder.Entity<Worklog>(entity =>
             {
-                entity.HasOne(d => d.Day)
-                    .WithMany(p => p.Worklogs)
-                    .HasForeignKey(d => d.DayId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Worklog_DayId_Day_Id");
-
                 entity.HasOne(d => d.Ticket)
                     .WithMany(p => p.Worklogs)
                     .HasForeignKey(d => d.TicketId)

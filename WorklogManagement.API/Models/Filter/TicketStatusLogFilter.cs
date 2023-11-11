@@ -2,7 +2,7 @@
 
 namespace WorklogManagement.API.Models.Filter
 {
-    public class TicketCommentFilter : IFilter
+    public class TicketStatusLogFilter : IFilter
     {
         [JsonPropertyName("ticketId")]
         public int? TicketId { get; set; }
