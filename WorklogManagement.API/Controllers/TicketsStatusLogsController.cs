@@ -40,10 +40,18 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var ticket = await _context.Tickets
+            var ticketStatusLog = await _context.TicketStatusLogs
                 .SingleAsync(x => x.Id == id);
 
-            return Ok(new Ticket(ticket));
+            return Ok(new TicketStatusLog(ticketStatusLog));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] TicketStatusLog ticketStatusLog)
+        {
+            await ticketStatusLog.SaveAsync(_context);
+
+            return Ok(ticketStatusLog);
         }
     }
 }

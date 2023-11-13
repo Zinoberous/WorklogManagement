@@ -54,35 +54,12 @@ namespace WorklogManagement.API.Models.Data
 
         public async Task SaveAsync(WorklogManagementContext context)
         {
-            DB.TicketStatusLog ticketStatusLog;
+            var ticketStatusLog = await context.TicketStatusLogs
+                .SingleAsync(x => x.Id == Id);
 
-            if (Id == default)
-            {
-                ticketStatusLog = new()
-                {
-                    TicketId = TicketId,
-                    TicketStatusId = (int)Status,
-                    Note = Note
-                };
+            ticketStatusLog.Note = Note;
 
-                await context.TicketStatusLogs.AddAsync(ticketStatusLog);
-
-                await context.SaveChangesAsync();
-
-                Id = ticketStatusLog.Id;
-                StartedAt = ticketStatusLog.StartedAt;
-            }
-            else
-            {
-                ticketStatusLog = await context.TicketStatusLogs
-                    .SingleAsync(x => x.Id == Id);
-
-                ticketStatusLog.TicketId = TicketId;
-                ticketStatusLog.TicketStatusId = (int)Status;
-                ticketStatusLog.Note = Note;
-
-                await context.SaveChangesAsync();
-            }
+            await context.SaveChangesAsync();
         }
     }
 }
