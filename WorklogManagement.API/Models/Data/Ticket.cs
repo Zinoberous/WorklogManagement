@@ -76,6 +76,15 @@ namespace WorklogManagement.API.Models.Data
                     Title = Title,
                     Description = Description,
                     TicketStatusId = (int)Status,
+                    TicketStatusLogs = new List<DB.TicketStatusLog>
+                    {
+                        new()
+                        {
+                            TicketStatusId = (int)Status,
+                            StartedAt = DateTime.UtcNow,
+                        }
+                    },
+                    CreatedAt = DateTime.UtcNow,
                 };
 
                 await context.Tickets.AddAsync(ticket);
@@ -92,7 +101,20 @@ namespace WorklogManagement.API.Models.Data
                 ticket.RefId = RefId;
                 ticket.Title = Title;
                 ticket.Description = Description;
-                ticket.TicketStatusId = (int)Status;
+
+                if (ticket.TicketStatusId != (int)Status)
+                {
+                    ticket.TicketStatusId = (int)Status;
+
+                    DB.TicketStatusLog statusLog = new()
+                    {
+                        TicketId = ticket.Id,
+                        TicketStatusId = (int)Status,
+                        StartedAt = DateTime.UtcNow
+                    };
+
+                    await context.TicketStatusLogs.AddAsync(statusLog);
+                }
 
                 await context.SaveChangesAsync();
             }

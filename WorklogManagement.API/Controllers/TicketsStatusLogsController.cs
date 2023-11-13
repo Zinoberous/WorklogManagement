@@ -45,25 +45,5 @@ namespace WorklogManagement.API.Controllers
 
             return Ok(new Ticket(ticket));
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Ticket ticket)
-        {
-            await ticket.SaveAsync(_context);
-
-            return Ok(ticket);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var ticket = await _context.Tickets.SingleAsync(x => x.Id == id);
-
-            _context.Tickets.Remove(ticket);
-
-            await _context.SaveChangesAsync();
-
-            return Ok();
-        }
     }
 }
