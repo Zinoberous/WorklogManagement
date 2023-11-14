@@ -172,6 +172,7 @@ VALUES
 (
 	N'Ill'
 )
+GO
 
 -- INSERT [TicketPriority]
 -- (

@@ -28,6 +28,9 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("status")]
         public Enums.TicketStatus Status { get; set; }
 
+        [JsonPropertyName("statusNote")]
+        public string? StatusNote { get; set; }
+
         [JsonPropertyName("createdAt")]
         public DateTime? CreatedAt { get; private set; }
 
@@ -36,13 +39,14 @@ namespace WorklogManagement.API.Models.Data
         // TODO: uri worklogs
 
         [JsonConstructor]
-        public Ticket(int? id, int? refId, string title, string? description, Enums.TicketStatus status, DateTime? createdAt)
+        public Ticket(int? id, int? refId, string title, string? description, Enums.TicketStatus status, string? statusNote, DateTime? createdAt)
         {
             Id = id;
             RefId = refId;
             Title = title;
             Description = description;
             Status = status;
+            StatusNote = statusNote;
             CreatedAt = createdAt;
         }
 
@@ -53,12 +57,14 @@ namespace WorklogManagement.API.Models.Data
             Title = ticket.Title;
             Description = ticket.Description;
             Status = (Enums.TicketStatus)ticket.TicketStatusId;
+            StatusNote = ticket.TicketStatusLogs.Last().Note;
             CreatedAt = ticket.CreatedAt;
         }
 
         public static async Task<Ticket> GetAsync(int id, WorklogManagementContext context)
         {
             var ticket = await context.Tickets
+                .Include(x => x.TicketStatusLogs)
                 .SingleAsync(x => x.Id == id);
 
             return new(ticket);
@@ -96,7 +102,9 @@ namespace WorklogManagement.API.Models.Data
             }
             else
             {
-                ticket = await context.Tickets.SingleAsync(x => x.Id == Id);
+                ticket = await context.Tickets
+                    .Include(x => x.TicketStatusLogs)
+                    .SingleAsync(x => x.Id == Id);
 
                 ticket.RefId = RefId;
                 ticket.Title = Title;
@@ -114,6 +122,11 @@ namespace WorklogManagement.API.Models.Data
                     };
 
                     await context.TicketStatusLogs.AddAsync(statusLog);
+                }
+
+                if (ticket.TicketStatusLogs.Last().Note != StatusNote)
+                {
+                    ticket.TicketStatusLogs.Last().Note = StatusNote;
                 }
 
                 await context.SaveChangesAsync();
