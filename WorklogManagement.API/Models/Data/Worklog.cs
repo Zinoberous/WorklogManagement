@@ -25,7 +25,7 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
-        [JsonPropertyName("timeSpent")]
+        [JsonPropertyName("timeSpentSeconds")]
         public int TimeSpentSeconds { get; set; }
 
         // TODO: uri attachments

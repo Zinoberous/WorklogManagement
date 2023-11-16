@@ -27,7 +27,9 @@ namespace WorklogManagement.API.Controllers
         {
             var result = await RequestHelper.GetAsync
             (
-                _context.Tickets,
+                _context.Tickets
+                    .Include(x => x.TicketStatusLogs)
+                    .Include(x => x.TicketAttachments),
                 query,
                 x => new Ticket(x),
                 x =>
@@ -43,6 +45,9 @@ namespace WorklogManagement.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var ticket = await _context.Tickets
+                .Include(x => x.TicketStatusLogs)
+                .Include(x => x.TicketAttachments)
+                .Include(x => x.Worklogs)
                 .SingleAsync(x => x.Id == id);
 
             return Ok(new Ticket(ticket));

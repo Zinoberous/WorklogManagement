@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorklogManagement.DataAccess.Models
 {
     [Table("Ticket")]
-    [Index("Title", Name = "UX_Ticket_Title", IsUnique = true)]
     public partial class Ticket
     {
         public Ticket()

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -199,12 +198,6 @@ namespace WorklogManagement.DataAccess.Migrations
                 name: "IX_Ticket_TicketStatusId",
                 table: "Ticket",
                 column: "TicketStatusId");
-
-            migrationBuilder.CreateIndex(
-                name: "UX_Ticket_Title",
-                table: "Ticket",
-                column: "Title",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UX_TicketAttachment_TicketId_Name",

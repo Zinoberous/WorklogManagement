@@ -44,12 +44,12 @@ namespace WorklogManagement.API.Models.Data
             StartedAt = ticketStatusLog.StartedAt;
         }
 
-        public static async Task<Ticket> GetAsync(int id, WorklogManagementContext context)
+        public static async Task<TicketStatusLog> GetAsync(int id, WorklogManagementContext context)
         {
-            var ticket = await context.Tickets
+            var ticketStatusLog = await context.TicketStatusLogs
                 .SingleAsync(x => x.Id == id);
 
-            return new(ticket);
+            return new(ticketStatusLog);
         }
 
         public async Task SaveAsync(WorklogManagementContext context)

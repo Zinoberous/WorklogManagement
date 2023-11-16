@@ -36,10 +36,16 @@ namespace WorklogManagement.API.Models.Data
 
         // TODO: uri attachments
 
+        [JsonPropertyName("attachmentsCount")]
+        public int AttachmentsCount { get; set; }
+
         // TODO: uri worklogs
 
+        [JsonPropertyName("timeSpentSeconds")]
+        public int TimeSpentSeconds { get; set; }
+
         [JsonConstructor]
-        public Ticket(int? id, int? refId, string title, string? description, Enums.TicketStatus status, string? statusNote, DateTime? createdAt)
+        public Ticket(int? id, int? refId, string title, string? description, Enums.TicketStatus status, string? statusNote, DateTime? createdAt, int attachmentsCount, int timeSpentSeconds)
         {
             Id = id;
             RefId = refId;
@@ -48,6 +54,8 @@ namespace WorklogManagement.API.Models.Data
             Status = status;
             StatusNote = statusNote;
             CreatedAt = createdAt;
+            AttachmentsCount = attachmentsCount;
+            TimeSpentSeconds = timeSpentSeconds;
         }
 
         public Ticket(DB.Ticket ticket)
@@ -59,12 +67,16 @@ namespace WorklogManagement.API.Models.Data
             Status = (Enums.TicketStatus)ticket.TicketStatusId;
             StatusNote = ticket.TicketStatusLogs.Last().Note;
             CreatedAt = ticket.CreatedAt;
+            AttachmentsCount = ticket.TicketAttachments.Count;
+            TimeSpentSeconds = (int)ticket.Worklogs.Sum(x => x.TimeSpent.TotalSeconds);
         }
 
         public static async Task<Ticket> GetAsync(int id, WorklogManagementContext context)
         {
             var ticket = await context.Tickets
                 .Include(x => x.TicketStatusLogs)
+                .Include(x => x.TicketAttachments)
+                .Include(x => x.Worklogs)
                 .SingleAsync(x => x.Id == id);
 
             return new(ticket);

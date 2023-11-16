@@ -69,8 +69,8 @@ CREATE TABLE [Ticket]
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
 	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]),
-	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]),
-	CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
+	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
+	--CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
 )
 GO
 
