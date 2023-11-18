@@ -23,10 +23,10 @@ namespace WorklogManagement.API.Models.Data
         public string Name { get; set; } = null!;
 
         [JsonPropertyName("comment")]
-        public string Comment { get; set; } = null!;
+        public string? Comment { get; set; }
 
         [JsonPropertyName("data")]
-        public byte[] Data { get; set; }
+        public string Data { get; set; }
 
         private string Directory => Path.Combine(_basedir, TicketId.ToString());
 
@@ -37,7 +37,7 @@ namespace WorklogManagement.API.Models.Data
 #endif
 
         [JsonConstructor]
-        public TicketAttachment(int? id, int ticketId, string name, string comment, byte[] data)
+        public TicketAttachment(int? id, int ticketId, string name, string comment, string data)
         {
             Id = id;
             TicketId = ticketId;
@@ -52,7 +52,7 @@ namespace WorklogManagement.API.Models.Data
             TicketId = attachment.TicketId;
             Name = attachment.Name;
             Comment = attachment.Comment;
-            Data = File.ReadAllBytes(Path.Combine(Directory, Name));
+            Data = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Directory, Name)));
         }
 
         public static async Task<TicketAttachment> GetAsync(int id, WorklogManagementContext context)
@@ -64,9 +64,14 @@ namespace WorklogManagement.API.Models.Data
         {
             DB.TicketAttachment attachment;
 
+            if (!System.IO.Directory.Exists(Directory))
+            {
+                System.IO.Directory.CreateDirectory(Directory);
+            }
+
             if (Id == default)
             {
-                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
                 attachment = new()
                 {
@@ -89,7 +94,7 @@ namespace WorklogManagement.API.Models.Data
                 File.Delete(Path.Combine(Directory, attachment.Name));
 
                 // neue Datei speichern
-                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
                 attachment.TicketId = TicketId;
                 attachment.Name = Name;

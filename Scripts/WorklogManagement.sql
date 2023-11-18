@@ -79,7 +79,7 @@ CREATE TABLE [TicketAttachment]
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[TicketId] INT NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/name
-	[Comment] NVARCHAR(MAX) NOT NULL
+	[Comment] NVARCHAR(MAX) NULL
 	CONSTRAINT PK_TicketAttachment_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
 	CONSTRAINT UX_TicketAttachment_TicketId_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
@@ -139,7 +139,7 @@ CREATE TABLE [WorklogAttachment]
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[WorklogId] INT NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../yyyy-MM-dd/[office/mobile]/worklogId/name
-	[Comment] NVARCHAR(MAX) NOT NULL
+	[Comment] NVARCHAR(MAX) NULL
 	CONSTRAINT PK_WorklogAttachment_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_WorklogAttachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]),
 	CONSTRAINT UX_WorklogAttachment_WorklogId_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])

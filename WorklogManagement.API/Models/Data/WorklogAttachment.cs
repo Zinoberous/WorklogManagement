@@ -23,13 +23,13 @@ namespace WorklogManagement.API.Models.Data
         public string Name { get; set; } = null!;
 
         [JsonPropertyName("comment")]
-        public string Comment { get; set; } = null!;
+        public string? Comment { get; set; }
 
         [JsonPropertyName("directory")]
         public string Directory { get; set; }
 
         [JsonPropertyName("data")]
-        public byte[] Data { get; set; }
+        public string Data { get; set; }
 
 #if DEBUG
         private static readonly string _basedir = Path.Combine(".", "Attachments", "Worklogs");
@@ -38,7 +38,7 @@ namespace WorklogManagement.API.Models.Data
 #endif
 
         [JsonConstructor]
-        public WorklogAttachment(int? id, int worklogId, string name, string comment, string directory, byte[] data)
+        public WorklogAttachment(int? id, int worklogId, string name, string comment, string directory, string data)
         {
             Id = id;
             WorklogId = worklogId;
@@ -56,7 +56,7 @@ namespace WorklogManagement.API.Models.Data
             Comment = attachment.Comment;
 
             Directory = Path.Combine(_basedir, $"{attachment.Worklog.Date:yyyy-MM-dd}", WorklogId.ToString());
-            Data = File.ReadAllBytes(Path.Combine(Directory, Name));
+            Data = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Directory, Name)));
         }
 
         public static async Task<WorklogAttachment> GetAsync(int id, WorklogManagementContext context)
@@ -72,9 +72,14 @@ namespace WorklogManagement.API.Models.Data
         {
             DB.WorklogAttachment attachment;
 
+            if (!System.IO.Directory.Exists(Directory))
+            {
+                System.IO.Directory.CreateDirectory(Directory);
+            }
+
             if (Id == default)
             {
-                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
+                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
                 attachment = new()
                 {
@@ -97,7 +102,7 @@ namespace WorklogManagement.API.Models.Data
                 File.Delete(Path.Combine(Directory, attachment.Name));
 
                 // neue Datei speichern
-                await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Data);
+                await File.WriteAllBytesAsync(Path.Combine(Directory, attachment.Name), Convert.FromBase64String(Data));
 
                 attachment.WorklogId = WorklogId;
                 attachment.Name = Name;

@@ -13,7 +13,7 @@ namespace WorklogManagement.DataAccess.Models
         public int WorklogId { get; set; }
         [StringLength(255)]
         public string Name { get; set; } = null!;
-        public string Comment { get; set; } = null!;
+        public string? Comment { get; set; }
 
         [ForeignKey("WorklogId")]
         [InverseProperty("WorklogAttachments")]

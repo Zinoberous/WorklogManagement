@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -92,7 +93,7 @@ namespace WorklogManagement.DataAccess.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TicketId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    Comment = table.Column<string>(type: "TEXT", nullable: false)
+                    Comment = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -160,7 +161,7 @@ namespace WorklogManagement.DataAccess.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     WorklogId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    Comment = table.Column<string>(type: "TEXT", nullable: false)
+                    Comment = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

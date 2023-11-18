@@ -95,9 +95,6 @@ namespace WorklogManagement.DataAccess.Migrations
 
                     b.HasIndex("TicketStatusId");
 
-                    b.HasIndex(new[] { "Title" }, "UX_Ticket_Title")
-                        .IsUnique();
-
                     b.ToTable("Ticket");
                 });
 
@@ -108,7 +105,6 @@ namespace WorklogManagement.DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -207,7 +203,6 @@ namespace WorklogManagement.DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
