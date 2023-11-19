@@ -15,8 +15,8 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("date")]
         public DateTime Date { get; set; }
 
-        [JsonPropertyName("duration")]
-        public TimeSpan Duration { get; set; }
+        [JsonPropertyName("durationSeconds")]
+        public int DurationSeconds { get; set; }
 
         [JsonPropertyName("type")]
         public Enums.CalendarEntryType Type { get; set; }
@@ -25,11 +25,11 @@ namespace WorklogManagement.API.Models.Data
         public string? Note { get; set; }
 
         [JsonConstructor]
-        public CalendarEntry(int? id, DateTime date, TimeSpan duration, Enums.CalendarEntryType type, string? note)
+        public CalendarEntry(int? id, DateTime date, int durationSeconds, Enums.CalendarEntryType type, string? note)
         {
             Id = id;
             Date = date;
-            Duration = duration;
+            DurationSeconds = durationSeconds;
             Type = type;
             Note = note;
         }
@@ -38,7 +38,7 @@ namespace WorklogManagement.API.Models.Data
         {
             Id = calendarEntry.Id;
             Date = calendarEntry.Date;
-            Duration = calendarEntry.Duration;
+            DurationSeconds = (int)calendarEntry.Duration.TotalSeconds;
             Type = (Enums.CalendarEntryType)calendarEntry.CalendarEntryTypeId;
             Note = calendarEntry.Note;
         }
@@ -57,7 +57,7 @@ namespace WorklogManagement.API.Models.Data
                 calendarEntry = new()
                 {
                     Date = Date,
-                    Duration = Duration,
+                    Duration = TimeSpan.FromSeconds(DurationSeconds),
                     CalendarEntryTypeId = (int)Type,
                     Note = Note,
                 };
@@ -73,7 +73,7 @@ namespace WorklogManagement.API.Models.Data
                 calendarEntry = await context.CalendarEntries.SingleAsync(x => x.Id == Id);
 
                 calendarEntry.Date = Date;
-                calendarEntry.Duration = Duration;
+                calendarEntry.Duration = TimeSpan.FromSeconds(DurationSeconds);
                 calendarEntry.CalendarEntryTypeId = (int)Type;
                 calendarEntry.Note = Note;
 
