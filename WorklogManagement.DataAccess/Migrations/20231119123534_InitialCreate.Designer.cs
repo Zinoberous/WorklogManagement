@@ -11,7 +11,7 @@ using WorklogManagement.DataAccess.Context;
 namespace WorklogManagement.DataAccess.Migrations
 {
     [DbContext(typeof(WorklogManagementContext))]
-    [Migration("20231118135904_InitialCreate")]
+    [Migration("20231119123534_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -229,6 +229,7 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.CalendarEntryType", "CalendarEntryType")
                         .WithMany("CalendarEntries")
                         .HasForeignKey("CalendarEntryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("UX_Day_Date_CalendarEntryType_CalendarEntryTypeId");
 
@@ -245,6 +246,7 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.TicketStatus", "TicketStatus")
                         .WithMany("Tickets")
                         .HasForeignKey("TicketStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Ticket_TicketStatusId_TicketStatus_Id");
 
@@ -258,6 +260,7 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.Ticket", "Ticket")
                         .WithMany("TicketAttachments")
                         .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TicketAttachment_TicketId_Ticket_Id");
 
@@ -276,6 +279,7 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.TicketStatus", "TicketStatus")
                         .WithMany("TicketStatusLogs")
                         .HasForeignKey("TicketStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TicketStatusLog_TicketStatusId_TicketStatus_Id");
 
@@ -289,6 +293,7 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.Ticket", "Ticket")
                         .WithMany("Worklogs")
                         .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Worklog_TicketId_Ticket_Id");
 
@@ -300,6 +305,7 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.Worklog", "Worklog")
                         .WithMany("WorklogAttachments")
                         .HasForeignKey("WorklogId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_WorklogAttachment_WorklogId_Worklog_Id");
 

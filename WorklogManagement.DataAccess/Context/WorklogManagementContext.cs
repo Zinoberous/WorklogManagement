@@ -30,7 +30,7 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.CalendarEntryType)
                     .WithMany(p => p.CalendarEntries)
                     .HasForeignKey(d => d.CalendarEntryTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("UX_Day_Date_CalendarEntryType_CalendarEntryTypeId");
             });
 
@@ -46,7 +46,7 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.TicketStatus)
                     .WithMany(p => p.Tickets)
                     .HasForeignKey(d => d.TicketStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Ticket_TicketStatusId_TicketStatus_Id");
             });
 
@@ -55,7 +55,7 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.Ticket)
                     .WithMany(p => p.TicketAttachments)
                     .HasForeignKey(d => d.TicketId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TicketAttachment_TicketId_Ticket_Id");
             });
 
@@ -71,7 +71,7 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.TicketStatus)
                     .WithMany(p => p.TicketStatusLogs)
                     .HasForeignKey(d => d.TicketStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TicketStatusLog_TicketStatusId_TicketStatus_Id");
             });
 
@@ -80,7 +80,7 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.Ticket)
                     .WithMany(p => p.Worklogs)
                     .HasForeignKey(d => d.TicketId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Worklog_TicketId_Ticket_Id");
             });
 
@@ -89,7 +89,7 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.Worklog)
                     .WithMany(p => p.WorklogAttachments)
                     .HasForeignKey(d => d.WorklogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_WorklogAttachment_WorklogId_Worklog_Id");
             });
 

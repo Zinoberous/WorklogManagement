@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -55,7 +54,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "UX_Day_Date_CalendarEntryType_CalendarEntryTypeId",
                         column: x => x.CalendarEntryTypeId,
                         principalTable: "CalendarEntryType",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,7 +82,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_Ticket_TicketStatusId_TicketStatus_Id",
                         column: x => x.TicketStatusId,
                         principalTable: "TicketStatus",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,7 +103,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_TicketAttachment_TicketId_Ticket_Id",
                         column: x => x.TicketId,
                         principalTable: "Ticket",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,7 +131,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_TicketStatusLog_TicketStatusId_TicketStatus_Id",
                         column: x => x.TicketStatusId,
                         principalTable: "TicketStatus",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -150,7 +153,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_Worklog_TicketId_Ticket_Id",
                         column: x => x.TicketId,
                         principalTable: "Ticket",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,7 +174,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_WorklogAttachment_WorklogId_Worklog_Id",
                         column: x => x.WorklogId,
                         principalTable: "Worklog",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

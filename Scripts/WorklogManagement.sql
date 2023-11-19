@@ -34,7 +34,7 @@ CREATE TABLE [CalendarEntry]
 	[CalendarEntryTypeId] INT NOT NULL,
 	[Note] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_Day_Id PRIMARY KEY ([Id]),
-	CONSTRAINT UX_Day_Date_CalendarEntryType_CalendarEntryTypeId FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]),
+	CONSTRAINT UX_Day_Date_CalendarEntryType_CalendarEntryTypeId FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT UX_Day_Date_CalendarEntryTypeId UNIQUE NONCLUSTERED ([Date], [CalendarEntryTypeId])
 )
 GO
@@ -67,9 +67,9 @@ CREATE TABLE [Ticket]
 	[TicketStatusId] INT NOT NULL,
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
-	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]),
-	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
+	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
+	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE
 	--CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
 )
 GO
@@ -81,7 +81,7 @@ CREATE TABLE [TicketAttachment]
 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/name
 	[Comment] NVARCHAR(MAX) NULL
 	CONSTRAINT PK_TicketAttachment_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
+	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT UX_TicketAttachment_TicketId_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
 )
 GO
@@ -93,7 +93,7 @@ GO
 -- 	[Comment] NVARCHAR(MAX) NOT NULL,
 -- 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 -- 	CONSTRAINT PK_TicketComment_Id PRIMARY KEY ([Id]),
--- 	CONSTRAINT FK_TicketComment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
+-- 	CONSTRAINT FK_TicketComment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE
 -- )
 -- GO
 
@@ -104,7 +104,7 @@ GO
 -- 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/ticketCommentId/name
 -- 	[Comment] NVARCHAR(MAX) NOT NULL
 -- 	CONSTRAINT PK_TicketCommentAttachment_Id PRIMARY KEY ([Id]),
--- 	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]),
+-- 	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]) ON DELETE CASCADE,
 -- 	CONSTRAINT UX_TicketCommentAttachment_TicketCommentId_Name UNIQUE NONCLUSTERED ([TicketCommentId], [Name])
 -- )
 -- GO
@@ -117,8 +117,8 @@ CREATE TABLE [TicketStatusLog]
 	[StartedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	[Note] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_TicketStatusLog_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]),
-	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]),
+	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE,
 )
 GO
 
@@ -130,7 +130,7 @@ CREATE TABLE [Worklog]
 	[Description] NVARCHAR(MAX) NULL,
 	[TimeSpent] TIME NOT NULL,
 	CONSTRAINT PK_Worklog_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Worklog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id])
+	CONSTRAINT FK_Worklog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE
 )
 GO
 
@@ -141,7 +141,7 @@ CREATE TABLE [WorklogAttachment]
 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../yyyy-MM-dd/[office/mobile]/worklogId/name
 	[Comment] NVARCHAR(MAX) NULL
 	CONSTRAINT PK_WorklogAttachment_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_WorklogAttachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]),
+	CONSTRAINT FK_WorklogAttachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT UX_WorklogAttachment_WorklogId_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])
 )
 GO
