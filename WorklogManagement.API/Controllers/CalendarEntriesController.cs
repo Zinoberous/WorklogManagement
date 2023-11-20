@@ -31,9 +31,9 @@ namespace WorklogManagement.API.Controllers
                 query,
                 x => new CalendarEntry(x),
                 x =>
-                    (query.Date == null || x.Date == query.Date) &&
-                    (query.From == null || x.Date >= query.From) &&
-                    (query.To == null || x.Date <= query.To) &&
+                    (query.Date == null || x.Date.Date == query.Date.Value.Date) &&
+                    (query.From == null || x.Date.Date >= query.From.Value.Date) &&
+                    (query.To == null || x.Date.Date <= query.To.Value.Date) &&
                     (query.CalendarEntryTypeEnum == null || x.CalendarEntryTypeId == (int)query.CalendarEntryTypeEnum)
             );
 

@@ -21,7 +21,7 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("type")]
         public Enums.CalendarEntryType Type { get; set; }
 
-        [JsonPropertyName("workloadComment")]
+        [JsonPropertyName("note")]
         public string? Note { get; set; }
 
         [JsonConstructor]
