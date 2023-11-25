@@ -27,7 +27,8 @@ namespace WorklogManagement.API.Controllers
         {
             var result = await RequestHelper.GetAsync
             (
-                _context.Worklogs,
+                _context.Worklogs
+                    .Include(x => x.WorklogAttachments),
                 query,
                 x => new Worklog(x),
                 x =>
@@ -41,7 +42,7 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(new Worklog(await _context.Worklogs.SingleAsync(x => x.Id == id)));
+            return Ok(new Worklog(await _context.Worklogs.Include(x => x.WorklogAttachments).SingleAsync(x => x.Id == id)));
         }
 
         [HttpPost]

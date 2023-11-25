@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using WorklogManagement.DataAccess.Context;
+using WorklogManagement.DataAccess.Models;
 using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
@@ -30,14 +31,18 @@ namespace WorklogManagement.API.Models.Data
 
         // TODO: uri attachments
 
+        [JsonPropertyName("attachmentsCount")]
+        public int AttachmentsCount { get; set; }
+
         [JsonConstructor]
-        public Worklog(int? id, DateTime date, int ticketId, string? description, int timeSpentSeconds)
+        public Worklog(int? id, DateTime date, int ticketId, string? description, int timeSpentSeconds, int attachmentsCount)
         {
             Id = id;
             Date = date;
             TicketId = ticketId;
             Description = description;
             TimeSpentSeconds = timeSpentSeconds;
+            AttachmentsCount = attachmentsCount;
         }
 
         public Worklog(DB.Worklog worklog)
@@ -47,11 +52,12 @@ namespace WorklogManagement.API.Models.Data
             TicketId = worklog.TicketId;
             Description = worklog.Description;
             TimeSpentSeconds = (int)worklog.TimeSpent.TotalSeconds;
+            AttachmentsCount = worklog.WorklogAttachments.Count;
         }
 
         public static async Task<Worklog> GetAsync(int id, WorklogManagementContext context)
         {
-            return new(await context.Worklogs.SingleAsync(x => x.Id == id));
+            return new(await context.Worklogs.Include(x => x.WorklogAttachments).SingleAsync(x => x.Id == id));
         }
 
         public async Task SaveAsync(WorklogManagementContext context)
