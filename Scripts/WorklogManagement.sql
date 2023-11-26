@@ -9,37 +9,59 @@ BEGIN TRAN
 BEGIN TRY
 
 IF OBJECT_ID('WorklogAttachment', 'U') IS NOT NULL
-    DROP TABLE [WorklogAttachment];
+BEGIN
+	DROP TABLE [WorklogAttachment]
+END
 
 IF OBJECT_ID('Worklog', 'U') IS NOT NULL
-    DROP TABLE [Worklog];
+BEGIN
+	DROP TABLE [Worklog]
+END
 
 IF OBJECT_ID('TicketStatusLog', 'U') IS NOT NULL
-    DROP TABLE [TicketStatusLog];
+BEGIN
+	DROP TABLE [TicketStatusLog]
+END
 
 -- IF OBJECT_ID('TicketCommentAttachment', 'U') IS NOT NULL
---     DROP TABLE [TicketCommentAttachment];
+-- BEGIN
+-- 	DROP TABLE [TicketCommentAttachment]
+-- END
 
 -- IF OBJECT_ID('TicketComment', 'U') IS NOT NULL
---     DROP TABLE [TicketComment];
+-- BEGIN
+-- 	DROP TABLE [TicketComment]
+-- END
 
 IF OBJECT_ID('TicketAttachment', 'U') IS NOT NULL
-    DROP TABLE [TicketAttachment]
+BEGIN
+	DROP TABLE [TicketAttachment]
+END
 
 IF OBJECT_ID('Ticket', 'U') IS NOT NULL
-    DROP TABLE [Ticket]
+BEGIN
+	DROP TABLE [Ticket]
+END
 
 IF OBJECT_ID('TicketStatus', 'U') IS NOT NULL
-    DROP TABLE [TicketStatus]
+BEGIN
+	DROP TABLE [TicketStatus]
+END
 
 -- IF OBJECT_ID('TicketPriority', 'U') IS NOT NULL
---     DROP TABLE [TicketPriority]
+-- BEGIN
+-- 	DROP TABLE [TicketPriority]
+-- END
 
 IF OBJECT_ID('CalendarEntry', 'U') IS NOT NULL
-    DROP TABLE [CalendarEntry]
+BEGIN
+	DROP TABLE [CalendarEntry]
+END
 
 IF OBJECT_ID('CalendarEntryType', 'U') IS NOT NULL
-    DROP TABLE [CalendarEntryType]
+BEGIN
+	DROP TABLE [CalendarEntryType]
+END
 
 CREATE TABLE [CalendarEntryType]
 (
