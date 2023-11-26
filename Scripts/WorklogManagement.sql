@@ -34,7 +34,7 @@ CREATE TABLE [CalendarEntry]
 	[CalendarEntryTypeId] INT NOT NULL,
 	[Note] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_CalendarEntry_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_CalendarEntry_Date_CalendarEntryType_Id FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT FK_CalendarEntry_Date_CalendarEntryType_Id FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]),
 	CONSTRAINT UX_CalendarEntry_Date_CalendarEntryTypeId UNIQUE NONCLUSTERED ([Date], [CalendarEntryTypeId])
 )
 GO
@@ -67,9 +67,9 @@ CREATE TABLE [Ticket]
 	[TicketStatusId] INT NOT NULL,
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
-	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]) ON DELETE CASCADE,
-	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE
+	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]) ON DELETE SET NULL,
+	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]),
+	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
 	--CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
 )
 GO
@@ -118,7 +118,7 @@ CREATE TABLE [TicketStatusLog]
 	[Note] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_TicketStatusLog_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
-	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE
+	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
 )
 GO
 
