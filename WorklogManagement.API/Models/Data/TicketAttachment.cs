@@ -33,7 +33,7 @@ namespace WorklogManagement.API.Models.Data
 #if DEBUG
         private static readonly string _basedir = Path.Combine(".", "Attachments", "Tickets");
 #else
-        private static readonly string _basedir = Path.Combine("var", "www", "html", "_res", "WorklogManagement", "Attachments", "Tickets");
+        private static readonly string _basedir = Path.Combine("/", "var", "www", "html", "_res", "WorklogManagement", "Attachments", "Tickets");
 #endif
 
         [JsonConstructor]

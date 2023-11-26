@@ -50,7 +50,14 @@ namespace WorklogManagement.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] WorklogAttachment attachment)
         {
-            await attachment.SaveAsync(_context);
+            try
+            {
+                await attachment.SaveAsync(_context);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
 
             return Ok(attachment);
         }
