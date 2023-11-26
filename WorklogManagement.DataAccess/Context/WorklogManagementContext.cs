@@ -41,7 +41,6 @@ namespace WorklogManagement.DataAccess.Context
                 entity.HasOne(d => d.Ref)
                     .WithMany(p => p.InverseRef)
                     .HasForeignKey(d => d.RefId)
-                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Ticket_RefId_Ticket_Id");
 
                 entity.HasOne(d => d.TicketStatus)

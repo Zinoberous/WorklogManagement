@@ -1,12 +1,12 @@
-BEGIN TRAN
-
-BEGIN TRY
-
 --CREATE DATABASE [WorklogManagement]
 --GO
 
 USE [WorklogManagement]
 GO
+
+BEGIN TRAN
+
+BEGIN TRY
 
 IF OBJECT_ID('WorklogAttachment', 'U') IS NOT NULL
     DROP TABLE [WorklogAttachment];
@@ -24,24 +24,22 @@ IF OBJECT_ID('TicketStatusLog', 'U') IS NOT NULL
 --     DROP TABLE [TicketComment];
 
 IF OBJECT_ID('TicketAttachment', 'U') IS NOT NULL
-    DROP TABLE [TicketAttachment];
+    DROP TABLE [TicketAttachment]
 
 IF OBJECT_ID('Ticket', 'U') IS NOT NULL
-    DROP TABLE [Ticket];
+    DROP TABLE [Ticket]
 
 IF OBJECT_ID('TicketStatus', 'U') IS NOT NULL
-    DROP TABLE [TicketStatus];
+    DROP TABLE [TicketStatus]
 
 -- IF OBJECT_ID('TicketPriority', 'U') IS NOT NULL
---     DROP TABLE [TicketPriority];
+--     DROP TABLE [TicketPriority]
 
 IF OBJECT_ID('CalendarEntry', 'U') IS NOT NULL
-    DROP TABLE [CalendarEntry];
+    DROP TABLE [CalendarEntry]
 
 IF OBJECT_ID('CalendarEntryType', 'U') IS NOT NULL
-    DROP TABLE [CalendarEntryType];
-
-GO
+    DROP TABLE [CalendarEntryType]
 
 CREATE TABLE [CalendarEntryType]
 (
@@ -50,7 +48,6 @@ CREATE TABLE [CalendarEntryType]
 	CONSTRAINT PK_CalendarEntryType_Id PRIMARY KEY ([Id]),
 	CONSTRAINT UX_CalendarEntryType_Name UNIQUE NONCLUSTERED ([Name])
 )
-GO
 
 CREATE TABLE [CalendarEntry]
 (
@@ -63,7 +60,6 @@ CREATE TABLE [CalendarEntry]
 	CONSTRAINT FK_CalendarEntry_Date_CalendarEntryType_Id FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]),
 	CONSTRAINT UX_CalendarEntry_Date_CalendarEntryTypeId UNIQUE NONCLUSTERED ([Date], [CalendarEntryTypeId])
 )
-GO
 
 -- CREATE TABLE [TicketPriority]
 -- (
@@ -72,7 +68,6 @@ GO
 -- 	CONSTRAINT PK_TicketPriority_Id PRIMARY KEY ([Id]),
 -- 	CONSTRAINT UX_TicketPriority_Name UNIQUE NONCLUSTERED ([Name])
 -- )
--- GO
 
 CREATE TABLE [TicketStatus]
 (
@@ -81,7 +76,6 @@ CREATE TABLE [TicketStatus]
 	CONSTRAINT PK_TicketStatus_Id PRIMARY KEY ([Id]),
 	CONSTRAINT UX_TicketStatus_Name UNIQUE NONCLUSTERED ([Name])
 )
-GO
 
 CREATE TABLE [Ticket]
 (
@@ -98,7 +92,6 @@ CREATE TABLE [Ticket]
 	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
 	--CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
 )
-GO
 
 CREATE TABLE [TicketAttachment]
 (
@@ -110,7 +103,6 @@ CREATE TABLE [TicketAttachment]
 	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT UX_TicketAttachment_TicketId_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
 )
-GO
 
 -- CREATE TABLE [TicketComment]
 -- (
@@ -121,7 +113,6 @@ GO
 -- 	CONSTRAINT PK_TicketComment_Id PRIMARY KEY ([Id]),
 -- 	CONSTRAINT FK_TicketComment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE
 -- )
--- GO
 
 -- CREATE TABLE [TicketCommentAttachment]
 -- (
@@ -133,7 +124,6 @@ GO
 -- 	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]) ON DELETE CASCADE,
 -- 	CONSTRAINT UX_TicketCommentAttachment_TicketCommentId_Name UNIQUE NONCLUSTERED ([TicketCommentId], [Name])
 -- )
--- GO
 
 CREATE TABLE [TicketStatusLog]
 (
@@ -146,7 +136,6 @@ CREATE TABLE [TicketStatusLog]
 	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
 )
-GO
 
 CREATE TABLE [Worklog]
 (
@@ -158,7 +147,6 @@ CREATE TABLE [Worklog]
 	CONSTRAINT PK_Worklog_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_Worklog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE
 )
-GO
 
 CREATE TABLE [WorklogAttachment]
 (
@@ -170,7 +158,6 @@ CREATE TABLE [WorklogAttachment]
 	CONSTRAINT FK_WorklogAttachment_WorklogId_Worklog_Id FOREIGN KEY ([WorklogId]) REFERENCES [Worklog] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT UX_WorklogAttachment_WorklogId_Name UNIQUE NONCLUSTERED ([WorklogId], [Name])
 )
-GO
 
 INSERT [CalendarEntryType]
 (
@@ -198,7 +185,6 @@ VALUES
 (
 	N'Ill'
 )
-GO
 
 -- INSERT [TicketPriority]
 -- (
@@ -220,7 +206,6 @@ GO
 -- (
 -- 	N'Lowest'
 -- )
--- GO
 
 INSERT [TicketStatus]
 (
@@ -248,7 +233,6 @@ VALUES
 (
 	N'Continuous'
 )
-GO
 
 COMMIT
 
