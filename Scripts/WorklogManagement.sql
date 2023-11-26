@@ -33,9 +33,9 @@ CREATE TABLE [CalendarEntry]
 	[Duration] TIME NOT NULL,
 	[CalendarEntryTypeId] INT NOT NULL,
 	[Note] NVARCHAR(MAX) NULL,
-	CONSTRAINT PK_Day_Id PRIMARY KEY ([Id]),
-	CONSTRAINT UX_Day_Date_CalendarEntryType_CalendarEntryTypeId FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]) ON DELETE CASCADE,
-	CONSTRAINT UX_Day_Date_CalendarEntryTypeId UNIQUE NONCLUSTERED ([Date], [CalendarEntryTypeId])
+	CONSTRAINT PK_CalendarEntry_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_CalendarEntry_Date_CalendarEntryType_Id FOREIGN KEY ([CalendarEntryTypeId]) REFERENCES [CalendarEntryType] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT UX_CalendarEntry_Date_CalendarEntryTypeId UNIQUE NONCLUSTERED ([Date], [CalendarEntryTypeId])
 )
 GO
 
@@ -67,7 +67,7 @@ CREATE TABLE [Ticket]
 	[TicketStatusId] INT NOT NULL,
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
 	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE
 	--CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
@@ -79,7 +79,7 @@ CREATE TABLE [TicketAttachment]
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[TicketId] INT NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL, -- Name mit Extension => Dateipfad: .../ticketId/name
-	[Comment] NVARCHAR(MAX) NULL
+	[Comment] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_TicketAttachment_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_TicketAttachment_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
 	CONSTRAINT UX_TicketAttachment_TicketId_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
