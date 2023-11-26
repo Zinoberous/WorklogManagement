@@ -1,22 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace WorklogManagement.DataAccess.Models
+namespace WorklogManagement.DataAccess.Models;
+
+[Table("TicketAttachment")]
+[Index("TicketId", "Name", Name = "UX_TicketAttachment_TicketId_Name", IsUnique = true)]
+public partial class TicketAttachment
 {
-    [Table("TicketAttachment")]
-    [Index("TicketId", "Name", Name = "UX_TicketAttachment_TicketId_Name", IsUnique = true)]
-    public partial class TicketAttachment
-    {
-        [Key]
-        public int Id { get; set; }
-        public int TicketId { get; set; }
-        [StringLength(255)]
-        public string Name { get; set; } = null!;
-        public string? Comment { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-        [ForeignKey("TicketId")]
-        [InverseProperty("TicketAttachments")]
-        public virtual Ticket Ticket { get; set; } = null!;
-    }
+    public int TicketId { get; set; }
+
+    [StringLength(255)]
+    public string Name { get; set; } = null!;
+
+    public string? Comment { get; set; }
+
+    [ForeignKey("TicketId")]
+    [InverseProperty("TicketAttachments")]
+    public virtual Ticket Ticket { get; set; } = null!;
 }

@@ -26,20 +26,21 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.Property<int>("CalendarEntryTypeId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
 
-                    b.Property<TimeSpan>("Duration")
+                    b.Property<TimeOnly>("Duration")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Note")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_CalendarEntry_Id");
 
                     b.HasIndex("CalendarEntryTypeId");
 
-                    b.HasIndex(new[] { "Date", "CalendarEntryTypeId" }, "UX_Day_Date_CalendarEntryTypeId")
+                    b.HasIndex(new[] { "Date", "CalendarEntryTypeId" }, "UX_CalendarEntry_Date_CalendarEntryTypeId")
                         .IsUnique();
 
                     b.ToTable("CalendarEntry");
@@ -56,7 +57,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_CalendarEntryType_Id");
 
                     b.HasIndex(new[] { "Name" }, "UX_CalendarEntryType_Name")
                         .IsUnique();
@@ -89,7 +91,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_Ticket_Id");
 
                     b.HasIndex("RefId");
 
@@ -115,7 +118,8 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_TicketAttachment_Id");
 
                     b.HasIndex(new[] { "TicketId", "Name" }, "UX_TicketAttachment_TicketId_Name")
                         .IsUnique();
@@ -134,7 +138,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_TicketStatus_Id");
 
                     b.HasIndex(new[] { "Name" }, "UX_TicketStatus_Name")
                         .IsUnique();
@@ -162,7 +167,8 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.Property<int>("TicketStatusId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_TicketStatusLog_Id");
 
                     b.HasIndex("TicketId");
 
@@ -177,8 +183,8 @@ namespace WorklogManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
@@ -186,10 +192,11 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeSpan>("TimeSpent")
+                    b.Property<TimeOnly>("TimeSpent")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_Worklog_Id");
 
                     b.HasIndex("TicketId");
 
@@ -213,7 +220,8 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.Property<int>("WorklogId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_WorklogAttachment_Id");
 
                     b.HasIndex(new[] { "WorklogId", "Name" }, "UX_WorklogAttachment_WorklogId_Name")
                         .IsUnique();
@@ -226,9 +234,8 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.CalendarEntryType", "CalendarEntryType")
                         .WithMany("CalendarEntries")
                         .HasForeignKey("CalendarEntryTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("UX_Day_Date_CalendarEntryType_CalendarEntryTypeId");
+                        .HasConstraintName("FK_CalendarEntry_Date_CalendarEntryType_Id");
 
                     b.Navigation("CalendarEntryType");
                 });
@@ -243,7 +250,6 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.TicketStatus", "TicketStatus")
                         .WithMany("Tickets")
                         .HasForeignKey("TicketStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Ticket_TicketStatusId_TicketStatus_Id");
 
@@ -276,7 +282,6 @@ namespace WorklogManagement.DataAccess.Migrations
                     b.HasOne("WorklogManagement.DataAccess.Models.TicketStatus", "TicketStatus")
                         .WithMany("TicketStatusLogs")
                         .HasForeignKey("TicketStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TicketStatusLog_TicketStatusId_TicketStatus_Id");
 

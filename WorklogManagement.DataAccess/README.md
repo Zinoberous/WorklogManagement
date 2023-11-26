@@ -4,10 +4,16 @@ Scaffold-DbContext -Connection "Server=<Server>;Database=WorklogManagement;User 
 
 ## migration erzeugen
 
-- cd .\WorklogManagement.DataAccess
-- dotnet ef migrations add InitialCreate --context WorklogManagementContext --startup-project ../WorklogManagement.API
+- Aus WorklofManagement.API alle dateien mit local.db löschen
+- Aus WorklogManagement.DataAccess alles auf ./Migrations löschen
+- Paket-Manager-Konsole öffnen
+	- WorklogManagement.DataAccess als Startprojekt auswählen
+	- cd .\WorklogManagement.DataAccess
+	- dotnet ef migrations add InitialCreate --context WorklogManagementContext --startup-project ../WorklogManagement.API
+	- In *_InitialCreate.cs in Up() am Ende unten stehenden Code ergänzen
+	- dotnet ef database update --context WorklogManagementContext --startup-project ../WorklogManagement.API
 
-- *_InitialCreate.cs:
+*_InitialCreate.cs:
 ```
 migrationBuilder.InsertData(
     table: "CalendarEntryType",
@@ -36,9 +42,3 @@ migrationBuilder.InsertData(
         { 6, "Canceled" },
         { 7, "Continuous" },
     });
-```
-
-## local.db erzeugen
-
-- cd .\WorklogManagement.DataAccess
-- dotnet ef database update --context WorklogManagementContext --startup-project ../WorklogManagement.API

@@ -6,13 +6,13 @@ namespace WorklogManagement.API.Models.Filter
     public class CalendarEntryFilter : IFilter
     {
         [JsonPropertyName("date")]
-        public DateTime? Date { get; set; }
+        public DateOnly? Date { get; set; }
 
         [JsonPropertyName("from")]
-        public DateTime? From { get; set; }
+        public DateOnly? From { get; set; }
 
         [JsonPropertyName("to")]
-        public DateTime? To { get; set; }
+        public DateOnly? To { get; set; }
 
         [JsonPropertyName("calendarEntryType")]
         public string? CalendarEntryType { get; set; }

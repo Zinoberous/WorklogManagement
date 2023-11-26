@@ -4,19 +4,13 @@ using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
 {
-    public class TicketStatus : IData
+    public class TicketStatus(DB.TicketStatus status) : IData
     {
         [JsonPropertyName("id")]
-        public int Id { get; }
+        public int Id { get; } = status.Id;
 
         [JsonPropertyName("name")]
         [MaxLength(255)]
-        public string Name { get; }
-
-        public TicketStatus(DB.TicketStatus status)
-        {
-            Id = status.Id;
-            Name = status.Name;
-        }
+        public string Name { get; } = status.Name;
     }
 }

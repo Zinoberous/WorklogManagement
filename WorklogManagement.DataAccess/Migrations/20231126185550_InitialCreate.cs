@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -20,7 +21,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CalendarEntryType", x => x.Id);
+                    table.PrimaryKey("PK_CalendarEntryType_Id", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -33,7 +34,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketStatus", x => x.Id);
+                    table.PrimaryKey("PK_TicketStatus_Id", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -42,20 +43,19 @@ namespace WorklogManagement.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateTime>(type: "date", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    Date = table.Column<DateOnly>(type: "TEXT", nullable: false),
+                    Duration = table.Column<TimeOnly>(type: "TEXT", nullable: false),
                     CalendarEntryTypeId = table.Column<int>(type: "INTEGER", nullable: false),
                     Note = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CalendarEntry", x => x.Id);
+                    table.PrimaryKey("PK_CalendarEntry_Id", x => x.Id);
                     table.ForeignKey(
-                        name: "UX_Day_Date_CalendarEntryType_CalendarEntryTypeId",
+                        name: "FK_CalendarEntry_Date_CalendarEntryType_Id",
                         column: x => x.CalendarEntryTypeId,
                         principalTable: "CalendarEntryType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -72,7 +72,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ticket", x => x.Id);
+                    table.PrimaryKey("PK_Ticket_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Ticket_RefId_Ticket_Id",
                         column: x => x.RefId,
@@ -82,8 +82,7 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_Ticket_TicketStatusId_TicketStatus_Id",
                         column: x => x.TicketStatusId,
                         principalTable: "TicketStatus",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -98,7 +97,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketAttachment", x => x.Id);
+                    table.PrimaryKey("PK_TicketAttachment_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TicketAttachment_TicketId_Ticket_Id",
                         column: x => x.TicketId,
@@ -120,7 +119,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketStatusLog", x => x.Id);
+                    table.PrimaryKey("PK_TicketStatusLog_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TicketStatusLog_TicketId_Ticket_Id",
                         column: x => x.TicketId,
@@ -131,8 +130,7 @@ namespace WorklogManagement.DataAccess.Migrations
                         name: "FK_TicketStatusLog_TicketStatusId_TicketStatus_Id",
                         column: x => x.TicketStatusId,
                         principalTable: "TicketStatus",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -141,14 +139,14 @@ namespace WorklogManagement.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateTime>(type: "date", nullable: false),
+                    Date = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     TicketId = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
-                    TimeSpent = table.Column<TimeSpan>(type: "TEXT", nullable: false)
+                    TimeSpent = table.Column<TimeOnly>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Worklog", x => x.Id);
+                    table.PrimaryKey("PK_Worklog_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Worklog_TicketId_Ticket_Id",
                         column: x => x.TicketId,
@@ -169,7 +167,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorklogAttachment", x => x.Id);
+                    table.PrimaryKey("PK_WorklogAttachment_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_WorklogAttachment_WorklogId_Worklog_Id",
                         column: x => x.WorklogId,
@@ -184,7 +182,7 @@ namespace WorklogManagement.DataAccess.Migrations
                 column: "CalendarEntryTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "UX_Day_Date_CalendarEntryTypeId",
+                name: "UX_CalendarEntry_Date_CalendarEntryTypeId",
                 table: "CalendarEntry",
                 columns: new[] { "Date", "CalendarEntryTypeId" },
                 unique: true);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 using DB = WorklogManagement.DataAccess.Models;
 
@@ -68,7 +69,7 @@ namespace WorklogManagement.API.Models.Data
             StatusNote = ticket.TicketStatusLogs.Last().Note;
             CreatedAt = ticket.CreatedAt;
             AttachmentsCount = ticket.TicketAttachments.Count;
-            TimeSpentSeconds = (int)ticket.Worklogs.Sum(x => x.TimeSpent.TotalSeconds);
+            TimeSpentSeconds = ticket.Worklogs.Sum(x => TimeHelper.TimeToSeconds(x.TimeSpent));
         }
 
         public static async Task<Ticket> GetAsync(int id, WorklogManagementContext context)

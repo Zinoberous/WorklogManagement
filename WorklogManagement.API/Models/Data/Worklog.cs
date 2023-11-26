@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 using WorklogManagement.DataAccess.Models;
 using DB = WorklogManagement.DataAccess.Models;
@@ -16,7 +17,7 @@ namespace WorklogManagement.API.Models.Data
         // TODO: uri day
 
         [JsonPropertyName("date")]
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
 
         // TODO: uri ticket
 
@@ -38,7 +39,7 @@ namespace WorklogManagement.API.Models.Data
         public int AttachmentsCount { get; set; }
 
         [JsonConstructor]
-        public Worklog(int? id, DateTime date, int ticketId, string ticket, string? description, int timeSpentSeconds, int attachmentsCount)
+        public Worklog(int? id, DateOnly date, int ticketId, string ticket, string? description, int timeSpentSeconds, int attachmentsCount)
         {
             Id = id;
             Date = date;
@@ -56,7 +57,7 @@ namespace WorklogManagement.API.Models.Data
             TicketId = worklog.TicketId;
             Ticket = worklog.Ticket.Title;
             Description = worklog.Description;
-            TimeSpentSeconds = (int)worklog.TimeSpent.TotalSeconds;
+            TimeSpentSeconds = TimeHelper.TimeToSeconds(worklog.TimeSpent);
             AttachmentsCount = worklog.WorklogAttachments.Count;
         }
 
@@ -76,7 +77,7 @@ namespace WorklogManagement.API.Models.Data
                     Date = Date,
                     TicketId = TicketId,
                     Description = Description,
-                    TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds),
+                    TimeSpent = TimeHelper.SecondsToTime(TimeSpentSeconds),
                 };
 
                 await context.Worklogs.AddAsync(worklog);
@@ -92,7 +93,7 @@ namespace WorklogManagement.API.Models.Data
                 worklog.Date = Date;
                 worklog.TicketId = TicketId;
                 worklog.Description = Description;
-                worklog.TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds);
+                worklog.TimeSpent = TimeHelper.SecondsToTime(TimeSpentSeconds);
 
                 await context.SaveChangesAsync();
             }
