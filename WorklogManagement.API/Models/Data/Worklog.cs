@@ -23,6 +23,9 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("ticketId")]
         public int TicketId { get; set; }
 
+        [JsonPropertyName("ticket")]
+        public string Ticket { get; set; }
+
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
@@ -35,11 +38,12 @@ namespace WorklogManagement.API.Models.Data
         public int AttachmentsCount { get; set; }
 
         [JsonConstructor]
-        public Worklog(int? id, DateTime date, int ticketId, string? description, int timeSpentSeconds, int attachmentsCount)
+        public Worklog(int? id, DateTime date, int ticketId, string ticket, string? description, int timeSpentSeconds, int attachmentsCount)
         {
             Id = id;
             Date = date;
             TicketId = ticketId;
+            Ticket = ticket;
             Description = description;
             TimeSpentSeconds = timeSpentSeconds;
             AttachmentsCount = attachmentsCount;
@@ -50,6 +54,7 @@ namespace WorklogManagement.API.Models.Data
             Id = worklog.Id;
             Date = worklog.Date;
             TicketId = worklog.TicketId;
+            Ticket = worklog.Ticket.Title;
             Description = worklog.Description;
             TimeSpentSeconds = (int)worklog.TimeSpent.TotalSeconds;
             AttachmentsCount = worklog.WorklogAttachments.Count;
@@ -57,7 +62,7 @@ namespace WorklogManagement.API.Models.Data
 
         public static async Task<Worklog> GetAsync(int id, WorklogManagementContext context)
         {
-            return new(await context.Worklogs.Include(x => x.WorklogAttachments).SingleAsync(x => x.Id == id));
+            return new(await context.Worklogs.Include(x => x.Ticket).Include(x => x.WorklogAttachments).SingleAsync(x => x.Id == id));
         }
 
         public async Task SaveAsync(WorklogManagementContext context)

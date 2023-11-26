@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using System.Text.Json.Serialization;
 using WorklogManagement.DataAccess.Context;
+using WorklogManagement.DataAccess.Models;
 using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
@@ -25,11 +27,10 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("comment")]
         public string? Comment { get; set; }
 
-        [JsonPropertyName("directory")]
-        public string Directory { get; set; }
-
         [JsonPropertyName("data")]
         public string Data { get; set; }
+
+        private string Directory => Path.Combine(_basedir, WorklogId.ToString());
 
 #if DEBUG
         private static readonly string _basedir = Path.Combine(".", "Attachments", "Worklogs");
@@ -38,13 +39,12 @@ namespace WorklogManagement.API.Models.Data
 #endif
 
         [JsonConstructor]
-        public WorklogAttachment(int? id, int worklogId, string name, string comment, string directory, string data)
+        public WorklogAttachment(int? id, int worklogId, string name, string comment, string data)
         {
             Id = id;
             WorklogId = worklogId;
             Name = name;
             Comment = comment;
-            Directory = directory;
             Data = data;
         }
 
@@ -54,8 +54,6 @@ namespace WorklogManagement.API.Models.Data
             WorklogId = attachment.WorklogId;
             Name = attachment.Name;
             Comment = attachment.Comment;
-
-            Directory = Path.Combine(_basedir, $"{attachment.Worklog.Date:yyyy-MM-dd}", WorklogId.ToString());
             Data = Convert.ToBase64String(File.ReadAllBytes(Path.Combine(Directory, Name)));
         }
 

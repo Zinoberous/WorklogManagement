@@ -28,6 +28,7 @@ namespace WorklogManagement.API.Controllers
             var result = await RequestHelper.GetAsync
             (
                 _context.Worklogs
+                    .Include(x => x.Ticket)
                     .Include(x => x.WorklogAttachments),
                 query,
                 x => new Worklog(x),
@@ -42,7 +43,7 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(new Worklog(await _context.Worklogs.Include(x => x.WorklogAttachments).SingleAsync(x => x.Id == id)));
+            return Ok(new Worklog(await _context.Worklogs.Include(x => x.Ticket).Include(x => x.WorklogAttachments).SingleAsync(x => x.Id == id)));
         }
 
         [HttpPost]
@@ -57,6 +58,7 @@ namespace WorklogManagement.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var worklog = await _context.Worklogs
+                .Include(x => x.Ticket)
                 .Include(x => x.WorklogAttachments)
                 .SingleAsync(x => x.Id == id);
 
