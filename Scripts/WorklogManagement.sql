@@ -118,7 +118,7 @@ CREATE TABLE [TicketStatusLog]
 	[Note] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_TicketStatusLog_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
-	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id]) ON DELETE CASCADE
 )
 GO
 
