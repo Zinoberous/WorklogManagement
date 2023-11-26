@@ -1,20 +1,46 @@
+BEGIN TRAN
+
+BEGIN TRY
+
 --CREATE DATABASE [WorklogManagement]
 --GO
 
 USE [WorklogManagement]
 GO
 
-DROP TABLE	[WorklogAttachment],
-			[Worklog],
-			[TicketStatusLog],
-			-- [TicketCommentAttachment],
-			-- [TicketComment],
-			[TicketAttachment],
-			[Ticket],
-			[TicketStatus],
-			--[TicketPriority],
-			[CalendarEntry],
-			[CalendarEntryType]
+IF OBJECT_ID('WorklogAttachment', 'U') IS NOT NULL
+    DROP TABLE [WorklogAttachment];
+
+IF OBJECT_ID('Worklog', 'U') IS NOT NULL
+    DROP TABLE [Worklog];
+
+IF OBJECT_ID('TicketStatusLog', 'U') IS NOT NULL
+    DROP TABLE [TicketStatusLog];
+
+-- IF OBJECT_ID('TicketCommentAttachment', 'U') IS NOT NULL
+--     DROP TABLE [TicketCommentAttachment];
+
+-- IF OBJECT_ID('TicketComment', 'U') IS NOT NULL
+--     DROP TABLE [TicketComment];
+
+IF OBJECT_ID('TicketAttachment', 'U') IS NOT NULL
+    DROP TABLE [TicketAttachment];
+
+IF OBJECT_ID('Ticket', 'U') IS NOT NULL
+    DROP TABLE [Ticket];
+
+IF OBJECT_ID('TicketStatus', 'U') IS NOT NULL
+    DROP TABLE [TicketStatus];
+
+-- IF OBJECT_ID('TicketPriority', 'U') IS NOT NULL
+--     DROP TABLE [TicketPriority];
+
+IF OBJECT_ID('CalendarEntry', 'U') IS NOT NULL
+    DROP TABLE [CalendarEntry];
+
+IF OBJECT_ID('CalendarEntryType', 'U') IS NOT NULL
+    DROP TABLE [CalendarEntryType];
+
 GO
 
 CREATE TABLE [CalendarEntryType]
@@ -67,7 +93,7 @@ CREATE TABLE [Ticket]
 	[TicketStatusId] INT NOT NULL,
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
 	CONSTRAINT PK_Ticket_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]) ON DELETE SET NULL,
+	CONSTRAINT FK_Ticket_RefId_Ticket_Id FOREIGN KEY ([RefId]) REFERENCES [Ticket] ([Id]),
 	-- CONSTRAINT FK_Ticket_TicketPriorityId_TicketPriority_Id FOREIGN KEY ([TicketPriorityId]) REFERENCES [TicketPriority] ([Id]),
 	CONSTRAINT FK_Ticket_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
 	--CONSTRAINT UX_Ticket_Title UNIQUE NONCLUSTERED ([Title])
@@ -224,6 +250,8 @@ VALUES
 )
 GO
 
+COMMIT
+
 SELECT * FROM [CalendarEntry]
 SELECT * FROM [CalendarEntryType]
 --SELECT * FROM [TicketPriority]
@@ -235,3 +263,10 @@ SELECT * FROM [TicketAttachment]
 SELECT * FROM [TicketStatusLog]
 SELECT * FROM [Worklog]
 SELECT * FROM [WorklogAttachment]
+
+END TRY
+
+BEGIN CATCH
+	ROLLBACK
+	THROW
+END CATCH

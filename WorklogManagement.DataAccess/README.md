@@ -7,6 +7,7 @@ Scaffold-DbContext -Connection "Server=<Server>;Database=WorklogManagement;User 
 - cd .\WorklogManagement.DataAccess
 - dotnet ef migrations add InitialCreate --context WorklogManagementContext --startup-project ../WorklogManagement.API
 
+- *_InitialCreate.cs:
 ```
 migrationBuilder.InsertData(
     table: "CalendarEntryType",
