@@ -9,18 +9,11 @@ namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WorklogAttachmentsController : ControllerBase
+    public class WorklogAttachmentsController(ILogger<WorklogAttachmentsController> logger, IConfiguration config, WorklogManagementContext context) : ControllerBase
     {
-        private readonly ILogger<MainController> _logger;
-        private readonly IConfiguration _config;
-        private readonly WorklogManagementContext _context;
-
-        public WorklogAttachmentsController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
-        {
-            _logger = logger;
-            _config = config;
-            _context = context;
-        }
+        private readonly ILogger<WorklogAttachmentsController> _logger = logger;
+        private readonly IConfiguration _config = config;
+        private readonly WorklogManagementContext _context = context;
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] WorklogAttachmentsQuery query)

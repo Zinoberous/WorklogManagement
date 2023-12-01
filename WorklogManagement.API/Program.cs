@@ -43,7 +43,8 @@ services.AddDbContext<WorklogManagementContext>
     options =>
     {
 #if DEBUG
-        options.UseSqlite("Data Source=local.db");
+        //options.UseSqlite("Data Source=local.db");
+        options.UseSqlServer(config.GetConnectionString("WorklogManagement")!);
 #else
         options.UseSqlServer(config.GetConnectionString("WorklogManagement")!);
 #endif

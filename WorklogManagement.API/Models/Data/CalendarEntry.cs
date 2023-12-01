@@ -39,7 +39,7 @@ namespace WorklogManagement.API.Models.Data
         {
             Id = calendarEntry.Id;
             Date = calendarEntry.Date;
-            DurationSeconds = TimeHelper.TimeToSeconds(calendarEntry.Duration);
+            DurationSeconds = calendarEntry.DurationSeconds;
             Type = (Enums.CalendarEntryType)calendarEntry.CalendarEntryTypeId;
             Note = calendarEntry.Note;
         }
@@ -59,6 +59,7 @@ namespace WorklogManagement.API.Models.Data
                 {
                     Date = Date,
                     Duration = TimeHelper.SecondsToTime(DurationSeconds),
+                    DurationSeconds = DurationSeconds,
                     CalendarEntryTypeId = (int)Type,
                     Note = Note,
                 };
@@ -75,6 +76,7 @@ namespace WorklogManagement.API.Models.Data
 
                 calendarEntry.Date = Date;
                 calendarEntry.Duration = TimeHelper.SecondsToTime(DurationSeconds);
+                calendarEntry.DurationSeconds = DurationSeconds;
                 calendarEntry.CalendarEntryTypeId = (int)Type;
                 calendarEntry.Note = Note;
 

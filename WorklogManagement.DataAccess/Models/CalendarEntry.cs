@@ -17,6 +17,8 @@ public partial class CalendarEntry
 
     public TimeOnly Duration { get; set; }
 
+    public int DurationSeconds { get; set; }
+
     public int CalendarEntryTypeId { get; set; }
 
     public string? Note { get; set; }

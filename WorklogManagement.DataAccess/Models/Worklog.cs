@@ -20,6 +20,8 @@ public partial class Worklog
 
     public TimeOnly TimeSpent { get; set; }
 
+    public int TimeSpentSeconds { get; set; }
+
     [ForeignKey("TicketId")]
     [InverseProperty("Worklogs")]
     public virtual Ticket Ticket { get; set; } = null!;

@@ -9,18 +9,11 @@ namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CalendarEntriesController : ControllerBase
+    public class CalendarEntriesController(ILogger<CalendarEntriesController> logger, IConfiguration config, WorklogManagementContext context) : ControllerBase
     {
-        private readonly ILogger<MainController> _logger;
-        private readonly IConfiguration _config;
-        private readonly WorklogManagementContext _context;
-
-        public CalendarEntriesController(ILogger<MainController> logger, IConfiguration config, WorklogManagementContext context)
-        {
-            _logger = logger;
-            _config = config;
-            _context = context;
-        }
+        private readonly ILogger<CalendarEntriesController> _logger = logger;
+        private readonly IConfiguration _config = config;
+        private readonly WorklogManagementContext _context = context;
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CalendarEntryQuery query)

@@ -57,7 +57,7 @@ namespace WorklogManagement.API.Models.Data
             TicketId = worklog.TicketId;
             Ticket = worklog.Ticket.Title;
             Description = worklog.Description;
-            TimeSpentSeconds = TimeHelper.TimeToSeconds(worklog.TimeSpent);
+            TimeSpentSeconds = worklog.TimeSpentSeconds;
             AttachmentsCount = worklog.WorklogAttachments.Count;
         }
 
@@ -78,6 +78,7 @@ namespace WorklogManagement.API.Models.Data
                     TicketId = TicketId,
                     Description = Description,
                     TimeSpent = TimeHelper.SecondsToTime(TimeSpentSeconds),
+                    TimeSpentSeconds = TimeSpentSeconds
                 };
 
                 await context.Worklogs.AddAsync(worklog);
@@ -94,6 +95,7 @@ namespace WorklogManagement.API.Models.Data
                 worklog.TicketId = TicketId;
                 worklog.Description = Description;
                 worklog.TimeSpent = TimeHelper.SecondsToTime(TimeSpentSeconds);
+                worklog.TimeSpentSeconds = TimeSpentSeconds;
 
                 await context.SaveChangesAsync();
             }

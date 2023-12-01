@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorklogManagement.DataAccess", "WorklogManagement.DataAccess\WorklogManagement.DataAccess.csproj", "{BA018FC9-4469-4351-93EC-387DCADA393E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.API", "WorklogManagement.API\WorklogManagement.API.csproj", "{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorklogManagement.API", "WorklogManagement.API\WorklogManagement.API.csproj", "{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.Playground", "WorklogManagement.Playground\WorklogManagement.Playground.csproj", "{E3227FEC-C136-4F48-ACA5-F1BEF14309C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B934720-0D45-4AF0-9EA6-F45ABAE67B62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3227FEC-C136-4F48-ACA5-F1BEF14309C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3227FEC-C136-4F48-ACA5-F1BEF14309C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3227FEC-C136-4F48-ACA5-F1BEF14309C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3227FEC-C136-4F48-ACA5-F1BEF14309C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

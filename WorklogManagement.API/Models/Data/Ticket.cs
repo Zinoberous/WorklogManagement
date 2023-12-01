@@ -69,7 +69,7 @@ namespace WorklogManagement.API.Models.Data
             StatusNote = ticket.TicketStatusLogs.Last().Note;
             CreatedAt = ticket.CreatedAt;
             AttachmentsCount = ticket.TicketAttachments.Count;
-            TimeSpentSeconds = ticket.Worklogs.Sum(x => TimeHelper.TimeToSeconds(x.TimeSpent));
+            TimeSpentSeconds = ticket.Worklogs.Sum(x => x.TimeSpentSeconds);
         }
 
         public static async Task<Ticket> GetAsync(int id, WorklogManagementContext context)

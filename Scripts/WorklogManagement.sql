@@ -76,6 +76,7 @@ CREATE TABLE [CalendarEntry]
 	[Id] INT NOT NULL IDENTITY(1, 1),
 	[Date] DATE NOT NULL,
 	[Duration] TIME NOT NULL,
+	[DurationSeconds] INT NOT NULL,
 	[CalendarEntryTypeId] INT NOT NULL,
 	[Note] NVARCHAR(MAX) NULL,
 	CONSTRAINT PK_CalendarEntry_Id PRIMARY KEY ([Id]),
@@ -166,6 +167,7 @@ CREATE TABLE [Worklog]
 	[TicketId] INT NOT NULL,
 	[Description] NVARCHAR(MAX) NULL,
 	[TimeSpent] TIME NOT NULL,
+	[TimeSpentSeconds] INT NOT NULL,
 	CONSTRAINT PK_Worklog_Id PRIMARY KEY ([Id]),
 	CONSTRAINT FK_Worklog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE
 )
@@ -273,6 +275,11 @@ SELECT * FROM [WorklogAttachment]
 END TRY
 
 BEGIN CATCH
-	ROLLBACK
-	-- TODO: throw
+	IF @@TRANCOUNT > 0
+	BEGIN
+		PRINT CHAR(13)+CHAR(10)
+		DECLARE @Error NVARCHAR(MAX) = ERROR_MESSAGE()
+		RAISERROR(@Error, 11, 0)
+		ROLLBACK
+	END
 END CATCH
