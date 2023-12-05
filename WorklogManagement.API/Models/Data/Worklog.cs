@@ -2,7 +2,6 @@
 using System.Text.Json.Serialization;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
-using WorklogManagement.DataAccess.Models;
 using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data

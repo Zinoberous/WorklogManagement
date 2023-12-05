@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.DataAccess.Context;

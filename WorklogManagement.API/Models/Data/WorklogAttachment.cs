@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 using System.Text.Json.Serialization;
 using WorklogManagement.DataAccess.Context;
-using WorklogManagement.DataAccess.Models;
 using DB = WorklogManagement.DataAccess.Models;
 
 namespace WorklogManagement.API.Models.Data
@@ -36,6 +34,7 @@ namespace WorklogManagement.API.Models.Data
         private static readonly string _basedir = Path.Combine(".", "Attachments", "Worklogs");
 #else
         private static readonly string _basedir = Path.Combine("/", "var", "www", "html", "_res", "WorklogManagement", "Attachments", "Worklogs");
+        //private static readonly string _basedir = Path.Combine("/", "var", "www", "html", "_res", "DevWorklogManagement", "Attachments", "Worklogs");
 #endif
 
         [JsonConstructor]

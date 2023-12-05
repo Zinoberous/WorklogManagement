@@ -42,6 +42,7 @@ namespace WorklogManagement.API.Models.Data
             TicketId = ticketStatusLog.TicketId;
             Status = (Enums.TicketStatus)ticketStatusLog.TicketStatusId;
             StartedAt = ticketStatusLog.StartedAt;
+            Note = ticketStatusLog.Note;
         }
 
         public static async Task<TicketStatusLog> GetAsync(int id, WorklogManagementContext context)

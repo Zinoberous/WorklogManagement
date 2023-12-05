@@ -32,9 +32,9 @@ namespace WorklogManagement.API.Controllers
         [HttpGet("calendar")]
         public async Task<IActionResult> GetCalendarEntriesSumByType()
         {
-           var statistics = await _context.CalendarEntries
-                .GroupBy(x => x.CalendarEntryTypeId)
-                .ToDictionaryAsync(x => x.Key, x => x.Count());
+            var statistics = await _context.CalendarEntries
+                 .GroupBy(x => x.CalendarEntryTypeId)
+                 .ToDictionaryAsync(x => x.Key, x => x.Count());
 
             return Ok(statistics);
         }
