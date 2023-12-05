@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
 Console.Title = "WorklogManagement.API";
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
+
+ConfigHelper.Initialize(config);
 
 var services = builder.Services;
 

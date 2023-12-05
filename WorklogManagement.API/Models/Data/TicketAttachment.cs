@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 using DB = WorklogManagement.DataAccess.Models;
 
@@ -28,14 +29,16 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("data")]
         public string Data { get; set; }
 
-        private string Directory => Path.Combine(_basedir, TicketId.ToString());
+        private string Directory => Path.Combine(_baseDir, TicketId.ToString());
 
-#if DEBUG
-        private static readonly string _basedir = Path.Combine(".", "Attachments", "Tickets");
-#else
-        private static readonly string _basedir = Path.Combine("/", "var", "www", "html", "_res", "WorklogManagement", "Attachments", "Tickets");
-        //private static readonly string _basedir = Path.Combine("/", "var", "www", "html", "_res", "DevWorklogManagement", "Attachments", "Tickets");
-#endif
+        private static readonly string _baseDir =
+            Path.Combine
+            (
+                string.IsNullOrWhiteSpace(ConfigHelper.Config.GetValue<string>("AttachmentsBaseDir"))
+                    ? Path.Combine(".", "Attachments")
+                    : ConfigHelper.Config.GetValue<string>("AttachmentsBaseDir")!,
+                "Tickets"
+            );
 
         [JsonConstructor]
         public TicketAttachment(int? id, int ticketId, string name, string comment, string data)
