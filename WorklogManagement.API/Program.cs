@@ -37,7 +37,7 @@ services.AddSwaggerGen
 (
     options =>
     {
-        options.SwaggerDoc("v1", new() { Title = "WorklogManagemen", Version = "v1" });
+        options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
     }
 );
 

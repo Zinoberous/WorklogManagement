@@ -18,11 +18,6 @@ BEGIN
 	DROP TABLE [Worklog]
 END
 
-IF OBJECT_ID('TicketStatusLog', 'U') IS NOT NULL
-BEGIN
-	DROP TABLE [TicketStatusLog]
-END
-
 -- IF OBJECT_ID('TicketCommentAttachment', 'U') IS NOT NULL
 -- BEGIN
 -- 	DROP TABLE [TicketCommentAttachment]
@@ -32,6 +27,11 @@ END
 -- BEGIN
 -- 	DROP TABLE [TicketComment]
 -- END
+
+IF OBJECT_ID('TicketStatusLog', 'U') IS NOT NULL
+BEGIN
+	DROP TABLE [TicketStatusLog]
+END
 
 IF OBJECT_ID('TicketAttachment', 'U') IS NOT NULL
 BEGIN
@@ -103,7 +103,7 @@ CREATE TABLE [TicketStatus]
 CREATE TABLE [Ticket]
 (
 	[Id] INT NOT NULL IDENTITY(1, 1),
-	[RefId] INT NULL, -- definiert dieses Ticket als Subticket oder Nachfolger
+	[RefId] INT NULL,
 	[Title] NVARCHAR(255) NOT NULL,
 	[Description] NVARCHAR(MAX) NULL,
 	-- [TicketPriorityId] INT NOT NULL,
@@ -127,6 +127,18 @@ CREATE TABLE [TicketAttachment]
 	CONSTRAINT UX_TicketAttachment_TicketId_Name UNIQUE NONCLUSTERED ([TicketId], [Name])
 )
 
+CREATE TABLE [TicketStatusLog]
+(
+	[Id] INT NOT NULL IDENTITY(1, 1),
+	[TicketId] INT NOT NULL,
+	[TicketStatusId] INT NOT NULL,
+	[StartedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
+	[Note] NVARCHAR(MAX) NULL,
+	CONSTRAINT PK_TicketStatusLog_Id PRIMARY KEY ([Id]),
+	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
+	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
+)
+
 -- CREATE TABLE [TicketComment]
 -- (
 -- 	[Id] INT NOT NULL IDENTITY(1, 1),
@@ -147,18 +159,6 @@ CREATE TABLE [TicketAttachment]
 -- 	CONSTRAINT FK_TicketCommentAttachment_TicketCommentId_TicketComment_Id FOREIGN KEY ([TicketCommentId]) REFERENCES [TicketComment] ([Id]) ON DELETE CASCADE,
 -- 	CONSTRAINT UX_TicketCommentAttachment_TicketCommentId_Name UNIQUE NONCLUSTERED ([TicketCommentId], [Name])
 -- )
-
-CREATE TABLE [TicketStatusLog]
-(
-	[Id] INT NOT NULL IDENTITY(1, 1),
-	[TicketId] INT NOT NULL,
-	[TicketStatusId] INT NOT NULL,
-	[StartedAt] DATETIME NOT NULL DEFAULT GETUTCDATE(),
-	[Note] NVARCHAR(MAX) NULL,
-	CONSTRAINT PK_TicketStatusLog_Id PRIMARY KEY ([Id]),
-	CONSTRAINT FK_TicketStatusLog_TicketId_Ticket_Id FOREIGN KEY ([TicketId]) REFERENCES [Ticket] ([Id]) ON DELETE CASCADE,
-	CONSTRAINT FK_TicketStatusLog_TicketStatusId_TicketStatus_Id FOREIGN KEY ([TicketStatusId]) REFERENCES [TicketStatus] ([Id])
-)
 
 CREATE TABLE [Worklog]
 (

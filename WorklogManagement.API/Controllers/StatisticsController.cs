@@ -30,11 +30,12 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("calendar")]
-        public async Task<IActionResult> GetCalendarEntriesSumByType()
+        public async Task<IActionResult> GetCalendarEntriesSumByType(int? year)
         {
             var statistics = await _context.CalendarEntries
-                 .GroupBy(x => x.CalendarEntryTypeId)
-                 .ToDictionaryAsync(x => x.Key, x => x.Count());
+                .Where(x => year == null || x.Date.Year == year)
+                .GroupBy(x => x.CalendarEntryTypeId)
+                .ToDictionaryAsync(x => x.Key, x => x.Count());
 
             return Ok(statistics);
         }
@@ -43,8 +44,8 @@ namespace WorklogManagement.API.Controllers
         public async Task<IActionResult> GetTicketsSumByStatus()
         {
             var statistics = await _context.Tickets
-                 .GroupBy(x => x.TicketStatusId)
-                 .ToDictionaryAsync(x => x.Key, x => x.Count());
+                .GroupBy(x => x.TicketStatusId)
+                .ToDictionaryAsync(x => x.Key, x => x.Count());
 
             return Ok(statistics);
         }
