@@ -22,13 +22,12 @@ namespace WorklogManagement.API.Models
 
         public IEnumerable<TData> Items { get; }
 
-        public Result(TQuery query, IEnumerable<TData> items, uint totalItems)
+        public Result(TQuery query, uint totalPages, uint totalItems, IEnumerable<TData> items)
         {
             Query = query;
-            Items = items;
-
+            TotalPages = totalPages;
             TotalItems = totalItems;
-            TotalPages = query.PageSize == 0 ? 1 : (uint)Math.Ceiling((double)TotalItems / query.PageSize);
+            Items = items;
         }
     }
 }

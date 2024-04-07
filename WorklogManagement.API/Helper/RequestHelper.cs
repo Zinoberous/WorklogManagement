@@ -58,15 +58,21 @@ namespace WorklogManagement.API.Helper
 
             filteredItems = orderedItems ?? filteredItems;
 
-            var page = query.PageSize == 0 ? filteredItems : filteredItems
-                .Skip((int)(query.PageIndex * query.PageSize))
-                .Take((int)query.PageSize);
+            var totalPages = query.PageSize == 0 ? 1 : Math.Ceiling((double)totalItems / query.PageSize);
+
+            var pageIndex = query.PageIndex >= totalPages ? totalPages - 1 : query.PageIndex;
+
+            var page = query.PageSize == 0
+                ? filteredItems
+                : filteredItems
+                    .Skip((int)(pageIndex * query.PageSize))
+                    .Take((int)query.PageSize);
 
             var result = await page
                 .Select(select)
                 .ToListAsync();
 
-            return new(query, result, (uint)totalItems);
+            return new(query, (uint)totalPages, (uint)totalItems, result);
         }
     }
 }
