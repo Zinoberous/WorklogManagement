@@ -26,7 +26,7 @@ namespace WorklogManagement.API.Controllers
                 query,
                 x => new Ticket(x),
                 x =>
-                    (query.RefId == null || x.RefId == query.RefId) &&
+                    (query.RefId == null || (query.RefId == -1 && x.RefId == null) || (query.RefId == -2 && x.RefId != null) || x.RefId == query.RefId) &&
                     (query.Title == null || x.Title.Contains(query.Title)) &&
                     (query.StatusEnum == null || query.StatusEnum.Contains((Enums.TicketStatus)x.TicketStatusId))
             );
