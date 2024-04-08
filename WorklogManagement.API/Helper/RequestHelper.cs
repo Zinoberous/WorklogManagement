@@ -30,6 +30,11 @@ namespace WorklogManagement.API.Helper
 
             var totalItems = filteredItems.Count();
 
+            if (totalItems == 0)
+            {
+                return new(query, 0, 0, await filteredItems.Select(select).ToListAsync());
+            }
+
             IOrderedQueryable<TData>? orderedItems = null;
 
             foreach (var sort in query.Sort.Split(','))
@@ -60,7 +65,9 @@ namespace WorklogManagement.API.Helper
 
             var totalPages = query.PageSize == 0 ? 1 : Math.Ceiling((double)totalItems / query.PageSize);
 
-            var pageIndex = query.PageIndex >= totalPages ? totalPages - 1 : query.PageIndex;
+            var pageIndex =  query.PageIndex >= totalPages
+                    ? totalPages - 1
+                    : query.PageIndex;
 
             var page = query.PageSize == 0
                 ? filteredItems
