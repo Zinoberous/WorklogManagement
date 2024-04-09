@@ -17,6 +17,9 @@ namespace WorklogManagement.API.Models.Data
         [JsonPropertyName("ticketId")]
         public int TicketId { get; set; }
 
+        [JsonPropertyName("ticket")]
+        public Ticket? Ticket { get; set; }
+
         [JsonPropertyName("status")]
         public Enums.TicketStatus Status { get; set; }
 
@@ -40,6 +43,9 @@ namespace WorklogManagement.API.Models.Data
         {
             Id = ticketStatusLog.Id;
             TicketId = ticketStatusLog.TicketId;
+            Ticket = ticketStatusLog.Ticket is null
+                ? null
+                : new(ticketStatusLog.Ticket);
             Status = (Enums.TicketStatus)ticketStatusLog.TicketStatusId;
             StartedAt = ticketStatusLog.StartedAt;
             Note = ticketStatusLog.Note;

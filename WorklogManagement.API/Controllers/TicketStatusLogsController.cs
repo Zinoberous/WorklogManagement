@@ -15,12 +15,31 @@ namespace WorklogManagement.API.Controllers
         private readonly IConfiguration _config = config;
         private readonly WorklogManagementContext _context = context;
 
+        private IQueryable<DataAccess.Models.TicketStatusLog> GetItems(string? expand)
+        {
+            var data = _context.TicketStatusLogs.AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(expand))
+            {
+                return data;
+            }
+
+            var expands = expand.ToLower().Split(',');
+
+            if (expands.Contains("ticket"))
+            {
+                data = data.Include(x => x.Ticket);
+            }
+
+            return data;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] TicketStatusLogQuery query)
         {
             var result = await RequestHelper.GetAsync
             (
-                _context.TicketStatusLogs,
+                GetItems(query.Expand),
                 query,
                 x => new TicketStatusLog(x),
                 x =>
@@ -31,9 +50,9 @@ namespace WorklogManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int id, string? expand)
         {
-            var ticketStatusLog = await _context.TicketStatusLogs
+            var ticketStatusLog = await GetItems(expand)
                 .SingleAsync(x => x.Id == id);
 
             return Ok(new TicketStatusLog(ticketStatusLog));

@@ -8,5 +8,6 @@ namespace WorklogManagement.API.Implements
         public string Sort { get; set; } = "Id";
         public uint PageSize { get; set; } = 0;
         public uint PageIndex { get; set; } = 0;
+        public string? Expand { get; set; }
     }
 }
