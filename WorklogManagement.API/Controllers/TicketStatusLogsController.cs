@@ -43,7 +43,8 @@ namespace WorklogManagement.API.Controllers
                 query,
                 x => new TicketStatusLog(x),
                 x =>
-                    query.TicketId == null || x.TicketId == query.TicketId
+                    (query.TicketId == null || x.TicketId == query.TicketId) &&
+                    (query.BeforeTicketStatusLogId == null || x.Id < query.BeforeTicketStatusLogId)
             );
 
             return Ok(result);

@@ -6,5 +6,8 @@ namespace WorklogManagement.API.Models.Filter
     {
         [JsonPropertyName("ticketId")]
         public int? TicketId { get; set; }
+
+        [JsonPropertyName("before")]
+        public int? BeforeTicketStatusLogId { get; set; }
     }
 }
