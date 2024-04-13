@@ -28,6 +28,7 @@ namespace WorklogManagement.API.Controllers
                 x =>
                     (query.RefId == null || (query.RefId == -1 && x.RefId == null) || (query.RefId == -2 && x.RefId != null) || x.RefId == query.RefId) &&
                     (query.Title == null || x.Title.Contains(query.Title)) &&
+                     (query.Search == null || x.Title.Contains(query.Search) || (!string.IsNullOrWhiteSpace(x.Description) && x.Description.Contains(query.Search))) &&
                     (query.StatusEnum == null || query.StatusEnum.Contains((Enums.TicketStatus)x.TicketStatusId))
             );
 

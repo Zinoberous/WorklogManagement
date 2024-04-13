@@ -27,7 +27,8 @@ namespace WorklogManagement.API.Controllers
                 x => new Worklog(x),
                 x =>
                     (query.Date == null || x.Date == query.Date.Value) &&
-                    (query.TicketId == null || x.TicketId == query.TicketId)
+                    (query.TicketId == null || x.TicketId == query.TicketId) &&
+                     (query.Search == null || (!string.IsNullOrWhiteSpace(x.Description) && x.Description.Contains(query.Search)))
             );
 
             return Ok(result);

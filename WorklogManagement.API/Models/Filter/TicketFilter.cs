@@ -11,7 +11,10 @@ namespace WorklogManagement.API.Models.Filter
 
         [JsonPropertyName("title")]
         [StringLength(255)]
-        public string? Title { get; set; } = null!;
+        public string? Title { get; set; }
+
+        [JsonPropertyName("search")]
+        public string? Search { get; set; }
 
         [JsonPropertyName("status")]
         public string? Status { get; set; }

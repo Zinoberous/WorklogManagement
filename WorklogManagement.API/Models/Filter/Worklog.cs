@@ -9,5 +9,8 @@ namespace WorklogManagement.API.Models.Filter
 
         [JsonPropertyName("ticketId")]
         public int? TicketId { get; set; }
+
+        [JsonPropertyName("search")]
+        public string? Search { get; set; }
     }
 }
