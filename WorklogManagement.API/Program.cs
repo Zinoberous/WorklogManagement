@@ -10,8 +10,8 @@ var config = builder.Configuration;
 
 #if STAGING
 config.AddJsonFile("local.settings.staging.json", true);
-#elif PROD
-config.AddJsonFile("local.settings.prod.json", true);
+#elif PRODUCTION
+config.AddJsonFile("local.settings.production.json", true);
 #else
 config.AddJsonFile("local.settings.json", true);
 #endif

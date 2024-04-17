@@ -4,15 +4,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Configurations>Debug;Release;Release-Staging;Release-Prod</Configurations>
+    <Configurations>Debug;Release;Release-Staging;Release-Production</Configurations>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)'=='Release-Staging'">
     <DefineConstants>STAGING</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release-Prod'">
-    <DefineConstants>PROD</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)'=='Release-Production'">
+    <DefineConstants>PRODUCTION</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
