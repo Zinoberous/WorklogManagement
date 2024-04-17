@@ -8,7 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
 
+#if STAGING
+config.AddJsonFile("local.settings.dev.json", true);
+#elif PROD
+config.AddJsonFile("local.settings.prod.json", true);
+#else
 config.AddJsonFile("local.settings.json", true);
+#endif
 
 ConfigHelper.Initialize(config);
 
