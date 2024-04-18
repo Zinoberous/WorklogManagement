@@ -106,7 +106,7 @@ namespace WorklogManagement.API.Controllers
                 {
                     var worktimeNote = entries.Single(x => (CalendarEntryType)x.CalendarEntryTypeId == CalendarEntryType.WorkTime).Note;
 
-                    if (!string.IsNullOrWhiteSpace(worktimeNote) && worktimeNote.StartsWith("Büro:"))
+                    if (!string.IsNullOrWhiteSpace(worktimeNote) && worktimeNote.StartsWith("B\u00fcro:"))
                     {
                         var specifiedSeconds = SecondsFromNote(worktimeNote);
 
