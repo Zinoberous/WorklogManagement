@@ -102,19 +102,19 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("https://lexnarf.dns.navy/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = string.Empty;
 });
 #elif PRODUCTION
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = string.Empty;
 });
 #else
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = string.Empty;
 });
 
 #endif
