@@ -101,19 +101,19 @@ app.UseSwagger();
 #if STAGING
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("./stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
+    c.SwaggerEndpoint("https://lexnarf.dns.navy/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
     c.RoutePrefix = "swagger";
 });
 #elif PRODUCTION
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("./worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
+    c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
     c.RoutePrefix = "swagger";
 });
 #else
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("./worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+    c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
     c.RoutePrefix = "swagger";
 });
 
