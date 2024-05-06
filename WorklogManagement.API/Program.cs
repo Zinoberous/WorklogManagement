@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
@@ -47,6 +46,7 @@ services.AddCors
 );
 
 #if STAGING
+
 services.AddSwaggerGen
 (
     options =>
@@ -54,14 +54,9 @@ services.AddSwaggerGen
         options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
     }
 );
-services.Configure<SwaggerGenOptions>(options =>
-{
-    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
-    {
-        new OpenApiServer { Url = "/stage-worklog-management/api" }
-    };
-});
+
 #elif PRODUCTION
+
 services.AddSwaggerGen
 (
     options =>
@@ -69,14 +64,9 @@ services.AddSwaggerGen
         options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
     }
 );
-services.Configure<SwaggerGenOptions>(options =>
-{
-    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
-    {
-        new OpenApiServer { Url = "/worklog-management/api" }
-    };
-});
+
 #else
+
 services.AddSwaggerGen
 (
     options =>
@@ -84,13 +74,7 @@ services.AddSwaggerGen
         options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
     }
 );
-services.Configure<SwaggerGenOptions>(options =>
-{
-    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
-    {
-        new OpenApiServer { Url = "/worklog-management/api" }
-    };
-});
+
 #endif
 
 services.AddDbContext<WorklogManagementContext>
@@ -113,6 +97,25 @@ app.MapControllers();
 app.UseCors();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+
+#if STAGING
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
+    c.RoutePrefix = "swagger";
+});
+#elif PRODUCTION
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+    c.RoutePrefix = "swagger";
+});
+#else
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+    c.RoutePrefix = "swagger";
+});
+#endif
 
 app.Run();
