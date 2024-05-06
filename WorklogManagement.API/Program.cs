@@ -116,6 +116,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
     c.RoutePrefix = "swagger";
 });
+
 #endif
 
 app.Run();
