@@ -5,7 +5,7 @@ using WorklogManagement.DataAccess.Context;
 #if STAGING
 Console.Title = "StageWorklogManagement.API";
 #elif PRODUCTION
-Console.Title = "WorklogManagement.API";
+Console.Title = "ProdWorklogManagement.API";
 #else
 Console.Title = "WorklogManagement.API";
 #endif
@@ -61,7 +61,7 @@ services.AddSwaggerGen
 (
     options =>
     {
-        options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+        options.SwaggerDoc("v1", new() { Title = "ProdWorklogManagement", Version = "v1" });
     }
 );
 
@@ -107,7 +107,7 @@ app.UseSwaggerUI(c =>
 #elif PRODUCTION
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
     c.RoutePrefix = "swagger";
 });
 #else
