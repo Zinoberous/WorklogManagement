@@ -109,7 +109,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("v1/swagger.json", "ProdWorklogManagement API v1");
-    c.RoutePrefix = "worklog-management/api/swagger";
+    c.RoutePrefix = "swagger";
 });
 #else
  app.UseSwaggerUI(c =>
@@ -119,11 +119,5 @@ app.UseSwaggerUI(c =>
  });
 
 #endif
-
-//app.UseSwaggerUI(c =>
-//{
-//    c.RoutePrefix = "swagger";
-//    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
-//});
 
 app.Run();
