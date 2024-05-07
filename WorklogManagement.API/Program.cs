@@ -124,10 +124,12 @@ app.Run();
 
 namespace WorklogManagement.API
 {
-    public class SwaggerBasePathFilter(IConfiguration config) : IDocumentFilter
+    public class SwaggerBasePathFilter : IDocumentFilter
     {
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
+            var config = ConfigHelper.Config;
+
             string scheme = config.GetValue<string>("PubScheme");
 
             string hostPath = config.GetValue<string>("PubHost");
