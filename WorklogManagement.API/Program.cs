@@ -52,10 +52,10 @@ services.AddCors
 
 services.AddSwaggerGen
 (
-    options =>
+    options =>ith status code 500
     {
         options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
-        options.DocumentFilter<SwaggerBasePathFilter>("/stage-worklog-management/api");
+        options.DocumentFilter<SwaggerBasePathFilter>(config);
 
     }
 );
@@ -124,24 +124,30 @@ namespace WorklogManagement.API
 {
     public class SwaggerBasePathFilter : IDocumentFilter
     {
-        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        private readonly string _scheme;
+
+        private readonly string _hostPath;
+
+        private readonly string _basePath;
+
+        public SwaggerBasePathFilter(IConfiguration config)
         {
-            var config = ConfigHelper.Config;
+            _scheme = config.GetValue<string>("PubScheme");
 
-            string scheme = config.GetValue<string>("PubScheme");
+            _hostPath = config.GetValue<string>("PubHost");
 
-            string hostPath = config.GetValue<string>("PubHost");
-
-            string basePath = config.GetValue<string>("PubBase");
-
+            _basePath = config.GetValue<string>("PubBase");
+        }
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {           
             var paths = new OpenApiPaths();
 
-            Console.WriteLine($"{scheme}://{hostPath}");
-            Console.WriteLine($"{scheme}://{hostPath}{basePath}");
+            Console.WriteLine($"{_scheme}://{_hostPath}");
+            Console.WriteLine($"{_scheme}://{_hostPath}{_basePath}");
 
             foreach (var (key, value) in swaggerDoc.Paths)
             {
-                //paths.Add(key.Replace($"{scheme}://{hostPath}", $"{scheme}://{hostPath}{basePath}"), value);
+                paths.Add(key.Replace($"{_scheme}://{_hostPath}", $"{_scheme}://{_hostPath}{_basePath}"), value);
             }
 
             swaggerDoc.Paths = paths;
