@@ -50,8 +50,6 @@ services.AddCors
 
 #if STAGING
 
-services.AddMvc();
-
 services.AddSwaggerGen
 (
     options =>
@@ -138,9 +136,12 @@ namespace WorklogManagement.API
 
             var paths = new OpenApiPaths();
 
+            Console.WriteLine($"{scheme}://{hostPath}");
+            Console.WriteLine($"{scheme}://{hostPath}{basePath}");
+
             foreach (var (key, value) in swaggerDoc.Paths)
             {
-                paths.Add(key.Replace($"{scheme}://{hostPath}", $"{scheme}://{hostPath}{basePath}"), value);
+                //paths.Add(key.Replace($"{scheme}://{hostPath}", $"{scheme}://{hostPath}{basePath}"), value);
             }
 
             swaggerDoc.Paths = paths;
