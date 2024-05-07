@@ -52,7 +52,7 @@ services.AddCors
 
 services.AddSwaggerGen
 (
-    options =>ith status code 500
+    options =>
     {
         options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
         options.DocumentFilter<SwaggerBasePathFilter>(config);
