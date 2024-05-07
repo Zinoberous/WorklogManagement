@@ -67,7 +67,7 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "ProdWorklogManagement", Version = "v1" });
-        options.DocumentFilter<SwaggerBasePathFilter>("/worklog-management/api");
+        options.DocumentFilter<SwaggerBasePathFilter>(config);
     }
 );
 
@@ -78,7 +78,7 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
-        options.DocumentFilter<SwaggerBasePathFilter>("/worklog-management/api");
+        options.DocumentFilter<SwaggerBasePathFilter>(config);
 
     }
 );
@@ -138,6 +138,7 @@ namespace WorklogManagement.API
 
             _basePath = config.GetValue<string>("PubBase");
         }
+
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {           
             var paths = new OpenApiPaths();
