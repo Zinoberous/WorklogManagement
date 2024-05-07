@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
@@ -96,25 +97,31 @@ app.MapControllers();
 
 app.UseCors();
 
-app.UseSwagger();
+app.UseSwagger(c =>
+{
+	c.PreSerializeFilters.Add((swagger, httpReq) =>
+	{
+		swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/{httpReq.Headers["X-Forwarded-Prefix"]}" } };
+	});
+});
 
 #if STAGING
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("https://lexnarf.dns.navy/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
-    c.RoutePrefix = string.Empty;
+    c.RoutePrefix = "swagger";
 });
 #elif PRODUCTION
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
-    c.RoutePrefix = string.Empty;
+    c.RoutePrefix = "swagger";
 });
 #else
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
-    c.RoutePrefix = string.Empty;
+    c.RoutePrefix = "swagger";
 });
 
 #endif
