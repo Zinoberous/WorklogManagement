@@ -5,8 +5,6 @@ using WorklogManagement.API;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
-
-
 #if STAGING
 Console.Title = "StageWorklogManagement.API";
 #elif PRODUCTION
@@ -59,6 +57,8 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
+        options.DocumentFilter<SwaggerBasePathFilter>("/stage-worklog-management/api");
+
     }
 );
 
@@ -80,6 +80,8 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+        options.DocumentFilter<SwaggerBasePathFilter>("/worklog-management/api");
+
     }
 );
 
@@ -122,22 +124,21 @@ app.Run();
 
 namespace WorklogManagement.API
 {
-    public class SwaggerBasePathFilter : IDocumentFilter
+    public class SwaggerBasePathFilter(IConfiguration config) : IDocumentFilter
     {
-        private readonly string _basePath;
-
-        public SwaggerBasePathFilter(string basePath)
-        {
-            _basePath = basePath;
-        }
-
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
+            string scheme = config.GetValue<string>("PubScheme");
+
+            string hostPath = config.GetValue<string>("PubHost");
+
+            string basePath = config.GetValue<string>("PubBase");
+
             var paths = new OpenApiPaths();
 
             foreach (var (key, value) in swaggerDoc.Paths)
             {
-                paths.Add(key.Replace("/", $"/{_basePath}/"), value);
+                paths.Add(key.Replace($"{scheme}://{hostPath}", $"{scheme}://{hostPath}{basePath}"), value);
             }
 
             swaggerDoc.Paths = paths;
