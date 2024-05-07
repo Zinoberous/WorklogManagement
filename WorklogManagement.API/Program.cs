@@ -48,6 +48,8 @@ services.AddCors
 
 #if STAGING
 
+services.AddMvc();
+
 services.AddSwaggerGen
 (
     options =>
