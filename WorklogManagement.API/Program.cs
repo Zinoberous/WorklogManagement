@@ -1,11 +1,14 @@
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.EntityFrameworkCore;
+using WorklogManagement.API;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
 #if STAGING
 Console.Title = "StageWorklogManagement.API";
 #elif PRODUCTION
-Console.Title = "WorklogManagement.API";
+Console.Title = "ProdWorklogManagement.API";
 #else
 Console.Title = "WorklogManagement.API";
 #endif
@@ -52,6 +55,8 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
+        options.DocumentFilter<SwaggerBasePathFilter>(config);
+
     }
 );
 
@@ -61,7 +66,8 @@ services.AddSwaggerGen
 (
     options =>
     {
-        options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+        options.SwaggerDoc("v1", new() { Title = "ProdWorklogManagement", Version = "v1" });
+        //options.DocumentFilter<SwaggerBasePathFilter>(config);
     }
 );
 
@@ -72,6 +78,8 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+        options.DocumentFilter<SwaggerBasePathFilter>(config);
+
     }
 );
 
@@ -98,24 +106,47 @@ app.UseCors();
 
 app.UseSwagger();
 
+app.UseSwaggerUI(c =>
+{
 #if STAGING
-app.UseSwaggerUI(c =>
-{
     c.SwaggerEndpoint("/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
-    c.RoutePrefix = "swagger";
-});
 #elif PRODUCTION
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
-    c.RoutePrefix = "swagger";
-});
+    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
 #else
-app.UseSwaggerUI(c =>
-{
     c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+#endif
     c.RoutePrefix = "swagger";
 });
-#endif
 
 app.Run();
+
+namespace WorklogManagement.API
+{
+    public class SwaggerBasePathFilter : IDocumentFilter
+    {
+        private readonly IConfiguration _config;
+        private readonly string _scheme;
+        private readonly string _hostPath;
+        private readonly string _basePath;
+
+        public SwaggerBasePathFilter(IConfiguration config)
+        {
+            _config = config;
+            _scheme = _config.GetValue<string>("PubScheme");
+            _hostPath = _config.GetValue<string>("PubHost");
+            _basePath = _config.GetValue<string>("PubBase");
+        }
+
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            var paths = new OpenApiPaths();
+
+            foreach (var (key, value) in swaggerDoc.Paths)
+            {
+                paths.Add(key.Replace($"{_scheme}://{_hostPath}", $"{_scheme}://{_hostPath}{_basePath}"), value);
+            }
+
+            swaggerDoc.Paths = paths;
+        }
+    }
+}
