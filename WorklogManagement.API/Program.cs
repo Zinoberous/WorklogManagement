@@ -67,7 +67,7 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "ProdWorklogManagement", Version = "v1" });
-        options.DocumentFilter<SwaggerBasePathFilter>(config);
+        //options.DocumentFilter<SwaggerBasePathFilter>(config);
     }
 );
 
