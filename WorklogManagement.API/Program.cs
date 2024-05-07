@@ -97,33 +97,33 @@ app.MapControllers();
 
 app.UseCors();
 
-app.UseSwagger(c =>
-{
-	c.PreSerializeFilters.Add((swagger, httpReq) =>
-	{
-		swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/{httpReq.Headers["X-Forwarded-Prefix"]}" } };
-	});
-});
+app.UseSwagger();
 
-#if STAGING
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("https://lexnarf.dns.navy/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
-    c.RoutePrefix = "swagger";
-});
-#elif PRODUCTION
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
-    c.RoutePrefix = "swagger";
-});
-#else
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
-    c.RoutePrefix = "swagger";
-});
+// #if STAGING
+// app.UseSwaggerUI(c =>
+// {
+//     c.SwaggerEndpoint("https://lexnarf.dns.navy/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
+//     c.RoutePrefix = "swagger";
+// });
+// #elif PRODUCTION
+// app.UseSwaggerUI(c =>
+// {
+//     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
+//     c.RoutePrefix = "swagger";
+// });
+// #else
+// app.UseSwaggerUI(c =>
+// {
+//     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+//     c.RoutePrefix = "swagger";
+// });
 
-#endif
+// #endif
+
+app.UseSwaggerUI(c =>
+{
+    c.RoutePrefix = "swagger";
+    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+});
 
 app.Run();
