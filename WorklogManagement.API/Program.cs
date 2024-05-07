@@ -124,27 +124,22 @@ namespace WorklogManagement.API
 {
     public class SwaggerBasePathFilter : IDocumentFilter
     {
+        private readonly IConfiguration _config;
         private readonly string _scheme;
-
         private readonly string _hostPath;
-
         private readonly string _basePath;
 
         public SwaggerBasePathFilter(IConfiguration config)
         {
-            _scheme = config.GetValue<string>("PubScheme");
-
-            _hostPath = config.GetValue<string>("PubHost");
-
-            _basePath = config.GetValue<string>("PubBase");
+            _config = config;
+            _scheme = _config.GetValue<string>("PubScheme");
+            _hostPath = _config.GetValue<string>("PubHost");
+            _basePath = _config.GetValue<string>("PubBase");
         }
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {           
             var paths = new OpenApiPaths();
-
-            Console.WriteLine($"{_scheme}://{_hostPath}");
-            Console.WriteLine($"{_scheme}://{_hostPath}{_basePath}");
 
             foreach (var (key, value) in swaggerDoc.Paths)
             {
