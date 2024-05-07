@@ -99,31 +99,31 @@ app.UseCors();
 
 app.UseSwagger();
 
-// #if STAGING
-// app.UseSwaggerUI(c =>
-// {
-//     c.SwaggerEndpoint("https://lexnarf.dns.navy/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
-//     c.RoutePrefix = "swagger";
-// });
-// #elif PRODUCTION
-// app.UseSwaggerUI(c =>
-// {
-//     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
-//     c.RoutePrefix = "swagger";
-// });
-// #else
-// app.UseSwaggerUI(c =>
-// {
-//     c.SwaggerEndpoint("https://lexnarf.dns.navy/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
-//     c.RoutePrefix = "swagger";
-// });
-
-// #endif
-
+#if STAGING
+ app.UseSwaggerUI(c =>
+ {
+     c.SwaggerEndpoint("stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
+     c.RoutePrefix = "swagger";
+ });
+#elif PRODUCTION
 app.UseSwaggerUI(c =>
 {
-    c.RoutePrefix = "swagger";
-    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+    c.SwaggerEndpoint("v1/swagger.json", "ProdWorklogManagement API v1");
+    c.RoutePrefix = "worklog-management/api/swagger";
 });
+#else
+ app.UseSwaggerUI(c =>
+ {
+     c.SwaggerEndpoint("worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+     c.RoutePrefix = "swagger";
+ });
+
+#endif
+
+//app.UseSwaggerUI(c =>
+//{
+//    c.RoutePrefix = "swagger";
+//    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+//});
 
 app.Run();
