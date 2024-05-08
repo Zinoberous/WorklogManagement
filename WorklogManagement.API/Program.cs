@@ -55,7 +55,7 @@ services.AddSwaggerGen
     options =>
     {
         options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
-        options.DocumentFilter<SwaggerBasePathFilter>(config);
+        //options.DocumentFilter<SwaggerBasePathFilter>(config);
 
     }
 );
@@ -104,19 +104,46 @@ app.MapControllers();
 
 app.UseCors();
 
+#if STAGING
+
+app.UsePathBase("/stage-worklog-management/api");
+
 app.UseSwagger();
 
-app.UseSwaggerUI(c =>
-{
-#if STAGING
-    c.SwaggerEndpoint("/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
+
+//var basePath = "/v1";
+//app.UseSwagger(c =>
+//{
+//    c.RouteTemplate = "swagger/{documentName}/swagger.json";
+//    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+//    {
+//        swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}{basePath}" } };
+//    });
+//});
+
 #elif PRODUCTION
-    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
+
+app.UseSwagger();
+
 #else
-    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+
+app.UseSwagger();
+
 #endif
-    c.RoutePrefix = "swagger";
-});
+
+app.UseSwaggerUI();
+
+//app.UseSwaggerUI(c =>
+//{
+//#if STAGING
+//    c.SwaggerEndpoint("/stage-worklog-management/api/swagger/v1/swagger.json", "StageWorklogManagement API v1");
+//#elif PRODUCTION
+//    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "ProdWorklogManagement API v1");
+//#else
+//    c.SwaggerEndpoint("/worklog-management/api/swagger/v1/swagger.json", "WorklogManagement API v1");
+//#endif
+//    c.RoutePrefix = "swagger";
+//});
 
 app.Run();
 
