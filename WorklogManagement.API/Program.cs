@@ -4,13 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
-#if STAGING
-Console.Title = "StageWorklogManagement.API";
-#elif PRODUCTION
-Console.Title = "ProdWorklogManagement.API";
-#else
-Console.Title = "WorklogManagement.API";
-#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +20,8 @@ config.AddJsonFile("local.settings.json", true);
 ConfigHelper.Initialize(config);
 
 var services = builder.Services;
+
+Console.Title = config.GetValue<string>("PubTitle");
 
 services.AddControllers();
 
@@ -47,37 +42,13 @@ services.AddCors
     }
 );
 
-#if STAGING
-
 services.AddSwaggerGen
 (
     options =>
     {
-        options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
+        options.SwaggerDoc("v1", new() { Title = config.GetValue<string>("PubTitle"), Version = "v1" });
     }
 );
-
-#elif PRODUCTION
-
-services.AddSwaggerGen
-(
-    options =>
-    {
-        options.SwaggerDoc("v1", new() { Title = "ProdWorklogManagement", Version = "v1" });        
-    }
-);
-
-#else
-
-services.AddSwaggerGen
-(
-    options =>
-    {
-        options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });      
-    }
-);
-
-#endif
 
 services.AddDbContext<WorklogManagementContext>
 (
