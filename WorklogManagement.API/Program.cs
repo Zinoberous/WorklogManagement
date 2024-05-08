@@ -145,7 +145,6 @@ app.UseSwaggerUI();
 //    c.RoutePrefix = "swagger";
 //});
 
-
 app.Run();
 
 namespace WorklogManagement.API
