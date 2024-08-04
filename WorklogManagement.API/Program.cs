@@ -1,8 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
+#if STAGING
+Console.Title = "StageWorklogManagement.API";
+#elif PRODUCTION
 Console.Title = "WorklogManagement.API";
+#else
+Console.Title = "WorklogManagement.API";
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +46,22 @@ services.AddCors
     }
 );
 
+#if STAGING
+services.AddSwaggerGen
+(
+    options =>
+    {
+        options.SwaggerDoc("v1", new() { Title = "StageWorklogManagement", Version = "v1" });
+    }
+);
+services.Configure<SwaggerGenOptions>(options =>
+{
+    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
+    {
+        new OpenApiServer { Url = "/stage-worklog-management/api" }
+    };
+});
+#elif PRODUCTION
 services.AddSwaggerGen
 (
     options =>
@@ -46,6 +69,29 @@ services.AddSwaggerGen
         options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
     }
 );
+services.Configure<SwaggerGenOptions>(options =>
+{
+    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
+    {
+        new OpenApiServer { Url = "/worklog-management/api" }
+    };
+});
+#else
+services.AddSwaggerGen
+(
+    options =>
+    {
+        options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+    }
+);
+services.Configure<SwaggerGenOptions>(options =>
+{
+    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
+    {
+        new OpenApiServer { Url = "/worklog-management/api" }
+    };
+});
+#endif
 
 services.AddDbContext<WorklogManagementContext>
 (
@@ -67,6 +113,7 @@ app.MapControllers();
 app.UseCors();
 
 app.UseSwagger();
+
 app.UseSwaggerUI();
 
 app.Run();
