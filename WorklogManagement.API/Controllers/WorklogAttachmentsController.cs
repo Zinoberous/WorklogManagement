@@ -9,10 +9,8 @@ namespace WorklogManagement.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WorklogAttachmentsController(ILogger<WorklogAttachmentsController> logger, IConfiguration config, WorklogManagementContext context) : ControllerBase
+    public class WorklogAttachmentsController(WorklogManagementContext context) : ControllerBase
     {
-        private readonly ILogger<WorklogAttachmentsController> _logger = logger;
-        private readonly IConfiguration _config = config;
         private readonly WorklogManagementContext _context = context;
 
         [HttpGet]

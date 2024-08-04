@@ -65,7 +65,7 @@ namespace WorklogManagement.API.Helper
 
             var totalPages = query.PageSize == 0 ? 1 : Math.Ceiling((double)totalItems / query.PageSize);
 
-            var pageIndex =  query.PageIndex >= totalPages
+            var pageIndex = query.PageIndex >= totalPages
                     ? totalPages - 1
                     : query.PageIndex;
 

@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorklogManagement.DataAccess.Models;
 
-[Table("CalendarEntryType")]
-[Index("Name", Name = "UX_CalendarEntryType_Name", IsUnique = true)]
-public partial class CalendarEntryType
+[Table("AbsenceType")]
+[Index("Name", Name = "UX_AbsenceType_Name", IsUnique = true)]
+public partial class AbsenceType
 {
     [Key]
     public int Id { get; set; }
@@ -14,6 +14,6 @@ public partial class CalendarEntryType
     [StringLength(255)]
     public string Name { get; set; } = null!;
 
-    [InverseProperty("CalendarEntryType")]
-    public virtual ICollection<CalendarEntry> CalendarEntries { get; set; } = new List<CalendarEntry>();
+    [InverseProperty("AbsenceType")]
+    public virtual ICollection<Absence> Absences { get; set; } = new List<Absence>();
 }

@@ -10,9 +10,9 @@ public partial class WorklogManagementContext : DbContext
     {
     }
 
-    public virtual DbSet<CalendarEntry> CalendarEntries { get; set; }
+    public virtual DbSet<Absence> Absences { get; set; }
 
-    public virtual DbSet<CalendarEntryType> CalendarEntryTypes { get; set; }
+    public virtual DbSet<AbsenceType> AbsenceTypes { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
 
@@ -22,24 +22,28 @@ public partial class WorklogManagementContext : DbContext
 
     public virtual DbSet<TicketStatusLog> TicketStatusLogs { get; set; }
 
+    public virtual DbSet<WorkTime> WorkTimes { get; set; }
+
+    public virtual DbSet<WorkTimeType> WorkTimeTypes { get; set; }
+
     public virtual DbSet<Worklog> Worklogs { get; set; }
 
     public virtual DbSet<WorklogAttachment> WorklogAttachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CalendarEntry>(entity =>
+        modelBuilder.Entity<Absence>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_CalendarEntry_Id");
+            entity.HasKey(e => e.Id).HasName("PK_Absence_Id");
 
-            entity.HasOne(d => d.CalendarEntryType).WithMany(p => p.CalendarEntries)
+            entity.HasOne(d => d.AbsenceType).WithMany(p => p.Absences)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CalendarEntry_Date_CalendarEntryType_Id");
+                .HasConstraintName("FK_Absence_AbsenceTypeId_AbsenceType_Id");
         });
 
-        modelBuilder.Entity<CalendarEntryType>(entity =>
+        modelBuilder.Entity<AbsenceType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_CalendarEntryType_Id");
+            entity.HasKey(e => e.Id).HasName("PK_AbsenceType_Id");
         });
 
         modelBuilder.Entity<Ticket>(entity =>
@@ -78,6 +82,20 @@ public partial class WorklogManagementContext : DbContext
             entity.HasOne(d => d.TicketStatus).WithMany(p => p.TicketStatusLogs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TicketStatusLog_TicketStatusId_TicketStatus_Id");
+        });
+
+        modelBuilder.Entity<WorkTime>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_WorkTime_Id");
+
+            entity.HasOne(d => d.WorkTimeType).WithMany(p => p.WorkTimes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WorkTime_WorkTimeTypeId_WorkTimeType_Id");
+        });
+
+        modelBuilder.Entity<WorkTimeType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_WorkTimeType_Id");
         });
 
         modelBuilder.Entity<Worklog>(entity =>
