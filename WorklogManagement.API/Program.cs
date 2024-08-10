@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using WorklogManagement.API.Helper;
 using WorklogManagement.DataAccess.Context;
 
@@ -19,9 +20,9 @@ var config = builder.Configuration;
 config.AddJsonFile("local.settings.staging.json", true);
 #elif PRODUCTION
 config.AddJsonFile("local.settings.production.json", true);
-#else
-config.AddJsonFile("local.settings.json", true);
 #endif
+
+config.AddJsonFile("local.settings.json", true);
 
 ConfigHelper.Initialize(config);
 
@@ -56,10 +57,10 @@ services.AddSwaggerGen
 );
 services.Configure<SwaggerGenOptions>(options =>
 {
-    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
-    {
-        new OpenApiServer { Url = "/stage-worklog-management/api" }
-    };
+    options.SwaggerGeneratorOptions.Servers =
+    [
+        new() { Url = "/stage-worklog-management/api" }
+    ];
 });
 #elif PRODUCTION
 services.AddSwaggerGen
@@ -71,10 +72,10 @@ services.AddSwaggerGen
 );
 services.Configure<SwaggerGenOptions>(options =>
 {
-    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
-    {
-        new OpenApiServer { Url = "/worklog-management/api" }
-    };
+    options.SwaggerGeneratorOptions.Servers =
+    [
+        new() { Url = "/worklog-management/api" }
+    ];
 });
 #else
 services.AddSwaggerGen
@@ -86,10 +87,10 @@ services.AddSwaggerGen
 );
 services.Configure<SwaggerGenOptions>(options =>
 {
-    options.SwaggerGeneratorOptions.Servers = new List<OpenApiServer>
-    {
-        new OpenApiServer { Url = "/worklog-management/api" }
-    };
+    options.SwaggerGeneratorOptions.Servers =
+    [
+        new() { Url = "/worklog-management/api" }
+    ];
 });
 #endif
 
@@ -97,12 +98,7 @@ services.AddDbContext<WorklogManagementContext>
 (
     options =>
     {
-#if DEBUG
-        //options.UseSqlite("Data Source=local.db");
         options.UseSqlServer(config.GetConnectionString("WorklogManagement")!);
-#else
-        options.UseSqlServer(config.GetConnectionString("WorklogManagement")!);
-#endif
     }
 );
 
