@@ -1,0 +1,14 @@
+﻿@page "/tickets/{id:int}"
+@rendermode InteractiveServer
+@inherits BasePage<TicketViewModel>
+
+<PageTitle>Ticket #@Id</PageTitle>
+
+<Content>
+    Ticket #@Id
+</Content>
+
+@code {
+    [Parameter]
+    public required int Id { get; set; }
+}

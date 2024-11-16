@@ -1,0 +1,46 @@
+:root {
+    --header-height: 50px;
+}
+
+.sidebar-top {
+    padding-top: var(--header-height);
+    border-block-end: var(--rz-panel-menu-item-border);
+}
+
+.rz-sidebar {
+    width: max-content !important;
+    border-inline-end: unset !important;
+}
+
+.menubar {
+    height: var(--header-height);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-bottom: unset !important;
+}
+
+.menubar ~ main {
+    margin-top: var(--header-height);
+}
+
+main {
+    padding: 10px;
+}
+
+pre {
+    margin: 5px 0;
+    padding: 10px;
+    background-color: #1E1E1E;
+    border-radius: 5px;
+}
+
+code {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    tab-size: 4;
+    overflow-x: auto;
+}

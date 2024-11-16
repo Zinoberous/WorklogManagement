@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="app.css" />
+    <HeadOutlet />
+    <RadzenTheme Theme="humanistic-dark" @rendermode="InteractiveAuto" />
+</head>
+
+<body>
+    <Routes />
+    <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+    <script>
+        function initializeEditorTabKeyHandling(e) {
+            e.addEventListener('keydown', function (e) {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    document.execCommand('insertText', false, '\t');
+                }
+            });
+        }
+
+        function insertEditorHtml(e, html) {
+            // Finde den Hauptcontainer
+            const contentContainer = e.querySelector('.rz-html-editor-content');
+
+            // Ermittle die aktuelle Cursorposition
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+            let currentElement = range.startContainer;
+
+            // Iteriere nach oben, um das nächste Top-Level-Element zu finden
+            while (currentElement && currentElement.parentElement !== contentContainer) {
+                currentElement = currentElement.parentElement;
+            }
+
+            // Wenn kein aktuelles Top-Level-Element gefunden wurde, füge es am Ende hinzu
+            if (!currentElement) {
+                console.warn("Kein gültiges Top-Level-Element gefunden, füge am Ende ein.");
+                currentElement = contentContainer.lastChild;
+            }
+
+            // Erstelle das neue HTML-Element
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+
+            const newElement = tempDiv.firstChild;
+
+            // Füge das neue HTML nach dem aktuellen Top-Level-Element ein
+            if (currentElement.nextSibling) {
+                contentContainer.insertBefore(newElement, currentElement.nextSibling);
+            } else {
+                contentContainer.appendChild(newElement);
+            }
+
+            // Positioniere den Cursor hinter dem <br>-Tag
+            const brElement = newElement.querySelector('br');
+            if (brElement) {
+                const newRange = document.createRange();
+                newRange.setStartAfter(brElement);
+                newRange.collapse(true);
+
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+            }
+
+            // Setze den Fokus zurück auf den Editor
+            e.focus();
+        }
+    </script>
+</body>
+
+</html>

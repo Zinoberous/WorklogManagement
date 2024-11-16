@@ -1,0 +1,14 @@
+﻿@page "/tracking/{id:int}"
+@rendermode InteractiveServer
+@inherits BasePage<WorklogViewModel>
+
+<PageTitle>Eintrag #@Id</PageTitle>
+
+<Content>
+    Eintrag #@Id
+</Content>
+
+@code {
+    [Parameter]
+    public required int Id { get; set; }
+}
