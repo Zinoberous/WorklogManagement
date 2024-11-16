@@ -9,32 +9,16 @@
 </MenuBar>
 
 <Content>
-    @if (ViewModel.IsLoading)
-    {
-        <span>Lade Daten...</span>
-    }
-    else
-    {
-        @ViewModel.Worklog!.Description
-    }
-
-    <Editor @bind-Value="value" />
-
-    <h4>Vorschau</h4>
-    <div>
-        @((MarkupString)value)
-    </div>
+    Aufwand
 </Content>
 
 @code
 {
-    private string value = "<p>Startinhalt für Home</p>";
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await ViewModel.LoadWorklogAsync();
+            
         }
     }
 }

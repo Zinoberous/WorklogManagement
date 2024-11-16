@@ -2,7 +2,7 @@
 
 Paket-Manager-Konsole:
 
-WorklogManagement.Data asl Startprojekt einstellen
+WorklogManagement.Data als Startprojekt einstellen
 
 cd .\WorklogManagement.Data
 
@@ -22,17 +22,22 @@ Scaffold-DbContext -Connection "Server=<Server>;Database=WorklogManagement;User 
 *_InitialCreate.cs:
 ```
 migrationBuilder.InsertData(
-    table: "CalendarEntryType",
+    table: "WorkTimeType",
     columns: new[] { "Id", "Name" },
     values: new object[,]
     {
-        { 1, "WorkTime" },
-        { 2, "Office" },
-        { 3, "Mobile" },
-        { 4, "Holiday" },
-        { 5, "Vacation" },
-        { 6, "TimeCompensation" },
-        { 7, "Ill" },
+        { 1, "Office" },
+        { 2, "Mobile" },
+    });
+
+migrationBuilder.InsertData(
+    table: "AbsenceType",
+    columns: new[] { "Id", "Name" },
+    values: new object[,]
+    {
+        { 1, "Holiday" },
+        { 2, "Vacation" },
+        { 3, "Ill" },
     });
 
 migrationBuilder.InsertData(

@@ -11,4 +11,12 @@
 @code {
     [Parameter]
     public required int Id { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+        }
+    }
 }

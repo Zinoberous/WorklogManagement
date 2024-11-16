@@ -5,5 +5,23 @@
 <PageTitle>Startseite</PageTitle>
 
 <Content>
-    Startseite
+    @if (ViewModel.LoadOvertime.Value)
+    {
+        <span>Lade...</span>
+    }
+    else
+    {
+        @ViewModel.Overtime!.TotalSeconds
+    }
 </Content>
+
+@code
+{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ViewModel.LoadOvertimeAsync();
+        }
+    }
+}

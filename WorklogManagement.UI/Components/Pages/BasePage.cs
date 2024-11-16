@@ -38,6 +38,8 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
         {
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
 
+            ViewModel.Dispose();
+
             _disposed = true;
         }
     }

@@ -1,4 +1,4 @@
-﻿using WorklogManagement.Data;
+﻿using WorklogManagement.Service;
 
 namespace WorklogManagement.UI.ViewModels;
 

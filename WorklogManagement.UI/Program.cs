@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Radzen;
-using WorklogManagement.Data;
 using WorklogManagement.Data.Context;
+using WorklogManagement.Service;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.ViewModels;
 
