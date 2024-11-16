@@ -6,7 +6,7 @@ WorklogManagement.Data als Startprojekt einstellen
 
 cd .\WorklogManagement.Data
 
-Scaffold-DbContext -Connection "Server=<Server>;Database=WorklogManagement;User Id=<user>;Password=<password>;TrustServerCertificate=true;" -Provider "Microsoft.EntityFrameworkCore.SqlServer" -OutputDir ".\Models" -ContextDir ".\Context" -Namespace "WorklogManagement.Data.Models" -ContextNamespace "WorklogManagement.Data.Context" -DataAnnotations -NoOnConfiguring -Force
+Scaffold-DbContext -Connection "Server=<Server>;Database=WorklogManagement;User Id=<user>;Password=<password>;TrustServerCertificate=true;" -Provider "Microsoft.EntityFrameworkCore.SqlServer" -OutputDir ".\Generated\Models" -ContextDir ".\Generated\Context" -Namespace "WorklogManagement.Data.Models" -ContextNamespace "WorklogManagement.Data.Context" -DataAnnotations -NoOnConfiguring -Force
 
 ## migration erzeugen
 

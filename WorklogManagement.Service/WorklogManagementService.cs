@@ -11,9 +11,9 @@ public class WorklogManagementService(WorklogManagementContext context) : IWorkl
 
     public async Task<OvertimeInfo> GetOvertimeAsync()
     {
-        var totalOvertimeSeconds = 0;
-        var officeOvertimeSeconds = 0;
-        var mobileOvertimeSeconds = 0;
+        var totalOvertimeMinutes = 0;
+        var officeOvertimeMinutes = 0;
+        var mobileOvertimeMinutes = 0;
 
         var workTimes = await _context.WorkTimes.ToListAsync();
 
@@ -22,25 +22,25 @@ public class WorklogManagementService(WorklogManagementContext context) : IWorkl
             var expectedMinutes = entry.ExpectedMinutes;
             var actualMinutes = entry.ActualMinutes;
 
-            var overtimeSeconds = (actualMinutes - expectedMinutes) * 60;
+            var overtimeMinutes = (actualMinutes - expectedMinutes);
 
-            Interlocked.Add(ref totalOvertimeSeconds, overtimeSeconds);
+            Interlocked.Add(ref totalOvertimeMinutes, overtimeMinutes);
 
             if (entry.WorkTimeTypeId == (int)WorkTimeType.Office)
             {
-                Interlocked.Add(ref officeOvertimeSeconds, overtimeSeconds);
+                Interlocked.Add(ref officeOvertimeMinutes, overtimeMinutes);
             }
             else if (entry.WorkTimeTypeId == (int)WorkTimeType.Mobile)
             {
-                Interlocked.Add(ref mobileOvertimeSeconds, overtimeSeconds);
+                Interlocked.Add(ref mobileOvertimeMinutes, overtimeMinutes);
             }
         });
 
         return new()
         {
-            TotalSeconds = totalOvertimeSeconds,
-            OfficeSeconds = officeOvertimeSeconds,
-            MobileSeconds = mobileOvertimeSeconds,
+            TotalMinutes = totalOvertimeMinutes,
+            OfficeMinutes = officeOvertimeMinutes,
+            MobileMinutes = mobileOvertimeMinutes,
         };
     }
 }

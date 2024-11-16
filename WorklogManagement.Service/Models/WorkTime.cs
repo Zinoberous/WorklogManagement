@@ -1,0 +1,78 @@
+﻿using Microsoft.EntityFrameworkCore;
+using WorklogManagement.Data.Context;
+using DB = WorklogManagement.Data.Models;
+
+namespace WorklogManagement.Service.Models;
+
+public class WorkTime
+{
+    private int? _Id;
+    public int? Id { get => _Id; init => _Id = value; }
+
+    public required Enums.WorkTimeType Type { get; init; }
+
+    public required DateOnly Date { get; init; }
+
+    public required int ExpectedMinutes { get; init; }
+
+    public required int ActualMinutes { get; init; }
+
+    public string? Note { get; init; }
+
+    internal static WorkTime Map(DB.WorkTime workTime)
+    {
+        return new()
+        {
+            Id = workTime.Id,
+            Type = (Enums.WorkTimeType)workTime.WorkTimeTypeId,
+            Date = workTime.Date,
+            ExpectedMinutes = workTime.ExpectedMinutes,
+            ActualMinutes = workTime.ActualMinutes,
+            Note = workTime.Note,
+        };
+    }
+
+    internal async Task SaveAsync(WorklogManagementContext context)
+    {
+        DB.WorkTime workTime;
+
+        if (_Id is null)
+        {
+            workTime = new()
+            {
+                WorkTimeTypeId = (int)Type,
+                Date = Date,
+                ExpectedMinutes = ExpectedMinutes,
+                ActualMinutes = ActualMinutes,
+                Note = Note,
+            };
+
+            await context.WorkTimes.AddAsync(workTime);
+
+            await context.SaveChangesAsync();
+
+            _Id = workTime.Id;
+        }
+        else
+        {
+            workTime = await context.WorkTimes.SingleAsync(x => x.Id == _Id);
+
+            workTime.WorkTimeTypeId = (int)Type;
+            workTime.Date = Date;
+            workTime.ExpectedMinutes = ExpectedMinutes;
+            workTime.ActualMinutes = ActualMinutes;
+            workTime.Note = Note;
+
+            await context.SaveChangesAsync();
+        }
+    }
+
+    internal static async Task DeleteAsync(WorklogManagementContext context, int id)
+    {
+        var workTime = await context.WorkTimes.SingleAsync(x => x.Id == id);
+
+        context.WorkTimes.Remove(workTime);
+
+        await context.SaveChangesAsync();
+    }
+}

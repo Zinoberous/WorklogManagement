@@ -1,28 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace WorklogManagement.Data.Models;
 
-namespace WorklogManagement.Data.Models;
-
-[Table("Worklog")]
 public partial class Worklog
 {
-    [Key]
-    public int Id { get; set; }
+    public int TimeSpentMinutes
+    {
+        get => TimeSpentSeconds / 60;
+        set
+        {
+            int hours = value / 60;
+            int minutes = value % 60;
 
-    public DateOnly Date { get; set; }
+            TimeSpent = new(hours, minutes, 0);
 
-    public int TicketId { get; set; }
-
-    public string? Description { get; set; }
-
-    public TimeOnly TimeSpent { get; set; }
-
-    public int TimeSpentSeconds { get; set; }
-
-    [ForeignKey("TicketId")]
-    [InverseProperty("Worklogs")]
-    public virtual Ticket Ticket { get; set; } = null!;
-
-    [InverseProperty("Worklog")]
-    public virtual ICollection<WorklogAttachment> WorklogAttachments { get; set; } = new List<WorklogAttachment>();
+            TimeSpentSeconds = value * 60;
+        }
+    }
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Radzen;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Service;
+using WorklogManagement.Service.Common;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.ViewModels;
 
@@ -36,6 +37,12 @@ services
             .EnableDetailedErrors(isDevelopment)
             .EnableSensitiveDataLogging(isDevelopment);
     });
+
+var attachmentsBaseDir = string.IsNullOrWhiteSpace(config.GetValue<string>("AttachmentsBaseDir"))
+    ? Path.Combine(".", "Attachments")
+    : config.GetValue<string>("AttachmentsBaseDir")!;
+
+Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
 
 services
     .AddScoped<ChangelogViewModel>()
