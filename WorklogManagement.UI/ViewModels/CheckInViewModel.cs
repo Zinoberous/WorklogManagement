@@ -1,8 +1,8 @@
-﻿using WorklogManagement.Data.Context;
+﻿using WorklogManagement.Data;
 
 namespace WorklogManagement.UI.ViewModels;
 
-public class CheckInViewModel(WorklogManagementContext context) : BaseViewModel
+public class CheckInViewModel(IWorklogManagementService service) : BaseViewModel
 {
-    private readonly WorklogManagementContext _context = context;
+    private readonly IWorklogManagementService _service = service;
 }

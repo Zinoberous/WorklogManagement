@@ -1,8 +1,8 @@
-﻿using WorklogManagement.Data.Context;
+﻿using WorklogManagement.Data;
 
 namespace WorklogManagement.UI.ViewModels;
 
-public class HomeViewModel(WorklogManagementContext context) : BaseViewModel
+public class HomeViewModel(IWorklogManagementService service) : BaseViewModel
 {
-    private readonly WorklogManagementContext _context = context;
+    private readonly IWorklogManagementService _service = service;
 }

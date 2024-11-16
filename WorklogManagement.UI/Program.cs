@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using WorklogManagement.Data;
 using WorklogManagement.Data.Context;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.ViewModels;
@@ -24,6 +25,7 @@ services
     .AddScoped<ThemeService>();
 
 services
+    .AddScoped<IWorklogManagementService, WorklogManagementService>()
     .AddDbContext<WorklogManagementContext>(options =>
     {
         var conStr = config.GetConnectionString("WorklogManagement");

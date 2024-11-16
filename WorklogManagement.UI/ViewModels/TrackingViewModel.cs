@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WorklogManagement.Data.Context;
+﻿using WorklogManagement.Data;
 using WorklogManagement.Data.Models;
 
 namespace WorklogManagement.UI.ViewModels;
 
-public class TrackingViewModel(WorklogManagementContext context) : BaseViewModel
+public class TrackingViewModel(IWorklogManagementService service) : BaseViewModel
 {
+    private readonly IWorklogManagementService _service = service;
+
     public bool _isLoading = true;
     public bool IsLoading
     {
@@ -34,11 +35,9 @@ public class TrackingViewModel(WorklogManagementContext context) : BaseViewModel
         }
     }
 
-    private readonly WorklogManagementContext _context = context;
-
     public async Task LoadWorklogAsync()
     {
-        Worklog = await _context.Worklogs.FirstAsync();
+        Worklog = await _service.GetFirstWorklogAsync();
 
         IsLoading = false;
     }
