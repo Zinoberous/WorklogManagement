@@ -15,7 +15,7 @@ public class BaseViewModel : BaseNotifier, IDisposable
     private void SubscribeToObservableProperties()
     {
         var properties = GetType()
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(ObservableProperty<>))
             .ToArray();
 
