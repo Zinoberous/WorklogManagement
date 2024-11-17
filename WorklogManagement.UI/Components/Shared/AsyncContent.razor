@@ -1,0 +1,29 @@
+﻿@if (IsLoading)
+{
+    <RadzenStack AlignItems="AlignItems.Center" class="rz-m-12" Gap="2rem">
+        <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </RadzenStack>
+}
+else if (!string.IsNullOrWhiteSpace(Error))
+{
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            @Error
+        </RadzenColumn>
+    </RadzenRow>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public required bool IsLoading { get; set; }
+
+    [Parameter]
+    public string? Error { get; set; }
+
+    [Parameter]
+    public required RenderFragment ChildContent { get; set; }
+}

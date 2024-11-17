@@ -4,9 +4,11 @@
 
 <PageTitle>Verlauf</PageTitle>
 
-<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
-    Verlauf
-</Content>
+<Main>
+    <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
+        Verlauf
+    </AsyncContent>
+</Main>
 
 @code
 {

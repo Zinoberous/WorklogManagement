@@ -10,9 +10,11 @@
     <RadzenTextBox Placeholder="Suche:" @bind-Value=@ViewModel.Search.Value />
 </MenuBar>
 
-<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
-    @System.Text.Json.JsonSerializer.Serialize(ViewModel.Worklogs);
-</Content>
+<Main>
+    <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
+        @System.Text.Json.JsonSerializer.Serialize(ViewModel.Worklogs);
+    </AsyncContent>
+</Main>
 
 @code
 {

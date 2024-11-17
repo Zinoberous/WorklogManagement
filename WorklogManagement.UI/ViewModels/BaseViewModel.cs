@@ -21,9 +21,10 @@ public class BaseViewModel : BaseNotifier, IDisposable
         SubscribeToObservableProperties();
     }
 
-    protected async Task TryLoadAsync(Func<Task> loadAsync)
+    protected async Task TryLoadAsync(Func<Task> loadAsync) => await TryLoadAsync(IsLoading, LoadError, loadAsync);
+    protected async Task TryLoadAsync(ObservableProperty<bool> isLoading, ObservableProperty<Exception?> loadError, Func<Task> loadAsync)
     {
-        IsLoading.Value = true;
+        isLoading.Value = true;
 
         try
         {
@@ -31,11 +32,11 @@ public class BaseViewModel : BaseNotifier, IDisposable
         }
         catch (Exception ex)
         {
-            LoadError.Value = ex;
+            loadError.Value = ex;
         }
         finally
         {
-            IsLoading.Value = false;
+            isLoading.Value = false;
         }
     }
 

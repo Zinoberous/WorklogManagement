@@ -12,6 +12,10 @@
     border-inline-end: unset !important;
 }
 
+.rz-sidebar-responsive {
+    opacity: 1 !important;
+}
+
 .menubar {
     height: var(--header-height);
     padding: 5px;

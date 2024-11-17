@@ -4,9 +4,11 @@
 
 <PageTitle>Eintrag #@Id</PageTitle>
 
-<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
-    Eintrag #@Id
-</Content>
+<Main>
+    <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
+        Eintrag #@Id
+    </AsyncContent>
+</Main>
 
 @code {
     [Parameter]

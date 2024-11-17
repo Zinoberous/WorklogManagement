@@ -4,9 +4,40 @@
 
 <PageTitle>Startseite</PageTitle>
 
-<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
-    @ViewModel.Overtime.Value!.TotalMinutes
-</Content>
+<Main>
+    <RadzenRow>
+        <RadzenColumn>
+            <RadzenCard>
+                <RadzenText>Überstunden:</RadzenText>
+                <AsyncContent IsLoading="@ViewModel.LoadOvertime.Value" Error="@ViewModel.LoadOvertimeError.Value?.ToString()">
+                    @ViewModel.Overtime.Value!.TotalMinutes
+                </AsyncContent>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn>
+            <RadzenCard>
+                <RadzenText>Tage:</RadzenText>
+            </RadzenCard>
+        </RadzenColumn>
+        <RadzenColumn>
+            <RadzenCard>
+                <RadzenText>Tickets:</RadzenText>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenPanel>
+        <RadzenRow></RadzenRow>
+        <RadzenRow>
+            @* <RadzenDataGrid Value="@Enumerable.Empty">
+                <RadzenColumn />
+                @for(int i = 1; i <= 31; i++)
+                {
+                    <RadzenColumn />
+                }
+            </RadzenDataGrid> *@
+        </RadzenRow>
+    </RadzenPanel>
+</Main>
 
 @code
 {
