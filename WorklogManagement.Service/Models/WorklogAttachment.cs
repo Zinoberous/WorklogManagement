@@ -5,18 +5,9 @@ using DB = WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Service.Models;
 
-public class WorklogAttachment
+public class WorklogAttachment : Attachment, IDataModel
 {
-    private int? _Id;
-    public int? Id { get => _Id; init => _Id = value; }
-
     public required int WorklogId { get; init; }
-
-    public required string Name { get; init; }
-
-    public string? Comment { get; init; }
-
-    public required string Data { get; init; }
 
     private string Directory => GetDirectory(WorklogId);
 
@@ -45,7 +36,7 @@ public class WorklogAttachment
         };
     }
 
-    public async Task SaveAsync(WorklogManagementContext context)
+    internal async Task SaveAsync(WorklogManagementContext context)
     {
         DB.WorklogAttachment attachment;
 
@@ -54,7 +45,7 @@ public class WorklogAttachment
             System.IO.Directory.CreateDirectory(Directory);
         }
 
-        if (_Id is null)
+        if (_id is null)
         {
             await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
@@ -69,7 +60,7 @@ public class WorklogAttachment
 
             await context.SaveChangesAsync();
 
-            _Id = attachment.Id;
+            _id = attachment.Id;
         }
         else
         {
@@ -89,9 +80,10 @@ public class WorklogAttachment
         }
     }
 
-    public static async Task DeleteAsync(WorklogManagementContext context, int id)
+    internal static async Task DeleteAsync(WorklogManagementContext context, int id)
     {
-        var attachment = await context.WorklogAttachments.SingleAsync(x => x.Id == id);
+        var attachment = await context.WorklogAttachments
+            .SingleAsync(x => x.Id == id);
 
         context.WorklogAttachments.Remove(attachment);
 

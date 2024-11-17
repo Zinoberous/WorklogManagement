@@ -93,7 +93,7 @@
 
     async Task InsertCode(RadzenHtmlEditor editor)
     {
-        const string codeblock = """<pre><code contenteditable="true"><br/></code></pre>""";
+        const string codeblock = "<pre><code><br/></code></pre>";
 
         await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, codeblock);
     }

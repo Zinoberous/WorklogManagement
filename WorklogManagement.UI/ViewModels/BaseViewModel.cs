@@ -1,15 +1,62 @@
-﻿using System.Reflection;
+﻿using Microsoft.AspNetCore.Components;
+using System.Reflection;
+using System.Web;
 using WorklogManagement.UI.Models;
 
 namespace WorklogManagement.UI.ViewModels;
 
 public class BaseViewModel : BaseNotifier, IDisposable
 {
+    public ObservableProperty<bool> IsLoading { get; } = new(true);
+    public ObservableProperty<Exception?> LoadError { get; } = new();
+
+    private readonly NavigationManager _navigationManager;
+
     private readonly ICollection<IDisposable> _subscriptions = [];
 
-    public BaseViewModel()
+    public BaseViewModel(NavigationManager navigationManager)
     {
+        _navigationManager = navigationManager;
+
         SubscribeToObservableProperties();
+    }
+
+    protected async Task TryLoadAsync(Func<Task> loadAsync)
+    {
+        IsLoading.Value = true;
+
+        try
+        {
+            await loadAsync();
+        }
+        catch (Exception ex)
+        {
+            LoadError.Value = ex;
+        }
+        finally
+        {
+            IsLoading.Value = false;
+        }
+    }
+
+    protected void UpdateQuery(string key, string? value)
+    {
+        Uri uri = new(_navigationManager.Uri);
+
+        var queryParams = HttpUtility.ParseQueryString(uri.Query);
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            queryParams.Remove(key);
+        }
+        else
+        {
+            queryParams[key] = value;
+        }
+
+        var newUri = $"{uri.GetLeftPart(UriPartial.Path)}?{queryParams}";
+
+        _navigationManager.NavigateTo(newUri, forceLoad: false);
     }
 
     private void SubscribeToObservableProperties()

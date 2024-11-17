@@ -4,10 +4,10 @@ using DB = WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Service.Models;
 
-public class Absence
+public class Absence : IDataModel
 {
-    private int? _Id;
-    public int? Id { get => _Id; init => _Id = value; }
+    private int? _id;
+    public int? Id { get => _id; init => _id = value; }
 
     public required Enums.AbsenceType Type { get; init; }
 
@@ -33,7 +33,7 @@ public class Absence
     {
         DB.Absence absence;
 
-        if (_Id is null)
+        if (_id is null)
         {
             absence = new()
             {
@@ -47,11 +47,11 @@ public class Absence
 
             await context.SaveChangesAsync();
 
-            _Id = absence.Id;
+            _id = absence.Id;
         }
         else
         {
-            absence = await context.Absences.SingleAsync(x => x.Id == _Id);
+            absence = await context.Absences.SingleAsync(x => x.Id == _id);
 
             absence.AbsenceTypeId = (int)Type;
             absence.Date = Date;
@@ -64,7 +64,8 @@ public class Absence
 
     internal static async Task DeleteAsync(WorklogManagementContext context, int id)
     {
-        var absence = await context.Absences.SingleAsync(x => x.Id == id);
+        var absence = await context.Absences
+            .SingleAsync(x => x.Id == id);
 
         context.Absences.Remove(absence);
 

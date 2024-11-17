@@ -4,7 +4,7 @@ using DB = WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Service.Models;
 
-public class TicketStatusLog
+public class TicketStatusLog : IDataModel
 {
     public int Id { get; init; }
 

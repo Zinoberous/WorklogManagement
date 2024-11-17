@@ -4,7 +4,7 @@
 
 <PageTitle>Verlauf</PageTitle>
 
-<Content>
+<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
     Verlauf
 </Content>
 

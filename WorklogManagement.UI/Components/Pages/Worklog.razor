@@ -4,7 +4,7 @@
 
 <PageTitle>Eintrag #@Id</PageTitle>
 
-<Content>
+<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
     Eintrag #@Id
 </Content>
 

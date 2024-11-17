@@ -4,10 +4,10 @@ using DB = WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Service.Models;
 
-public class Worklog
+public class Worklog : IDataModel
 {
-    private int? _Id;
-    public int? Id { get => _Id; init => _Id = value; }
+    private int? _id;
+    public int? Id { get => _id; init => _id = value; }
 
     public required DateOnly Date { get; init; }
 
@@ -39,7 +39,7 @@ public class Worklog
     {
         DB.Worklog worklog;
 
-        if (_Id is null)
+        if (_id is null)
         {
             worklog = new()
             {
@@ -53,11 +53,11 @@ public class Worklog
 
             await context.SaveChangesAsync();
 
-            _Id = worklog.Id;
+            _id = worklog.Id;
         }
         else
         {
-            worklog = await context.Worklogs.SingleAsync(x => x.Id == _Id);
+            worklog = await context.Worklogs.SingleAsync(x => x.Id == _id);
 
             worklog.Date = Date;
             worklog.TicketId = TicketId;

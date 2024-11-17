@@ -6,19 +6,29 @@
 
 <MenuBar>
     <RadzenButton>Erstellen</RadzenButton>
+    <RadzenDatePicker @bind-Value=@ViewModel.Date.Value Disabled="@(!string.IsNullOrWhiteSpace(ViewModel.Search.Value))" />
+    <RadzenTextBox Placeholder="Suche:" @bind-Value=@ViewModel.Search.Value />
 </MenuBar>
 
-<Content>
-    Aufwand
+<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
+    @System.Text.Json.JsonSerializer.Serialize(ViewModel.Worklogs);
 </Content>
 
 @code
 {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "date")]
+    public DateOnly? InitialDate { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "search")]
+    public string? InitialSearch { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            
+            await ViewModel.InitAsync(InitialDate, InitialSearch);
         }
     }
 }

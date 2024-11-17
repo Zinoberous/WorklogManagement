@@ -4,10 +4,10 @@ using DB = WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Service.Models;
 
-public class WorkTime
+public class WorkTime : IDataModel
 {
-    private int? _Id;
-    public int? Id { get => _Id; init => _Id = value; }
+    private int? _id;
+    public int? Id { get => _id; init => _id = value; }
 
     public required Enums.WorkTimeType Type { get; init; }
 
@@ -36,7 +36,7 @@ public class WorkTime
     {
         DB.WorkTime workTime;
 
-        if (_Id is null)
+        if (_id is null)
         {
             workTime = new()
             {
@@ -51,11 +51,11 @@ public class WorkTime
 
             await context.SaveChangesAsync();
 
-            _Id = workTime.Id;
+            _id = workTime.Id;
         }
         else
         {
-            workTime = await context.WorkTimes.SingleAsync(x => x.Id == _Id);
+            workTime = await context.WorkTimes.SingleAsync(x => x.Id == _id);
 
             workTime.WorkTimeTypeId = (int)Type;
             workTime.Date = Date;
@@ -69,7 +69,8 @@ public class WorkTime
 
     internal static async Task DeleteAsync(WorklogManagementContext context, int id)
     {
-        var workTime = await context.WorkTimes.SingleAsync(x => x.Id == id);
+        var workTime = await context.WorkTimes
+            .SingleAsync(x => x.Id == id);
 
         context.WorkTimes.Remove(workTime);
 

@@ -1,24 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Service.Common;
 using DB = WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Service.Models;
 
-public class TicketAttachment
+public class TicketAttachment : Attachment, IDataModel
 {
-    private int? _Id;
-    public int? Id { get => _Id; init => _Id = value; }
-
     public int TicketId { get; init; }
-
-    [MaxLength(255)]
-    public required string Name { get; init; }
-
-    public string? Comment { get; init; }
-
-    public required string Data { get; init; }
 
     private string Directory => GetDirectory(TicketId);
 
@@ -47,7 +36,7 @@ public class TicketAttachment
         };
     }
 
-    public async Task SaveAsync(WorklogManagementContext context)
+    internal async Task SaveAsync(WorklogManagementContext context)
     {
         DB.TicketAttachment attachment;
 
@@ -56,7 +45,7 @@ public class TicketAttachment
             System.IO.Directory.CreateDirectory(Directory);
         }
 
-        if (_Id is null)
+        if (_id is null)
         {
             await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
@@ -71,11 +60,11 @@ public class TicketAttachment
 
             await context.SaveChangesAsync();
 
-            _Id = attachment.Id;
+            _id = attachment.Id;
         }
         else
         {
-            attachment = await context.TicketAttachments.SingleAsync(x => x.Id == _Id);
+            attachment = await context.TicketAttachments.SingleAsync(x => x.Id == _id);
 
             // alte Datei löschen
             File.Delete(Path.Combine(Directory, attachment.Name));
@@ -93,7 +82,8 @@ public class TicketAttachment
 
     internal static async Task DeleteAsync(WorklogManagementContext context, int id)
     {
-        var attachment = await context.TicketAttachments.SingleAsync(x => x.Id == id);
+        var attachment = await context.TicketAttachments
+            .SingleAsync(x => x.Id == id);
 
         context.TicketAttachments.Remove(attachment);
 

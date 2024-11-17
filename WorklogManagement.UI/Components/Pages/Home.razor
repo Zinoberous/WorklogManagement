@@ -4,15 +4,8 @@
 
 <PageTitle>Startseite</PageTitle>
 
-<Content>
-    @if (ViewModel.LoadOvertime.Value)
-    {
-        <span>Lade...</span>
-    }
-    else
-    {
-        @ViewModel.Overtime.Value!.TotalMinutes
-    }
+<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
+    @ViewModel.Overtime.Value!.TotalMinutes
 </Content>
 
 @code

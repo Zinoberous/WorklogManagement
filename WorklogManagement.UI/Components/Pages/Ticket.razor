@@ -4,7 +4,7 @@
 
 <PageTitle>Ticket #@Id</PageTitle>
 
-<Content>
+<Content IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
     Ticket #@Id
 </Content>
 
