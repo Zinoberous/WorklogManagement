@@ -34,7 +34,7 @@ main {
 }
 
 .rz-row {
-    margin: 5px 0;
+    margin: var(--rz-row-gap) 0;
 }
 
 pre {

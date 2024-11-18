@@ -1,18 +1,17 @@
 using Microsoft.AspNetCore.Components;
 
-namespace WorklogManagement.UI.Components.Pages
+namespace WorklogManagement.UI.Components.Pages;
+
+public partial class Ticket
 {
-    public partial class Ticket
+    [Parameter]
+    public required int Id { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        [Parameter]
-        public required int Id { get; set; }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        if (firstRender)
         {
-            if (firstRender)
-            {
 
-            }
         }
     }
 }

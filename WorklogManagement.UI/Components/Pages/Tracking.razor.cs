@@ -1,23 +1,22 @@
 using Microsoft.AspNetCore.Components;
 
-namespace WorklogManagement.UI.Components.Pages
+namespace WorklogManagement.UI.Components.Pages;
+
+public partial class Tracking
 {
-    public partial class Tracking
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "date")]
+    public DateOnly? InitialDate { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "search")]
+    public string? InitialSearch { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        [Parameter]
-        [SupplyParameterFromQuery(Name = "date")]
-        public DateOnly? InitialDate { get; set; }
-
-        [Parameter]
-        [SupplyParameterFromQuery(Name = "search")]
-        public string? InitialSearch { get; set; }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        if (firstRender)
         {
-            if (firstRender)
-            {
-                await ViewModel.InitAsync(InitialDate, InitialSearch);
-            }
+            await ViewModel.InitAsync(InitialDate, InitialSearch);
         }
     }
 }

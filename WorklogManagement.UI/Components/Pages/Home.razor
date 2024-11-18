@@ -32,15 +32,61 @@
     <RadzenRow>
         <RadzenColumn Size="12">
             <RadzenPanel>
-                <RadzenRow></RadzenRow>
                 <RadzenRow>
-                    @* <RadzenDataGrid Value="@Enumerable.Empty">
-                        <RadzenColumn />
-                        @for(int i = 1; i <= 31; i++)
-                        {
-                            <RadzenColumn />
-                        }
-                    </RadzenDataGrid> *@
+
+                </RadzenRow>
+                <RadzenRow>
+                    <RadzenColumn Size="12">
+                        <div class="rz-data-grid rz-datatable rz-datatable-scrollable">
+                            <div class="rz-data-grid-data">
+                                <table class="rz-grid-table rz-grid-gridlines-both">
+                                    <thead>
+                                        <tr>
+                                            <th class="rz-frozen-cell rz-frozen-cell-left rz-text-align-center">
+                                                <div>
+                                                    <span class="rz-column-title">
+                                                        <span class="rz-column-title-content" />
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            @for(int day = 1; day <= 31; day++)
+                                            {
+                                                <th>
+                                                    <div>
+                                                        <span class="rz-column-title">
+                                                            <span class="rz-column-title-content">
+                                                                @($"{day}".PadLeft(2, '0'))
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int month = 1; month <= 12; month++)
+                                        {
+                                            <tr class="rz-data-row">
+                                                <td class="rz-frozen-cell rz-frozen-cell-left">
+                                                    <span class="rz-cell-data">
+                                                        @ViewModel.MonthLabelShorts[month-1]
+                                                    </span>
+                                                </td>
+                                                @for (int day = 1; day <= 31; day++)
+                                                {
+                                                    <td>
+                                                        <span class="rz-cell-data">
+                                                            @ViewModel.GetDayLable(month, day)
+                                                        </span>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </RadzenColumn>
                 </RadzenRow>
             </RadzenPanel>
         </RadzenColumn>

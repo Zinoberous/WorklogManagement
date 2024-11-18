@@ -1,13 +1,12 @@
-namespace WorklogManagement.UI.Components.Pages
+namespace WorklogManagement.UI.Components.Pages;
+
+public partial class Home
 {
-    public partial class Home
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        if (firstRender)
         {
-            if (firstRender)
-            {
-                await ViewModel.LoadOvertimeAsync();
-            }
+            await ViewModel.LoadOvertimeAsync();
         }
     }
 }
