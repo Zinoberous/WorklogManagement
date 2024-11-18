@@ -33,6 +33,10 @@ main {
     padding: 10px;
 }
 
+.rz-row {
+    margin: 5px 0;
+}
+
 pre {
     margin: 5px 0;
     padding: 10px;

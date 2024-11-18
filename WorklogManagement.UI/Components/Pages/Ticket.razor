@@ -4,21 +4,8 @@
 
 <PageTitle>Ticket #@Id</PageTitle>
 
-<Main>
+<main class="ticket">
     <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
         Ticket #@Id
     </AsyncContent>
-</Main>
-
-@code {
-    [Parameter]
-    public required int Id { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-
-        }
-    }
-}
+</main>

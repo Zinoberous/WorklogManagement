@@ -8,19 +8,8 @@
     <RadzenButton>Erstellen</RadzenButton>
 </MenuBar>
 
-<Main>
+<main class="checkin">
     <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
         Stechuhr
     </AsyncContent>
-</Main>
-
-@code
-{
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-
-        }
-    }
-}
+</main>

@@ -4,19 +4,8 @@
 
 <PageTitle>Verlauf</PageTitle>
 
-<Main>
+<main class="changelog">
     <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
         Verlauf
     </AsyncContent>
-</Main>
-
-@code
-{
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-
-        }
-    }
-}
+</main>

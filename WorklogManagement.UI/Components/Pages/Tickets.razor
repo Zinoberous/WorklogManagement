@@ -8,19 +8,8 @@
     <RadzenButton>Erstellen</RadzenButton>
 </MenuBar>
 
-<Main>
+<main class="tickets">
     <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
         Tickets
     </AsyncContent>
-</Main>
-
-@code
-{
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-
-        }
-    }
-}
+</main>

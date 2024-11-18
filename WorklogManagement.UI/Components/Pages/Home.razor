@@ -4,14 +4,18 @@
 
 <PageTitle>Startseite</PageTitle>
 
-<Main>
+<main class="home">
+    <RadzenRow>
+    </RadzenRow>
     <RadzenRow>
         <RadzenColumn>
             <RadzenCard>
-                <RadzenText>Überstunden:</RadzenText>
-                <AsyncContent IsLoading="@ViewModel.LoadOvertime.Value" Error="@ViewModel.LoadOvertimeError.Value?.ToString()">
-                    @ViewModel.Overtime.Value!.TotalMinutes
-                </AsyncContent>
+                <div class="card">
+                    <RadzenText>Überstunden:</RadzenText>
+                    <AsyncContent IsLoading="@ViewModel.LoadOvertime.Value" Error="@ViewModel.LoadOvertimeError.Value?.ToString()">
+                        @ViewModel.Overtime.Value!.TotalMinutes
+                    </AsyncContent>
+                </div>
             </RadzenCard>
         </RadzenColumn>
         <RadzenColumn>
@@ -25,27 +29,20 @@
             </RadzenCard>
         </RadzenColumn>
     </RadzenRow>
-    <RadzenPanel>
-        <RadzenRow></RadzenRow>
-        <RadzenRow>
-            @* <RadzenDataGrid Value="@Enumerable.Empty">
-                <RadzenColumn />
-                @for(int i = 1; i <= 31; i++)
-                {
-                    <RadzenColumn />
-                }
-            </RadzenDataGrid> *@
-        </RadzenRow>
-    </RadzenPanel>
-</Main>
-
-@code
-{
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await ViewModel.LoadOvertimeAsync();
-        }
-    }
-}
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenPanel>
+                <RadzenRow></RadzenRow>
+                <RadzenRow>
+                    @* <RadzenDataGrid Value="@Enumerable.Empty">
+                        <RadzenColumn />
+                        @for(int i = 1; i <= 31; i++)
+                        {
+                            <RadzenColumn />
+                        }
+                    </RadzenDataGrid> *@
+                </RadzenRow>
+            </RadzenPanel>
+        </RadzenColumn>
+    </RadzenRow>
+</main>
