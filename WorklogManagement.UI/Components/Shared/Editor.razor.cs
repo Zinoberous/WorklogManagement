@@ -3,72 +3,58 @@ using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
 
-namespace WorklogManagement.UI.Components.Shared
+namespace WorklogManagement.UI.Components.Shared;
+
+public partial class Editor
 {
-    public partial class Editor
+    private RadzenHtmlEditor _editor;
+
+    [Parameter]
+    public string Value {  get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        private string _value = string.Empty;
-
-        [Parameter]
-        public string Value
+        if (firstRender)
         {
-            get => _value;
-            set
-            {
-                if (_value != value)
-                {
-                    _value = value;
-                    ValueChanged.InvokeAsync(value);
-                }
-            }
+            await JSRuntime.InvokeVoidAsync("initializeEditorTabKeyHandling", _editor.Element);
         }
+    }
 
-        [Parameter]
-        public EventCallback<string> ValueChanged { get; set; }
-
-        private RadzenHtmlEditor editor;
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+    async Task OnExecute(HtmlEditorExecuteEventArgs args)
+    {
+        switch (args.CommandName)
         {
-            if (firstRender)
-            {
-                await JSRuntime.InvokeVoidAsync("initializeEditorTabKeyHandling", editor.Element);
-            }
+            case "InsertNewLine":
+                await InsertNewLine(args.Editor);
+                await SynchronizeEditorValue();
+                break;
+            case "InsertCode":
+                await InsertCode(args.Editor);
+                await SynchronizeEditorValue();
+                break;
         }
+    }
 
-        async Task OnExecute(HtmlEditorExecuteEventArgs args)
-        {
-            switch (args.CommandName)
-            {
-                case "InsertNewLine":
-                    await InsertNewLine(args.Editor);
-                    await SynchronizeEditorValue();
-                    break;
-                case "InsertCode":
-                    await InsertCode(args.Editor);
-                    await SynchronizeEditorValue();
-                    break;
-            }
-        }
+    async Task InsertNewLine(RadzenHtmlEditor editor)
+    {
+        const string newline = "<div><br></div>";
 
-        async Task InsertNewLine(RadzenHtmlEditor editor)
-        {
-            const string newline = "<div><br></div>";
+        await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, newline);
+    }
 
-            await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, newline);
-        }
+    async Task InsertCode(RadzenHtmlEditor editor)
+    {
+        const string codeblock = "<pre><code><br/></code></pre>";
 
-        async Task InsertCode(RadzenHtmlEditor editor)
-        {
-            const string codeblock = "<pre><code><br/></code></pre>";
+        await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, codeblock);
+    }
 
-            await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, codeblock);
-        }
-
-        private async Task SynchronizeEditorValue()
-        {
-            // Zero-Width Space hinzufügen, um durch editor.ExecuteCommandAsync im Hintergrund benötigte Update-Logik auszuführen
-            await editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, "&#8203;");
-        }
+    private async Task SynchronizeEditorValue()
+    {
+        // Zero-Width Space hinzufügen, um durch editor.ExecuteCommandAsync im Hintergrund benötigte Update-Logik auszuführen
+        await _editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, "&#8203;");
     }
 }

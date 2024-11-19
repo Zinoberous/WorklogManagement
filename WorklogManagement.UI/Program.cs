@@ -26,6 +26,7 @@ services
     .AddScoped<ThemeService>();
 
 services
+    .AddHttpClient()
     .AddScoped<IWorklogManagementService, WorklogManagementService>()
     .AddDbContext<WorklogManagementContext>(options =>
     {

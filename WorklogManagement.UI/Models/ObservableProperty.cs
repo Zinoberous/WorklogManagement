@@ -2,7 +2,7 @@
 
 namespace WorklogManagement.UI.Models;
 
-public class ObservableProperty<T>(T initialValue = default!, Func<Task>? onChangeAsync = null)
+public class ObservableProperty<T>(T initialValue = default!, Func<Task>? onChangedAsync = null)
 {
     private readonly ReactiveProperty<T> _reactiveProperty = new(initialValue);
 
@@ -12,7 +12,7 @@ public class ObservableProperty<T>(T initialValue = default!, Func<Task>? onChan
         set
         {
             _reactiveProperty.Value = value;
-            _ = onChangeAsync?.Invoke();
+            _ = onChangedAsync?.Invoke();
         }
     }
 

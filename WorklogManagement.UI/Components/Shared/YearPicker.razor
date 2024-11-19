@@ -1,0 +1,24 @@
+﻿<div @onfocusout="TryCloseAsync">
+    <RadzenTextBox @ref="_input" Value="@Year.ToString()" ReadOnly="true" @onclick="Open" />
+    <div style="display: @(IsOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
+        <RadzenRow>
+            <RadzenColumn Size="4">
+                <div @onclick="PrevPage">&lt;</div>
+            </RadzenColumn>
+            <RadzenColumn Size="4">Jahr</RadzenColumn>
+            <RadzenColumn Size="4">
+                <div @onclick="NextPage">&gt;</div>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow>
+            @for (var year = StartYear; year <= EndYear; year++)
+            {
+                var currentYear = year;
+
+                <RadzenColumn Size="4">
+                    <div @onclick="(args => Select(currentYear))">@currentYear</div>
+                </RadzenColumn>
+            }
+        </RadzenRow>
+    </div>
+</div>

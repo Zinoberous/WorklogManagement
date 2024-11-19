@@ -30,6 +30,4 @@ public interface IWorklogManagementService
     Task<OvertimeInfo> GetOvertimeAsync();
 
     // TODO: Statistics
-
-    // TODO: Holidays
 }

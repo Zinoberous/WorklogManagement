@@ -22,8 +22,8 @@ public class TrackingViewModel : BaseViewModel
     {
         _service = service;
 
-        Date = new(DateOnly.FromDateTime(DateTime.Today), OnDateChangeAsync);
-        Search = new(string.Empty, OnSearchChangeAsync);
+        Date = new(DateOnly.FromDateTime(DateTime.Today), OnDateChangedAsync);
+        Search = new(string.Empty, OnSearchChangedAsync);
         RunningTickets = new();
         Worklogs = new();
         VisibleWorklogNotes = new();
@@ -73,7 +73,7 @@ public class TrackingViewModel : BaseViewModel
         Worklogs.Value = page.Items;
     }
 
-    private async Task OnDateChangeAsync()
+    private async Task OnDateChangedAsync()
     {
         if (!string.IsNullOrWhiteSpace(Search.Value))
         {
@@ -85,7 +85,7 @@ public class TrackingViewModel : BaseViewModel
         await LoadWorklogsAsync();
     }
 
-    private async Task OnSearchChangeAsync()
+    private async Task OnSearchChangedAsync()
     {
         UpdateQuery("search", Search!.Value);
 
