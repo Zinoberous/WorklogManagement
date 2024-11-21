@@ -1,5 +1,4 @@
-﻿@page "/tracking"
-@rendermode InteractiveServer
+﻿@* @page "/tracking"
 @inherits BasePage<TrackingViewModel>
 
 <PageTitle>Aufwand</PageTitle>
@@ -15,3 +14,4 @@
         @System.Text.Json.JsonSerializer.Serialize(ViewModel.Worklogs);
     </AsyncContent>
 </main>
+ *@

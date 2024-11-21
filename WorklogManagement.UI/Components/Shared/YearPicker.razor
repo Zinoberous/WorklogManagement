@@ -1,22 +1,30 @@
-﻿<div @onfocusout="TryCloseAsync">
-    <RadzenTextBox @ref="_input" Value="@Year.ToString()" ReadOnly="true" @onclick="Open" />
-    <div style="display: @(IsOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
-        <RadzenRow>
+﻿<div class="yearpicker" @onfocusout="TryCloseAsync">
+    <RadzenTextBox @ref="_input" class="yearpicker-value" Value="@Year.ToString()" ReadOnly="true" @onclick="Open" />
+    <div class="yearpicker-menu" style="display: @(IsOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
+        <RadzenRow Gap="0" RowGap="0">
             <RadzenColumn Size="4">
-                <div @onclick="PrevPage">&lt;</div>
+                <div class="yearpicker-btn" @onclick="PrevPage">&lt;</div>
             </RadzenColumn>
             <RadzenColumn Size="4">Jahr</RadzenColumn>
             <RadzenColumn Size="4">
-                <div @onclick="NextPage">&gt;</div>
+                <div class="yearpicker-btn" @onclick="NextPage">&gt;</div>
             </RadzenColumn>
         </RadzenRow>
-        <RadzenRow>
+        <RadzenRow Gap="0" RowGap="0">
             @for (var year = StartYear; year <= EndYear; year++)
             {
                 var currentYear = year;
 
-                <RadzenColumn Size="4">
-                    <div @onclick="(args => Select(currentYear))">@currentYear</div>
+                <RadzenColumn Size="3">
+                    @if (Year == currentYear)
+                    {
+                        <div class="yearpicker-selected">@currentYear</div>
+                    }
+                    else
+                    {
+                
+                        <div class="yearpicker-btn" @onclick="(args => Select(currentYear))">@currentYear</div>
+                    }
                 </RadzenColumn>
             }
         </RadzenRow>

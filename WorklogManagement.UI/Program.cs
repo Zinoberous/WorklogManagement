@@ -23,7 +23,8 @@ services
 
 services
     .AddRadzenComponents()
-    .AddScoped<ThemeService>();
+    .AddScoped<ThemeService>()
+    .AddScoped<NotificationService>();
 
 services
     .AddHttpClient()
@@ -46,13 +47,13 @@ var attachmentsBaseDir = string.IsNullOrWhiteSpace(config.GetValue<string>("Atta
 Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
 
 services
-    .AddScoped<ChangelogViewModel>()
-    .AddScoped<CheckInViewModel>()
-    .AddScoped<HomeViewModel>()
-    .AddScoped<TicketsViewModel>()
-    .AddScoped<TicketViewModel>()
-    .AddScoped<TrackingViewModel>()
-    .AddScoped<WorklogViewModel>();
+    //.AddScoped<ChangelogViewModel>()
+    //.AddScoped<CheckInViewModel>()
+    .AddScoped<HomeViewModel>();
+//.AddScoped<TicketsViewModel>()
+//.AddScoped<TicketViewModel>()
+//.AddScoped<TrackingViewModel>()
+//.AddScoped<WorklogViewModel>();
 
 var app = builder.Build();
 

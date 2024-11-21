@@ -1,14 +1,14 @@
 ﻿@if (IsLoading)
 {
-    <RadzenStack AlignItems="AlignItems.Center" class="rz-m-12" Gap="2rem">
+    <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="2rem" Style="height: 100%;" >
         <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
     </RadzenStack>
 }
-else if (!string.IsNullOrWhiteSpace(Error))
+else if (Error is not null)
 {
     <RadzenRow>
         <RadzenColumn Size="12">
-            @Error
+            @Error.Message
         </RadzenColumn>
     </RadzenRow>
 }

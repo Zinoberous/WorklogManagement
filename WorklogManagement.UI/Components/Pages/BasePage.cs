@@ -8,7 +8,7 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
     where TViewModel : BaseViewModel
 {
     [Inject]
-    protected TViewModel ViewModel { get; set; } = default!;
+    protected TViewModel ViewModel { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,8 +37,6 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
         if (!_disposed && disposing)
         {
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-
-            ViewModel.Dispose();
 
             _disposed = true;
         }

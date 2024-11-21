@@ -7,10 +7,10 @@ namespace WorklogManagement.UI.Components.Shared;
 
 public partial class Editor
 {
-    private RadzenHtmlEditor _editor;
+    private RadzenHtmlEditor _editor = null!;
 
     [Parameter]
-    public string Value {  get; set; }
+    public string Value { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }

@@ -5,7 +5,7 @@ namespace WorklogManagement.UI.Components.Shared;
 
 public partial class YearPicker
 {
-    private RadzenTextBox _input;
+    private RadzenTextBox _input = null!;
 
     private const int FirstYear = 1;
     private const int YearsPerRow = 4;

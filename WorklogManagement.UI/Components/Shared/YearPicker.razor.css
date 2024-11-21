@@ -1,0 +1,33 @@
+::deep .rz-row {
+    margin-bottom: unset;
+}
+
+::deep .yearpicker-value {
+    width: 70px;
+}
+
+.yearpicker-menu {
+    line-height: 50px;
+    position: absolute;
+    z-index: 10;
+    background: var(--rz-card-background-color);
+    color: var(--rz-text-color);
+    padding: 5px;
+    width: 250px;
+    text-align: center;
+    border: 1px solid var(--rz-text-color);
+}
+
+.yearpicker-btn {
+    height: 50px;
+    cursor: pointer;
+}
+
+.yearpicker-btn:hover {
+    background: #ffffff0a;
+}
+
+.yearpicker-selected {
+    height: 50px;
+    background: #428bca;
+}

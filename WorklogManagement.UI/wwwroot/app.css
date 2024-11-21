@@ -2,6 +2,13 @@
     --header-height: 50px;
 }
 
+.rz-notification {
+    inset-block-start: unset !important;
+    inset-inline-end: unset !important;
+    left: 20px;
+    bottom: 0;
+}
+
 .sidebar-top {
     padding-top: var(--header-height);
     border-block-end: var(--rz-panel-menu-item-border);
@@ -10,9 +17,6 @@
 .rz-sidebar {
     width: max-content !important;
     border-inline-end: unset !important;
-}
-
-.rz-sidebar-responsive {
     opacity: 1 !important;
 }
 
@@ -30,11 +34,11 @@
 }
 
 main {
-    padding: 10px;
+    padding: var(--rz-row-gap);
 }
 
 .rz-row {
-    margin: var(--rz-row-gap) 0;
+    margin-bottom: var(--rz-row-gap);
 }
 
 pre {
