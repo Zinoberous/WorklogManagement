@@ -1,15 +1,16 @@
-﻿using WorklogManagement.Service;
+﻿using Microsoft.JSInterop;
+using Radzen;
+using WorklogManagement.Service;
 using WorklogManagement.Service.Models;
 
 namespace WorklogManagement.UI.ViewModels;
 
-public class HomeViewModel(IHttpClientFactory httpClientFactory, IWorklogManagementService service) : BaseViewModel
+public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory httpClientFactory, NotificationService notificationService, IJSRuntime jsRuntime) : BaseViewModel
 {
-    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly IWorklogManagementService _service = service;
-
-    //public string[] DayLabelShorts { get; } = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-    //public string[] MonthLabelShorts { get; } = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly NotificationService _notificationService = notificationService;
+    private readonly IJSRuntime _jsRuntime = jsRuntime;
 
     private bool _loadOvertime = true;
     public bool LoadOvertime
@@ -36,15 +37,91 @@ public class HomeViewModel(IHttpClientFactory httpClientFactory, IWorklogManagem
     public int SelectedYear
     {
         get => _selectedYear;
-        set => SetValue(ref _selectedYear, value);
+        set
+        {
+            if (SetValue(ref _selectedYear, value))
+            {
+                _ = OnSelectedYearChangedAsync();
+            }
+        }
     }
 
-    //public ObservableProperty<string> SelectedFederalState { get; }
-    //public ObservableProperty<bool> LoadYear { get; }
-    //public ObservableProperty<Exception?> LoadYearError { get; }
-    //public ObservableProperty<Dictionary<DateOnly, string>> Holidays { get; }
-    //public ObservableProperty<IEnumerable<WorkTime>> WorkTimes { get; }
-    //public ObservableProperty<IEnumerable<Absence>> Absences { get; }
+    private string _selectedFederalState = "DE-HE";
+    public string SelectedFederalState
+    {
+        get => _selectedFederalState;
+        set
+        {
+            if (SetValue(ref _selectedFederalState, value))
+            {
+                _ = OnSelectedYearChangedAsync();
+            }
+        }
+    }
+
+    public bool LoadCalendar => LoadWorkTimes || LoadAbsences || LoadHolidays;
+
+    private bool _loadCalendarError = true;
+    public bool LoadCalendarError
+    {
+        get => _loadCalendarError;
+        set => SetValue(ref _loadCalendarError, value);
+    }
+
+    private bool _loadWorkTimes = true;
+    public bool LoadWorkTimes
+    {
+        get => _loadWorkTimes;
+        set
+        {
+            if (SetValue(ref _loadWorkTimes, value))
+            {
+                OnPropertyChanged(nameof(LoadCalendar));
+            }
+        }
+    }
+
+    private IEnumerable<WorkTime> _workTimes = [];
+    public IEnumerable<WorkTime> WorkTimes
+    {
+        get => _workTimes;
+        set => SetValue(ref _workTimes, value);
+    }
+
+    private bool _loadAbsences = true;
+    public bool LoadAbsences
+    {
+        get => _loadAbsences;
+        set
+        {
+            if (SetValue(ref _loadAbsences, value))
+            {
+                OnPropertyChanged(nameof(LoadCalendar));
+            }
+        }
+    }
+
+    private IEnumerable<Absence> _absences = [];
+    public IEnumerable<Absence> Absences
+    {
+        get => _absences;
+        set => SetValue(ref _absences, value);
+    }
+
+    private bool _loadHolidays = true;
+    public bool LoadHolidays
+    {
+        get => _loadHolidays;
+        set
+        {
+            if (SetValue(ref _loadHolidays, value))
+            {
+                OnPropertyChanged(nameof(LoadCalendar));
+            }
+        }
+    }
+
+    // TODO: Holidays
 
     public async Task LoadOvertimeAsync()
     {
@@ -64,34 +141,67 @@ public class HomeViewModel(IHttpClientFactory httpClientFactory, IWorklogManagem
         }
     }
 
-    //public string GetDayLable(int month, int day)
-    //{
-    //    try
-    //    {
-    //        DateOnly date = new(SelectedYear.Value, month, day);
+    public async Task LoadWorkTimesAsync()
+    {
+        LoadWorkTimes = true;
 
-    //        return DayLabelShorts[(int)date.DayOfWeek];
-    //    }
-    //    catch
-    //    {
-    //        return string.Empty;
-    //    }
-    //}
+        try
+        {
+            WorkTimes = await _service.GetWorkTimesOfYearAsync(SelectedYear);
+        }
+        catch (Exception ex)
+        {
+            LoadCalendarError = true;
 
-    //public async Task LoadHolydaysAsync()
-    //{
-    //    using var client = _httpClientFactory.CreateClient();
+            _notificationService.Notify(NotificationSeverity.Error, "Fehler beim Laden der Anwesenheiten.");
 
-    //    var res = await client.GetAsync($"https://date.nager.at/api/v3/PublicHolidays/{SelectedYear.Value}/DE");
-    //}
+            await _jsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            LoadWorkTimes = false;
+        }
+    }
 
-    //private async Task OnSelectedYearChangedAsync()
-    //{
+    public async Task LoadAbsencesAsync()
+    {
+        LoadAbsences = true;
 
-    //}
+        try
+        {
+            Absences = await _service.GetAbsencesOfYearAsyncAsync(SelectedYear);
+        }
+        catch (Exception ex)
+        {
+            LoadCalendarError = true;
 
-    //private async Task OnSelectedFederalStateChangedAsync()
-    //{
+            _notificationService.Notify(NotificationSeverity.Error, "Fehler beim Laden der Abwesenheiten!");
 
-    //}
+            await _jsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            LoadAbsences = false;
+        }
+    }
+
+    public async Task LoadHolidaysAsync()
+    {
+        using var client = _httpClientFactory.CreateClient();
+
+        var res = await client.GetAsync($"https://date.nager.at/api/v3/PublicHolidays/{SelectedYear}/DE");
+
+        // TODO: Holiday = [];
+    }
+
+    private async Task OnSelectedYearChangedAsync()
+    {
+        await LoadWorkTimesAsync();
+        await LoadAbsencesAsync();
+    }
+
+    private async Task OnSelectedFederalStateChangedAsync()
+    {
+        await LoadHolidaysAsync();
+    }
 }

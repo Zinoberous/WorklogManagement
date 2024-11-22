@@ -1,33 +1,26 @@
 ﻿using WorklogManagement.Service.Models;
-using WorklogManagement.Service.Models.Queries;
 
 namespace WorklogManagement.Service;
 
 public interface IWorklogManagementService
 {
-    Task<TDataModel> SaveAsync<TDataModel>(TDataModel item) where TDataModel : IDataModel;
+    Task<OvertimeInfo> GetOvertimeAsync();
 
-    Task DeleteAsync<TDataModel>(int id) where TDataModel : IDataModel;
+    Task<List<WorkTime>> GetWorkTimesOfYearAsync(int year);
 
-    // TODO: Absences
+    Task<List<Absence>> GetAbsencesOfYearAsyncAsync(int year);
 
-    Task<Ticket> GetTicketByIdAsync(int id);
-
-    Task<Page<Ticket>> GetTicketsAsync(TicketQuery query);
+    // TODO: Tickets
 
     // TODO: TicketAttachments
 
     // TODO: TicketsStatusLogs
 
-    Task<Worklog> GetWorklogByIdAsync(int id);
-
-    Task<Page<Worklog>> GetWorklogsAsync(WorklogQuery query);
+    // TODO: Worklogs
 
     // TODO: WorklogAttachments
 
-    // TODO: WorkTimes
+    Task<TDataModel> SaveAsync<TDataModel>(TDataModel item) where TDataModel : IDataModel;
 
-    Task<OvertimeInfo> GetOvertimeAsync();
-
-    // TODO: Statistics
+    Task DeleteAsync<TDataModel>(int id) where TDataModel : IDataModel;
 }

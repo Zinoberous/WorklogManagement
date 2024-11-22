@@ -35,9 +35,7 @@
                         <YearPicker Year="@ViewModel.SelectedYear" />
                     </RadzenColumn>
                     <RadzenColumn>
-                        @* <RadzenDropDown>
-                            TODO: Dropdown für Bundesland
-                        </RadzenDropDown> *@
+                        <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" Data="@federalStates" ValueProperty="Key" TextProperty="Value" />
                     </RadzenColumn>
                 </RadzenRow>
                 <RadzenRow>
