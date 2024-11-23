@@ -1,10 +1,15 @@
-﻿using WorklogManagement.Service.Models;
+﻿using WorklogManagement.Service.Enums;
+using WorklogManagement.Service.Models;
 
 namespace WorklogManagement.Service;
 
 public interface IWorklogManagementService
 {
     Task<OvertimeInfo> GetOvertimeAsync();
+
+    Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null);
+
+    Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
 
     Task<List<WorkTime>> GetWorkTimesOfYearAsync(int year);
 

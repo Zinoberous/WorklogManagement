@@ -47,6 +47,68 @@ public class WorklogManagementService(WorklogManagementContext context) : IWorkl
         };
     }
 
+    public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
+    {
+        var workDays = await _context.WorkTimes.Select(x => x.Date)
+            .Union(_context.Absences.Select(x => x.Date))
+            .Distinct()
+            .CountAsync();
+
+        var officeDays = await _context.WorkTimes
+            .Where(x => x.ActualMinutes > 0 && x.WorkTimeTypeId == (int)WorkTimeType.Office)
+            .Select(x => x.Date)
+            .Distinct()
+            .CountAsync();
+
+        var mobileDays = await _context.WorkTimes
+            .Where(x => x.ActualMinutes > 0 && x.WorkTimeTypeId == (int)WorkTimeType.Mobile)
+            .Select(x => x.Date)
+            .Distinct()
+            .CountAsync();
+
+        var timeCompensationDays = await _context.WorkTimes
+            .Where(x => x.ActualMinutes == 0)
+            .Select(x => x.Date)
+            .Distinct()
+            .CountAsync();
+
+        var holidayDays = await _context.Absences
+            .Where(x => x.AbsenceTypeId == (int)AbsenceType.Holiday)
+            .Select(x => x.Date)
+            .Distinct()
+            .CountAsync();
+
+        var vacationDays = await _context.Absences
+            .Where(x => x.AbsenceTypeId == (int)AbsenceType.Vacation)
+            .Select(x => x.Date)
+            .Distinct()
+            .CountAsync();
+
+        var illDays = await _context.Absences
+            .Where(x => x.AbsenceTypeId == (int)AbsenceType.Ill)
+            .Select(x => x.Date)
+            .Distinct()
+            .CountAsync();
+
+        return new()
+        {
+            { CalendarEntryType.Workday, workDays },
+            { CalendarEntryType.Office, officeDays },
+            { CalendarEntryType.Mobile, mobileDays },
+            { CalendarEntryType.TimeCompensation, timeCompensationDays },
+            { CalendarEntryType.Holiday, holidayDays },
+            { CalendarEntryType.Vacation, vacationDays },
+            { CalendarEntryType.Ill, illDays },
+        };
+    }
+
+    public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
+    {
+        return await _context.Tickets
+            .GroupBy(x => x.TicketStatusId)
+            .ToDictionaryAsync(x => (TicketStatus)x.Key, x => x.Count());
+    }
+
     public async Task<List<WorkTime>> GetWorkTimesOfYearAsync(int year)
     {
         return await _context.WorkTimes

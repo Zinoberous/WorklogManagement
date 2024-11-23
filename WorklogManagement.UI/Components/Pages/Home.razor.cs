@@ -27,6 +27,11 @@ public partial class Home
         if (firstRender)
         {
             await ViewModel.LoadOvertimeAsync();
+            await ViewModel.LoadCalendarStatisticsAsync();
+            await ViewModel.LoadTicketStatisticsAsync();
+            await ViewModel.LoadWorkTimesAsync();
+            await ViewModel.LoadAbsencesAsync();
+            await ViewModel.LoadHolidaysAsync();
         }
     }
 }
