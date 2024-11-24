@@ -5,5 +5,5 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class MenuBar
 {
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public required RenderFragment ChildContent { get; set; }
 }

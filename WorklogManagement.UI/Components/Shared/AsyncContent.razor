@@ -1,18 +1,25 @@
-﻿@if (IsLoading)
+@if (RenderMode == Enums.AsyncContentRenderMode.AfterLoading)
 {
-    <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="2rem" Style="height: 100%;" >
-        <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
-    </RadzenStack>
+    @if (IsLoading)
+    {
+        <Loader />
+    }
+    else
+    {
+        @ChildContent
+    }
 }
-else if (Error is not null)
-{
-    <RadzenRow>
-        <RadzenColumn Size="12">
-            @Error.Message
-        </RadzenColumn>
-    </RadzenRow>
-}
+// RenderMode == Enums.AsyncContentRenderMode.WhileLoading
 else
 {
-    @ChildContent
+    <div class="async-content-container">
+        @if (IsLoading)
+        {
+            <div class="async-content-loader-overlay">
+                <Loader />
+            </div>
+        }
+
+        @ChildContent
+    </div>
 }

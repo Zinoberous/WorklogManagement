@@ -23,7 +23,7 @@ public partial class Editor
         }
     }
 
-    async Task OnExecute(HtmlEditorExecuteEventArgs args)
+    private async Task OnExecute(HtmlEditorExecuteEventArgs args)
     {
         switch (args.CommandName)
         {
@@ -38,14 +38,14 @@ public partial class Editor
         }
     }
 
-    async Task InsertNewLine(RadzenHtmlEditor editor)
+    private async Task InsertNewLine(RadzenHtmlEditor editor)
     {
         const string newline = "<div><br></div>";
 
         await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, newline);
     }
 
-    async Task InsertCode(RadzenHtmlEditor editor)
+    private async Task InsertCode(RadzenHtmlEditor editor)
     {
         const string codeblock = "<pre><code><br/></code></pre>";
 
@@ -54,7 +54,7 @@ public partial class Editor
 
     private async Task SynchronizeEditorValue()
     {
-        // Zero-Width Space hinzufügen, um durch editor.ExecuteCommandAsync im Hintergrund benötigte Update-Logik auszuführen
+        // Zero-Width Space hinzufÃ¼gen, um durch editor.ExecuteCommandAsync im Hintergrund benÃ¶tigte Update-Logik auszufÃ¼hren
         await _editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, "&#8203;");
     }
 }

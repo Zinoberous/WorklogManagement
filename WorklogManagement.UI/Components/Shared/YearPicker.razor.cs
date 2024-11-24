@@ -13,37 +13,52 @@ public partial class YearPicker
     private const int ElementsPerPage = YearsPerRow * RowsPerPage;
 
     [Parameter]
-    public int Year { get; set; }
+    public int Value { get; set; }
 
-    public bool IsOpen { get; set; }
-    public bool IsMouseInside { get; set; }
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
 
-    public int PageIndex { get; set; }
-    public int StartYear => PageIndex * ElementsPerPage + FirstYear;
-    public int EndYear => StartYear + ElementsPerPage - FirstYear;
+    private bool _isOpen;
+    private bool _isMouseInside;
 
-    public void Open()
+    private int _pageIndex;
+    private int _firstYearOfPage;
+    private int _lastYearOfPage;
+
+    private void Open()
     {
-        PageIndex = (Year - FirstYear) / ElementsPerPage;
+        SetPageIndex((Value - FirstYear) / ElementsPerPage);
 
-        IsOpen = true;
+        _isOpen = true;
     }
 
-    public void MouseIn() => IsMouseInside = true;
+    private void MouseIn() => _isMouseInside = true;
 
-    public void MouseOut() => IsMouseInside = false;
+    private void MouseOut() => _isMouseInside = false;
 
-    public void PrevPage() => PageIndex--;
-
-    public void NextPage() => PageIndex++;
-
-    public void Select(int year) => Year = year;
-
-    public void Close() => IsOpen = false;
-
-    public async Task TryCloseAsync()
+    private void SetPageIndex(int pageIndex)
     {
-        if (!IsMouseInside)
+        _pageIndex = pageIndex;
+        _firstYearOfPage = _pageIndex * ElementsPerPage + FirstYear;
+        _lastYearOfPage = _firstYearOfPage + ElementsPerPage - FirstYear;
+    }
+
+    private void PrevPage() => SetPageIndex(_pageIndex - 1);
+
+    private void NextPage() => SetPageIndex(_pageIndex + 1);
+
+    private async Task SelectAsync(int year)
+    {
+        Value = year;
+
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private void Close() => _isOpen = false;
+
+    private async Task TryCloseAsync()
+    {
+        if (!_isMouseInside)
         {
             Close();
         }

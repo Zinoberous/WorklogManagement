@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
 using WorklogManagement.UI.ViewModels;
 
@@ -17,9 +17,9 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
         await base.OnInitializedAsync();
     }
 
-    private async void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        await InvokeAsync(StateHasChanged);
+        InvokeAsync(StateHasChanged);
     }
 
     #region dispose

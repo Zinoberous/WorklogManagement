@@ -9,7 +9,7 @@
 .yearpicker-menu {
     line-height: 50px;
     position: absolute;
-    z-index: 10;
+    z-index: 100;
     background: var(--rz-card-background-color);
     color: var(--rz-text-color);
     padding: 5px;

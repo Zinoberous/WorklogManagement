@@ -1,4 +1,3 @@
-﻿using Microsoft.JSInterop;
 using Radzen;
 using WorklogManagement.Service;
 using WorklogManagement.Service.Enums;
@@ -7,25 +6,17 @@ using WorklogManagement.UI.Models;
 
 namespace WorklogManagement.UI.ViewModels;
 
-public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory httpClientFactory, NotificationService notificationService, IJSRuntime jsRuntime) : BaseViewModel
+public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory httpClientFactory, INotifier notifier) : BaseViewModel
 {
     private readonly IWorklogManagementService _service = service;
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly NotificationService _notificationService = notificationService;
-    private readonly IJSRuntime _jsRuntime = jsRuntime;
+    private readonly INotifier _notifier = notifier;
 
     private bool _loadOvertime = true;
     public bool LoadOvertime
     {
         get => _loadOvertime;
         set => SetValue(ref _loadOvertime, value);
-    }
-
-    private Exception? _loadOvertimeError;
-    public Exception? LoadOvertimeError
-    {
-        get => _loadOvertimeError;
-        set => SetValue(ref _loadOvertimeError, value);
     }
 
     private OvertimeInfo? _overtime;
@@ -42,18 +33,18 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         set => SetValue(ref _loadCalendarStatistics, value);
     }
 
-    private Exception? _loadCalendarStatisticsError;
-    public Exception? LoadCalendarStatisticsError
+    private Dictionary<CalendarEntryType, int> _calendarStatisticsYear = [];
+    public Dictionary<CalendarEntryType, int> CalendarStatisticsYear
     {
-        get => _loadCalendarStatisticsError;
-        set => SetValue(ref _loadCalendarStatisticsError, value);
+        get => _calendarStatisticsYear;
+        set => SetValue(ref _calendarStatisticsYear, value);
     }
 
-    private Dictionary<CalendarEntryType, int> _calendarStatistics = [];
-    public Dictionary<CalendarEntryType, int> CalendarStatistics
+    private Dictionary<CalendarEntryType, int> _calendarStatisticsAll = [];
+    public Dictionary<CalendarEntryType, int> CalendarStatisticsAll
     {
-        get => _calendarStatistics;
-        set => SetValue(ref _calendarStatistics, value);
+        get => _calendarStatisticsAll;
+        set => SetValue(ref _calendarStatisticsAll, value);
     }
 
     private bool _loadTicketStatistics = true;
@@ -61,13 +52,6 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
     {
         get => _loadTicketStatistics;
         set => SetValue(ref _loadTicketStatistics, value);
-    }
-
-    private Exception? _loadTicketStatisticsError;
-    public Exception? LoadTicketStatisticsError
-    {
-        get => _loadTicketStatisticsError;
-        set => SetValue(ref _loadTicketStatisticsError, value);
     }
 
     private Dictionary<TicketStatus, int> _ticketStatistics = [];
@@ -175,7 +159,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         }
         catch (Exception ex)
         {
-            LoadOvertimeError = ex;
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Überstunden!", ex);
         }
         finally
         {
@@ -189,12 +173,12 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
 
         try
         {
-            // TODO: GetCalendarStaticsAsync() => over all years
-            CalendarStatistics = await _service.GetCalendarStaticsAsync(SelectedYear);
+            CalendarStatisticsYear = await _service.GetCalendarStaticsAsync(SelectedYear);
+            CalendarStatisticsAll = await _service.GetCalendarStaticsAsync();
         }
         catch (Exception ex)
         {
-            LoadCalendarStatisticsError = ex;
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Kalendereinträge!", ex);
         }
         finally
         {
@@ -212,7 +196,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         }
         catch (Exception ex)
         {
-            LoadTicketStatisticsError = ex;
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Tickets!", ex);
         }
         finally
         {
@@ -230,9 +214,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         }
         catch (Exception ex)
         {
-            _notificationService.Notify(NotificationSeverity.Error, "Fehler beim Laden der Arbeitszeiten!");
-
-            await _jsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Arbeitszeiten!", ex);
         }
         finally
         {
@@ -250,9 +232,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         }
         catch (Exception ex)
         {
-            _notificationService.Notify(NotificationSeverity.Error, "Fehler beim Laden der Abwesenheiten!");
-
-            await _jsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Abwesenheiten!", ex);
         }
         finally
         {
@@ -281,9 +261,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         }
         catch (Exception ex)
         {
-            _notificationService.Notify(NotificationSeverity.Error, "Fehler beim Laden der Feiertage!");
-
-            await _jsRuntime.InvokeVoidAsync("console.error", ex.ToString());
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Feiertage!", ex);
         }
         finally
         {
@@ -293,9 +271,11 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
 
     private async Task OnSelectedYearChangedAsync()
     {
-        await LoadCalendarStatisticsAsync();
-        await LoadWorkTimesAsync();
-        await LoadAbsencesAsync();
+        await Task.WhenAll([
+            LoadCalendarStatisticsAsync(),
+            LoadWorkTimesAsync(),
+            LoadAbsencesAsync(),
+        ]);
     }
 
     private async Task OnSelectedFederalStateChangedAsync()

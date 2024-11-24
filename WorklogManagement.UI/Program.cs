@@ -4,6 +4,7 @@ using WorklogManagement.Data.Context;
 using WorklogManagement.Service;
 using WorklogManagement.Service.Common;
 using WorklogManagement.UI.Components;
+using WorklogManagement.UI.Models;
 using WorklogManagement.UI.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +30,7 @@ services
 services
     .AddHttpClient()
     .AddScoped<IWorklogManagementService, WorklogManagementService>()
-    .AddDbContext<WorklogManagementContext>(options =>
+    .AddDbContextFactory<WorklogManagementContext>(options =>
     {
         var conStr = config.GetConnectionString("WorklogManagement");
 
@@ -39,6 +40,8 @@ services
             .EnableDetailedErrors(isDevelopment)
             .EnableSensitiveDataLogging(isDevelopment);
     });
+
+services.AddTransient<INotifier, Notifier>();
 
 var attachmentsBaseDir = string.IsNullOrWhiteSpace(config.GetValue<string>("AttachmentsBaseDir"))
     ? Path.Combine(".", "Attachments")

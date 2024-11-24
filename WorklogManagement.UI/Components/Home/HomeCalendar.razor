@@ -1,4 +1,4 @@
-﻿<div class="rz-data-grid rz-datatable rz-datatable-scrollable">
+<div class="rz-data-grid rz-datatable rz-datatable-scrollable">
     <div class="rz-data-grid-data">
         <table class="rz-grid-table rz-grid-gridlines-both">
             <thead>
@@ -30,14 +30,29 @@
                     <tr class="rz-data-row">
                         <td>
                             <span class="rz-cell-data">
-                                @month
+                                @_monthLabelShorts[month - 1]
                             </span>
                         </td>
                         @for (int day = 1; day <= 31; day++)
                         {
                             <td>
                                 <span class="rz-cell-data">
-                                    <HomeCalendarDay />
+                                    @try
+                                    {
+                                        DateOnly date = new(Year, month, day);
+
+                                        var workTimes = WorkTimes.Where(x => x.Date == date).ToArray();
+
+                                        var absences = Absences.Where(x => x.Date == date).ToArray();
+
+                                        var holidays = Holidays.Where(x => x.Date == date).ToArray();
+
+                                        <HomeCalendarDay Date="date" WorkTimes="workTimes" Absences="absences" Holidays="holidays" />
+                                    }
+                                    catch
+                                    {
+                                        // invalid date = nothing to render
+                                    }
                                 </span>
                             </td>
                         }
@@ -47,9 +62,3 @@
         </table>
     </div>
 </div>
-
-@code
-{
-    //public string[] DayLabelShorts { get; } = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-    //public string[] MonthLabelShorts { get; } = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-}

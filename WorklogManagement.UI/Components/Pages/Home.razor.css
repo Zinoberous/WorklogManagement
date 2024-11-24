@@ -1,3 +1,30 @@
-﻿::deep .rz-card {
-    height: 135px;
+::deep .rz-card {
+    height: 150px;
+    min-width: 400px;
+}
+
+::deep .rz-text-body1 {
+    text-decoration-line: underline;
+}
+
+.overtime div:nth-child(1),
+.overtime div:nth-child(2)
+{
+    text-align: center;
+}
+
+.overtime div:nth-child(1) {
+    font-size: 50px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+li {
+    flex: 50%;
 }

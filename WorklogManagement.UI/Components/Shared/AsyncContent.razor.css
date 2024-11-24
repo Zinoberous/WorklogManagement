@@ -1,0 +1,11 @@
+.async-content-container {
+    position: relative;
+}
+
+.async-content-loader-overlay {
+    position: absolute;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}

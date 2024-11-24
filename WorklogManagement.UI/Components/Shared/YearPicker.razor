@@ -1,9 +1,16 @@
-﻿<div class="yearpicker" @onfocusout="TryCloseAsync">
-    <RadzenTextBox @ref="_input" class="yearpicker-value" Value="@Year.ToString()" ReadOnly="true" @onclick="Open" />
-    <div class="yearpicker-menu" style="display: @(IsOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
+<div class="yearpicker" @onfocusout="TryCloseAsync">
+    <RadzenTextBox @ref="_input" class="yearpicker-value" Value="@Value.ToString()" ReadOnly="true" @onclick="Open" />
+    <div class="yearpicker-menu" style="display: @(_isOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
         <RadzenRow Gap="0" RowGap="0">
             <RadzenColumn Size="4">
-                <div class="yearpicker-btn" @onclick="PrevPage">&lt;</div>
+                @if (_pageIndex == 0)
+                {
+                    <div/>
+                }
+                else
+                {
+                    <div class="yearpicker-btn" @onclick="PrevPage">&lt;</div>
+                }
             </RadzenColumn>
             <RadzenColumn Size="4">Jahr</RadzenColumn>
             <RadzenColumn Size="4">
@@ -11,19 +18,19 @@
             </RadzenColumn>
         </RadzenRow>
         <RadzenRow Gap="0" RowGap="0">
-            @for (var year = StartYear; year <= EndYear; year++)
+            @for (var year = _firstYearOfPage; year <= _lastYearOfPage; year++)
             {
                 var currentYear = year;
 
                 <RadzenColumn Size="3">
-                    @if (Year == currentYear)
+                    @if (Value == currentYear)
                     {
                         <div class="yearpicker-selected">@currentYear</div>
                     }
                     else
                     {
                 
-                        <div class="yearpicker-btn" @onclick="(args => Select(currentYear))">@currentYear</div>
+                        <div class="yearpicker-btn" @onclick="(() => SelectAsync(currentYear))">@currentYear</div>
                     }
                 </RadzenColumn>
             }

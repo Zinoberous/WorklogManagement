@@ -1,10 +1,18 @@
+using WorklogManagement.Service.Enums;
+
 namespace WorklogManagement.UI.Components.Pages;
 
 public partial class Home
 {
-    private readonly Dictionary<string, string> federalStates = new()
+    private static readonly Dictionary<WorkTimeType, string> _workTimeLabels = new()
     {
-        { "DE-BW", "Baden-Württemberg" },
+        { WorkTimeType.Office, "BÃ¼ro" },
+        { WorkTimeType.Mobile, "Mobil" },
+    };
+
+    private static readonly Dictionary<string, string> _federalStates = new()
+    {
+        { "DE-BW", "Baden-WÃ¼rttemberg" },
         { "DE-BY", "Bayern" },
         { "DE-BE", "Berlin" },
         { "DE-BB", "Brandenburg" },
@@ -19,19 +27,29 @@ public partial class Home
         { "DE-SN", "Sachsen" },
         { "DE-ST", "Sachsen-Anhalt" },
         { "DE-SH", "Schleswig-Holstein" },
-        { "DE-TH", "Thüringen" }
+        { "DE-TH", "ThÃ¼ringen" }
     };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await ViewModel.LoadOvertimeAsync();
-            await ViewModel.LoadCalendarStatisticsAsync();
-            await ViewModel.LoadTicketStatisticsAsync();
-            await ViewModel.LoadWorkTimesAsync();
-            await ViewModel.LoadAbsencesAsync();
-            await ViewModel.LoadHolidaysAsync();
+            await Task.WhenAll([
+                ViewModel.LoadOvertimeAsync(),
+                ViewModel.LoadCalendarStatisticsAsync(),
+                ViewModel.LoadTicketStatisticsAsync(),
+                ViewModel.LoadWorkTimesAsync(),
+                ViewModel.LoadAbsencesAsync(),
+                ViewModel.LoadHolidaysAsync(),
+            ]);
         }
+    }
+
+    private static string MinutesToTime(int totalMinutes)
+    {
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+
+        return $"{hours:D2}:{minutes:D2}";
     }
 }
