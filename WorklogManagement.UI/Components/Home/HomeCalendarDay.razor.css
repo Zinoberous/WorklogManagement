@@ -1,0 +1,49 @@
+.day {
+    height: 100%;
+    position: relative;
+    padding-top: 20px;
+}
+
+.day > div:nth-child(1) {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+    padding: 2px;
+}
+
+.day > div:nth-child(2) {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.overtime, .undertime {
+    height: 16px;
+    padding: 1px;
+    border-radius: 50%;
+    color: black;
+}
+
+.overtime {
+    background-color: limegreen;
+}
+
+.undertime {
+    background-color: lightcoral;
+}
+
+.weeknumber {
+    border: 1px solid;
+    border-radius: 100%;
+}
+
+.overtime, .undertime, .weeknumber {
+    width: 16px;
+    font-size: 10px;
+    text-align: center;
+}

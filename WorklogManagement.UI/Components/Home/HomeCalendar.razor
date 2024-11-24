@@ -28,32 +28,30 @@
                 @for (int month = 1; month <= 12; month++)
                 {
                     <tr class="rz-data-row">
-                        <td>
+                        <td style="padding: 0; text-align: center;">
                             <span class="rz-cell-data">
                                 @_monthLabelShorts[month - 1]
                             </span>
                         </td>
                         @for (int day = 1; day <= 31; day++)
                         {
-                            <td>
-                                <span class="rz-cell-data">
-                                    @try
-                                    {
-                                        DateOnly date = new(Year, month, day);
+                            <td style="padding: 0;">
+                                @try
+                                {
+                                    DateOnly date = new(Year, month, day);
 
-                                        var workTimes = WorkTimes.Where(x => x.Date == date).ToArray();
+                                    var workTimes = WorkTimes.Where(x => x.Date == date).ToArray();
 
-                                        var absences = Absences.Where(x => x.Date == date).ToArray();
+                                    var absences = Absences.Where(x => x.Date == date).ToArray();
 
-                                        var holidays = Holidays.Where(x => x.Date == date).ToArray();
+                                    var holiday = Holidays.FirstOrDefault(x => x.Date == date);
 
-                                        <HomeCalendarDay Date="date" WorkTimes="workTimes" Absences="absences" Holidays="holidays" />
-                                    }
-                                    catch
-                                    {
-                                        // invalid date = nothing to render
-                                    }
-                                </span>
+                                    <HomeCalendarDay Date="date" WorkTimes="workTimes" Absences="absences" Holiday="holiday" />
+                                }
+                                catch
+                                {
+                                    // invalid date = nothing to render
+                                }
                             </td>
                         }
                     </tr>

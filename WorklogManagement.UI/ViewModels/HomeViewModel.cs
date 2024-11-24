@@ -19,8 +19,8 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         set => SetValue(ref _loadOvertime, value);
     }
 
-    private OvertimeInfo? _overtime;
-    public OvertimeInfo? Overtime
+    private OvertimeInfo _overtime = new() { TotalMinutes = 0, OfficeMinutes = 0, MobileMinutes = 0 };
+    public OvertimeInfo Overtime
     {
         get => _overtime;
         set => SetValue(ref _overtime, value);
@@ -33,14 +33,14 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         set => SetValue(ref _loadCalendarStatistics, value);
     }
 
-    private Dictionary<CalendarEntryType, int> _calendarStatisticsYear = [];
+    private Dictionary<CalendarEntryType, int> _calendarStatisticsYear = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
     public Dictionary<CalendarEntryType, int> CalendarStatisticsYear
     {
         get => _calendarStatisticsYear;
         set => SetValue(ref _calendarStatisticsYear, value);
     }
 
-    private Dictionary<CalendarEntryType, int> _calendarStatisticsAll = [];
+    private Dictionary<CalendarEntryType, int> _calendarStatisticsAll = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
     public Dictionary<CalendarEntryType, int> CalendarStatisticsAll
     {
         get => _calendarStatisticsAll;
@@ -54,7 +54,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
         set => SetValue(ref _loadTicketStatistics, value);
     }
 
-    private Dictionary<TicketStatus, int> _ticketStatistics = [];
+    private Dictionary<TicketStatus, int> _ticketStatistics = Enum.GetValues<TicketStatus>().ToDictionary(x => x, _ => 0);
     public Dictionary<TicketStatus, int> TicketStatistics
     {
         get => _ticketStatistics;

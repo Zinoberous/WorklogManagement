@@ -44,12 +44,4 @@ public partial class Home
             ]);
         }
     }
-
-    private static string MinutesToTime(int totalMinutes)
-    {
-        int hours = totalMinutes / 60;
-        int minutes = totalMinutes % 60;
-
-        return $"{hours:D2}:{minutes:D2}";
-    }
 }
