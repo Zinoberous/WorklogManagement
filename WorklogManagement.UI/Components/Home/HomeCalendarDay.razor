@@ -21,9 +21,14 @@
 
             var durationMinutes = timeCompensations.Sum(x => x.ExpectedMinutes);
 
-            @* var note = string.Join("\n", timeCompensations.Select(x => $"{MinutesToTime(x.ExpectedMinutes)} => {x.Note}")); *@
+            var notes = timeCompensations
+                .Where(x => !string.IsNullOrWhiteSpace(x.Note) && !x.Note.Equals("Zeitausgleich", StringComparison.OrdinalIgnoreCase))
+                .Select(x => $"{MinutesToTime(x.ExpectedMinutes)} => {x.Note}")
+                .ToArray();
 
-            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle("Zeitausgleich", durationMinutes, null)" />
+            var note = string.Join("\n", notes);
+
+            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle("Zeitausgleich", durationMinutes, note)" />
         }
         @foreach(var workTime in WorkTimes.Where(x => x.ActualMinutes > 0).OrderBy(x => x.Type))
         {

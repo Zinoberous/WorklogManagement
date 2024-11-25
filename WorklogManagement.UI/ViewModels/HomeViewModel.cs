@@ -210,7 +210,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
 
         try
         {
-            WorkTimes = await _service.GetWorkTimesOfYearAsync(SelectedYear);
+            WorkTimes = await _service.GetWorkTimesAsync(new(SelectedYear, 1, 1), new(SelectedYear, 12, 31));
         }
         catch (Exception ex)
         {
@@ -228,7 +228,7 @@ public class HomeViewModel(IWorklogManagementService service, IHttpClientFactory
 
         try
         {
-            Absences = await _service.GetAbsencesOfYearAsyncAsync(SelectedYear);
+            Absences = await _service.GetAbsencesAsync(new(SelectedYear, 1, 1), new(SelectedYear, 12, 31));
         }
         catch (Exception ex)
         {

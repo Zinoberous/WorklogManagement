@@ -29,7 +29,7 @@ services
 
 services
     .AddHttpClient()
-    .AddScoped<IWorklogManagementService, WorklogManagementService>()
+    .AddTransient<IWorklogManagementService, WorklogManagementService>()
     .AddDbContextFactory<WorklogManagementContext>(options =>
     {
         var conStr = config.GetConnectionString("WorklogManagement");
@@ -41,22 +41,19 @@ services
             .EnableSensitiveDataLogging(isDevelopment);
     });
 
-services.AddTransient<INotifier, Notifier>();
+services
+    .AddScoped<HomeViewModel>()
+    .AddScoped<CheckInViewModel>();
+
+services
+    .AddTransient<INotifier, Notifier>()
+    .AddTransient<INavigator, Navigator>();
 
 var attachmentsBaseDir = string.IsNullOrWhiteSpace(config.GetValue<string>("AttachmentsBaseDir"))
     ? Path.Combine(".", "Attachments")
     : config.GetValue<string>("AttachmentsBaseDir")!;
 
 Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
-
-services
-    //.AddScoped<ChangelogViewModel>()
-    //.AddScoped<CheckInViewModel>()
-    .AddScoped<HomeViewModel>();
-//.AddScoped<TicketsViewModel>()
-//.AddScoped<TicketViewModel>()
-//.AddScoped<TrackingViewModel>()
-//.AddScoped<WorklogViewModel>();
 
 var app = builder.Build();
 

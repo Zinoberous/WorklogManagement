@@ -1,4 +1,4 @@
-﻿using WorklogManagement.Service.Enums;
+using WorklogManagement.Service.Enums;
 using WorklogManagement.Service.Models;
 
 namespace WorklogManagement.Service;
@@ -11,9 +11,11 @@ public interface IWorklogManagementService
 
     Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
 
-    Task<List<WorkTime>> GetWorkTimesOfYearAsync(int year);
+    Task<List<WorkTime>> GetWorkTimesAsync(DateOnly date) => GetWorkTimesAsync(date, date);
+    Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to);
 
-    Task<List<Absence>> GetAbsencesOfYearAsyncAsync(int year);
+    Task<List<Absence>> GetAbsencesAsync(DateOnly date) => GetAbsencesAsync(date, date);
+    Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to);
 
     // TODO: Tickets
 

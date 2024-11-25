@@ -52,87 +52,69 @@ public class WorklogManagementService(IDbContextFactory<WorklogManagementContext
 
     public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
     {
-        Dictionary<CalendarEntryType, Task<int>> tasks = new()
-        {
-            [CalendarEntryType.Workday] = ExecuteAsync(context =>
-                context.WorkTimes
-                    .Where(x => year == null || x.Date.Year == year)
-                    .Select(x => x.Date)
-                    .Union(context.Absences
+        return await ExecuteAsync(async context =>
+            new Dictionary<CalendarEntryType, int>
+            {
+                [CalendarEntryType.Workday] =
+                    await context.WorkTimes
                         .Where(x => year == null || x.Date.Year == year)
-                        .Select(x => x.Date))
-                    .Distinct()
-                    .CountAsync()
-            ),
-
-            [CalendarEntryType.Office] = ExecuteAsync(context =>
-                context.WorkTimes
-                    .Where(x =>
-                        (year == null || x.Date.Year == year)
-                        && x.ActualMinutes > 0
-                        && x.WorkTimeTypeId == (int)WorkTimeType.Office)
-                    .Select(x => x.Date)
-                    .Distinct()
-                    .CountAsync()
-            ),
-
-            [CalendarEntryType.Mobile] = ExecuteAsync(context =>
-                context.WorkTimes
-                    .Where(x =>
-                        (year == null || x.Date.Year == year)
-                        && x.ActualMinutes > 0
-                        && x.WorkTimeTypeId == (int)WorkTimeType.Mobile)
-                    .Select(x => x.Date)
-                    .Distinct()
-                    .CountAsync()
-            ),
-
-            [CalendarEntryType.TimeCompensation] = ExecuteAsync(context =>
-                context.WorkTimes
-                    .Where(x =>
-                        (year == null || x.Date.Year == year)
-                        && x.ActualMinutes == 0)
-                    .Select(x => x.Date)
-                    .Distinct()
-                    .CountAsync()
-            ),
-
-            [CalendarEntryType.Holiday] = ExecuteAsync(context =>
-                context.Absences
-                    .Where(x =>
-                        (year == null || x.Date.Year == year)
-                        && x.AbsenceTypeId == (int)AbsenceType.Holiday)
-                    .Select(x => x.Date)
-                    .Distinct()
-                    .CountAsync()
-            ),
-
-            [CalendarEntryType.Vacation] = ExecuteAsync(context =>
-                context.Absences
-                    .Where(x =>
-                        (year == null || x.Date.Year == year)
-                        && x.AbsenceTypeId == (int)AbsenceType.Vacation)
-                    .Select(x => x.Date)
-                    .Distinct()
-                    .CountAsync()
-            ),
-
-            [CalendarEntryType.Ill] = ExecuteAsync(context =>
-                context.Absences
-                    .Where(x =>
-                        (year == null || x.Date.Year == year)
-                        && x.AbsenceTypeId == (int)AbsenceType.Ill)
-                    .Select(x => x.Date)
-                    .Distinct()
-                    .CountAsync()
-            )
-        };
-
-        await Task.WhenAll(tasks.Values);
-
-        return tasks.ToDictionary(
-            x => x.Key,
-            x => x.Value.Result
+                        .Select(x => x.Date)
+                        .Union(context.Absences
+                            .Where(x => year == null || x.Date.Year == year)
+                            .Select(x => x.Date))
+                        .Distinct()
+                        .CountAsync(),
+                [CalendarEntryType.Office] =
+                    await context.WorkTimes
+                        .Where(x =>
+                            (year == null || x.Date.Year == year)
+                            && x.ActualMinutes > 0
+                            && x.WorkTimeTypeId == (int)WorkTimeType.Office)
+                        .Select(x => x.Date)
+                        .Distinct()
+                        .CountAsync(),
+                [CalendarEntryType.Mobile] =
+                    await context.WorkTimes
+                        .Where(x =>
+                            (year == null || x.Date.Year == year)
+                            && x.ActualMinutes > 0
+                            && x.WorkTimeTypeId == (int)WorkTimeType.Mobile)
+                        .Select(x => x.Date)
+                        .Distinct()
+                        .CountAsync(),
+                [CalendarEntryType.TimeCompensation] =
+                    await context.WorkTimes
+                        .Where(x =>
+                            (year == null || x.Date.Year == year)
+                            && x.ActualMinutes == 0)
+                        .Select(x => x.Date)
+                        .Distinct()
+                        .CountAsync(),
+                [CalendarEntryType.Holiday] =
+                    await context.Absences
+                        .Where(x =>
+                            (year == null || x.Date.Year == year)
+                            && x.AbsenceTypeId == (int)AbsenceType.Holiday)
+                        .Select(x => x.Date)
+                        .Distinct()
+                        .CountAsync(),
+                [CalendarEntryType.Vacation] =
+                    await context.Absences
+                        .Where(x =>
+                            (year == null || x.Date.Year == year)
+                            && x.AbsenceTypeId == (int)AbsenceType.Vacation)
+                        .Select(x => x.Date)
+                        .Distinct()
+                        .CountAsync(),
+                [CalendarEntryType.Ill] =
+                    await context.Absences
+                        .Where(x =>
+                            (year == null || x.Date.Year == year)
+                            && x.AbsenceTypeId == (int)AbsenceType.Ill)
+                        .Select(x => x.Date)
+                        .Distinct()
+                        .CountAsync()
+            }
         );
     }
 
@@ -156,21 +138,21 @@ public class WorklogManagementService(IDbContextFactory<WorklogManagementContext
         return statistics;
     }
 
-    public async Task<List<WorkTime>> GetWorkTimesOfYearAsync(int year)
+    public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
     {
         return await ExecuteAsync(context =>
             context.WorkTimes
-                .Where(x => x.Date.Year == year)
+                .Where(x => x.Date >= from && x.Date <= to)
                 .Select(x => WorkTime.Map(x))
                 .ToListAsync()
         );
     }
 
-    public async Task<List<Absence>> GetAbsencesOfYearAsyncAsync(int year)
+    public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
         return await ExecuteAsync(context =>
             context.Absences
-                .Where(x => x.Date.Year == year)
+                .Where(x => x.Date >= from && x.Date <= to)
                 .Select(x => Absence.Map(x))
                 .ToListAsync()
         );
