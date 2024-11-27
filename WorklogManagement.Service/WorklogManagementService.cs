@@ -53,69 +53,81 @@ public class WorklogManagementService(IDbContextFactory<WorklogManagementContext
     public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
     {
         return await ExecuteAsync(async context =>
-            new Dictionary<CalendarEntryType, int>
+        {
+            static Task<int> CountDistinctDatesAsync(IQueryable<CalendarEntry> entries)
             {
-                [CalendarEntryType.Workday] =
-                    await context.WorkTimes
-                        .Where(x => year == null || x.Date.Year == year)
-                        .Select(x => x.Date)
-                        .Union(context.Absences
-                            .Where(x => year == null || x.Date.Year == year)
-                            .Select(x => x.Date))
-                        .Distinct()
-                        .CountAsync(),
-                [CalendarEntryType.Office] =
-                    await context.WorkTimes
-                        .Where(x =>
-                            (year == null || x.Date.Year == year)
-                            && x.ActualMinutes > 0
-                            && x.WorkTimeTypeId == (int)WorkTimeType.Office)
-                        .Select(x => x.Date)
-                        .Distinct()
-                        .CountAsync(),
-                [CalendarEntryType.Mobile] =
-                    await context.WorkTimes
-                        .Where(x =>
-                            (year == null || x.Date.Year == year)
-                            && x.ActualMinutes > 0
-                            && x.WorkTimeTypeId == (int)WorkTimeType.Mobile)
-                        .Select(x => x.Date)
-                        .Distinct()
-                        .CountAsync(),
-                [CalendarEntryType.TimeCompensation] =
-                    await context.WorkTimes
-                        .Where(x =>
-                            (year == null || x.Date.Year == year)
-                            && x.ActualMinutes == 0)
-                        .Select(x => x.Date)
-                        .Distinct()
-                        .CountAsync(),
-                [CalendarEntryType.Holiday] =
-                    await context.Absences
-                        .Where(x =>
-                            (year == null || x.Date.Year == year)
-                            && x.AbsenceTypeId == (int)AbsenceType.Holiday)
-                        .Select(x => x.Date)
-                        .Distinct()
-                        .CountAsync(),
-                [CalendarEntryType.Vacation] =
-                    await context.Absences
-                        .Where(x =>
-                            (year == null || x.Date.Year == year)
-                            && x.AbsenceTypeId == (int)AbsenceType.Vacation)
-                        .Select(x => x.Date)
-                        .Distinct()
-                        .CountAsync(),
-                [CalendarEntryType.Ill] =
-                    await context.Absences
-                        .Where(x =>
-                            (year == null || x.Date.Year == year)
-                            && x.AbsenceTypeId == (int)AbsenceType.Ill)
-                        .Select(x => x.Date)
-                        .Distinct()
-                        .CountAsync()
+                return entries
+                    .Select(x => x.Date)
+                    .Distinct()
+                    .CountAsync();
             }
-        );
+
+            var rawEntries = context
+                .WorkTimes.Select(x => new
+                {
+                    Type = nameof(WorkTime),
+                    TypeId = x.WorkTimeTypeId,
+                    DurationMinutes = x.ActualMinutes,
+                    x.Date
+                })
+                .Union(context.Absences.Select(x => new
+                {
+                    Type = nameof(Absence),
+                    TypeId = x.AbsenceTypeId,
+                    x.DurationMinutes,
+                    x.Date
+                }));
+
+            var calendarEntries = rawEntries
+                .Where(x => year == null || x.Date.Year == year)
+                .Select(x => new CalendarEntry
+                {
+                    Type = x.Type,
+                    TypeId = x.TypeId,
+                    DurationMinutes = x.DurationMinutes,
+                    Date = x.Date
+                });
+
+            Dictionary<CalendarEntryType, IQueryable<CalendarEntry>> entries = new()
+            {
+                [CalendarEntryType.Workday] = calendarEntries,
+                [CalendarEntryType.Office] = calendarEntries
+                    .Where(x =>
+                        x.Type == nameof(WorkTime)
+                        && x.TypeId == (int)WorkTimeType.Office
+                        && x.DurationMinutes > 0),
+                [CalendarEntryType.Mobile] = calendarEntries
+                    .Where(x =>
+                        x.Type == nameof(WorkTime)
+                        && x.TypeId == (int)WorkTimeType.Mobile
+                        && x.DurationMinutes > 0),
+                [CalendarEntryType.TimeCompensation] = calendarEntries
+                    .Where(x =>
+                        x.Type == nameof(WorkTime)
+                        && x.DurationMinutes == 0),
+                [CalendarEntryType.Holiday] = calendarEntries
+                    .Where(x =>
+                        x.Type == nameof(Absence)
+                        && x.TypeId == (int)AbsenceType.Holiday),
+                [CalendarEntryType.Vacation] = calendarEntries
+                    .Where(x =>
+                        x.Type == nameof(Absence)
+                        && x.TypeId == (int)AbsenceType.Vacation),
+                [CalendarEntryType.Ill] = calendarEntries
+                    .Where(x =>
+                        x.Type == nameof(Absence)
+                        && x.TypeId == (int)AbsenceType.Ill)
+            };
+
+            Dictionary<CalendarEntryType, int> result = [];
+
+            foreach (var entry in entries)
+            {
+                result[entry.Key] = await CountDistinctDatesAsync(entry.Value);
+            }
+
+            return result;
+        });
     }
 
     public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
