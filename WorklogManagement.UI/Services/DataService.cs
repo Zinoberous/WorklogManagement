@@ -1,7 +1,8 @@
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
+using WorklogManagement.UI.Models;
 
-namespace WorklogManagement.UI.Models;
+namespace WorklogManagement.UI.Services;
 
 public interface IDataService
 {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Web;
 
-namespace WorklogManagement.UI.Models;
+namespace WorklogManagement.UI.Services;
 
 public interface INavigator
 {

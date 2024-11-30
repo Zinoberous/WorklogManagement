@@ -1,7 +1,7 @@
 using Radzen;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.Home;
-using WorklogManagement.UI.Models;
+using WorklogManagement.UI.Services;
 
 #if DEBUG
 Console.Title = "WorklogManagement.UI";

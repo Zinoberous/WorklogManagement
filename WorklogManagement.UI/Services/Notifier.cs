@@ -1,7 +1,7 @@
-﻿using Microsoft.JSInterop;
+using Microsoft.JSInterop;
 using Radzen;
 
-namespace WorklogManagement.UI.Models;
+namespace WorklogManagement.UI.Services;
 
 public interface INotifier
 {
