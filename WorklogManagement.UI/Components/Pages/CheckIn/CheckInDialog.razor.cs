@@ -1,4 +1,5 @@
-namespace WorklogManagement.UI.Components.CheckIn;
+namespace WorklogManagement.UI.Components.Pages.CheckIn;
+
 public partial class CheckInDialog
 {
 

@@ -1,18 +1,15 @@
-//using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
-//namespace WorklogManagement.UI.Components.Pages;
+namespace WorklogManagement.UI.Components.Pages.CheckIn;
 
-//public partial class CheckIn
-//{
-//    [Parameter]
-//    [SupplyParameterFromQuery(Name = "date")]
-//    public DateOnly? InitialDate { get; set; }
+public partial class CheckIn
+{
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "date")]
+    public DateOnly? InitialDate { get; set; }
 
-//    protected override async Task OnAfterRenderAsync(bool firstRender)
-//    {
-//        if (firstRender)
-//        {
-//            await ViewModel.InitAsync(InitialDate);
-//        }
-//    }
-//}
+    protected override void OnInitialized()
+    {
+        _ = ViewModel.InitAsync(InitialDate);
+    }
+}

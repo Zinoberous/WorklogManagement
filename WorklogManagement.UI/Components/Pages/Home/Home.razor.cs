@@ -30,18 +30,15 @@ public partial class Home
         { "DE-TH", "Thüringen" }
     };
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized()
     {
-        if (firstRender)
-        {
-            await Task.WhenAll([
-                ViewModel.LoadOvertimeAsync(),
-                ViewModel.LoadCalendarStatisticsAsync(),
-                ViewModel.LoadTicketStatisticsAsync(),
-                ViewModel.LoadWorkTimesAsync(),
-                ViewModel.LoadAbsencesAsync(),
-                ViewModel.LoadHolidaysAsync(),
-            ]);
-        }
+        _ = Task.WhenAll([
+            ViewModel.LoadOvertimeAsync(),
+            ViewModel.LoadCalendarStatisticsAsync(),
+            ViewModel.LoadTicketStatisticsAsync(),
+            ViewModel.LoadWorkTimesAsync(),
+            ViewModel.LoadAbsencesAsync(),
+            ViewModel.LoadHolidaysAsync(),
+        ]);
     }
 }

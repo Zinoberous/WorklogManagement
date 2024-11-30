@@ -1,5 +1,6 @@
 using Radzen;
 using WorklogManagement.UI.Components;
+using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
 using WorklogManagement.UI.Services;
 
@@ -30,7 +31,8 @@ services
 services.AddHttpClient();
 
 services
-    .AddScoped<HomeViewModel>();
+    .AddScoped<HomeViewModel>()
+    .AddScoped<CheckInViewModel>();
 
 services
     .AddTransient<IDataService, DataService>()

@@ -235,7 +235,7 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
     private async Task OnSelectedYearChangedAsync()
     {
         await Task.WhenAll([
-            LoadCalendarStatisticsAsync(),
+            LoadCalendarYearStatisticsAsync(),
             LoadWorkTimesAsync(),
             LoadAbsencesAsync(),
         ]);
@@ -244,5 +244,24 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
     private async Task OnSelectedFederalStateChangedAsync()
     {
         await LoadHolidaysAsync();
+    }
+
+    private async Task LoadCalendarYearStatisticsAsync()
+    {
+        try
+        {
+            CalendarStatisticsYear = await _dataService.GetCalendarStaticsAsync(SelectedYear);
+        }
+        catch
+        {
+            Dictionary<CalendarEntryType, int> calendarStatistics = [];
+
+            foreach (CalendarEntryType type in Enum.GetValues<CalendarEntryType>())
+            {
+                calendarStatistics[type] = 0;
+            }
+
+            CalendarStatisticsYear = calendarStatistics;
+        }
     }
 }
