@@ -18,6 +18,8 @@ public partial class TicketStatusLog
 
     public string? Note { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [ForeignKey("TicketId")]
     [InverseProperty("TicketStatusLogs")]
     public virtual Ticket Ticket { get; set; } = null!;

@@ -1,0 +1,57 @@
+@using WorklogManagement.Shared.Enums
+@using WorklogManagement.UI.Extensions
+@using static WorklogManagement.UI.Helper.DisplayHelper
+
+<div class="day" title="@Holiday?.Name" style="@GetDayColoring()">
+    <div>
+        <span class="@GetWeekDayClassName()" title="@GetWeekDayTitle()">
+            @_dayLabelShorts[(int)Date.DayOfWeek]
+        </span>
+        @if (Date.DayOfWeek == DayOfWeek.Monday)
+        {
+            <span class="weeknumber">
+                @Date.GetWeekOfYear()
+            </span>
+        }
+    </div>
+    <div>
+        @if (WorkTimes.Any(x => x.ActualMinutes == 0))
+        {
+            var timeCompensations = WorkTimes.Where(x => x.ActualMinutes == 0).ToArray();
+
+            var durationMinutes = timeCompensations.Sum(x => x.ExpectedMinutes);
+
+            var notes = timeCompensations
+                .Where(x => !string.IsNullOrWhiteSpace(x.Note) && !x.Note.Equals("Zeitausgleich", StringComparison.OrdinalIgnoreCase))
+                .Select(x => $"{MinutesToTime(x.ExpectedMinutes)} => {x.Note}")
+                .ToArray();
+
+            var note = string.Join("\n", notes);
+
+            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle("Zeitausgleich", durationMinutes, note)" />
+        }
+        @foreach(var workTime in WorkTimes.Where(x => x.ActualMinutes > 0).OrderBy(x => x.Type))
+        {
+            var label = workTime.Type switch
+            {
+                WorkTimeType.Office => "Büro",
+                WorkTimeType.Mobile => "Mobil",
+                _ => "Unbekannt"
+            };
+
+            <RadzenIcon Icon="@_workTimeIcons[workTime.Type]" title="@GetIconTitle(label, workTime.ActualMinutes, workTime.Note)" />
+        }
+        @foreach (var absence in Absences.OrderBy(x => x.Type))
+        {
+            var label = absence.Type switch
+            {
+                AbsenceType.Holiday => "Feiertag",
+                AbsenceType.Vacation => "Urlaub",
+                AbsenceType.Ill => "Krank",
+                _ => "Unbekannt"
+            };
+
+            <RadzenIcon Icon="@_absenceIcons[absence.Type]" title="@GetIconTitle(label, absence.DurationMinutes, absence.Note)" />
+        }
+    </div>
+</div>

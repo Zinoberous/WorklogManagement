@@ -1,0 +1,16 @@
+@* @page "/checkin"
+@inherits BasePage<CheckInViewModel>
+
+<PageTitle>Stechuhr</PageTitle>
+
+<MenuBar>
+    <RadzenButton>Erstellen</RadzenButton>
+    <RadzenDatePicker @bind-Value="@ViewModel.Date" />
+</MenuBar>
+
+<main class="checkin">
+    <AsyncContent IsLoading="@ViewModel.IsLoading" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+        @System.Text.Json.JsonSerializer.Serialize(ViewModel.WorkTimes)
+        @System.Text.Json.JsonSerializer.Serialize(ViewModel.Absences)
+    </AsyncContent>
+</main> *@

@@ -1,0 +1,16 @@
+@* @page "/tracking"
+@inherits BasePage<TrackingViewModel>
+
+<PageTitle>Aufwand</PageTitle>
+
+<MenuBar>
+    <RadzenButton>Erstellen</RadzenButton>
+    <RadzenDatePicker @bind-Value=@ViewModel.Date.Value Disabled="@(!string.IsNullOrWhiteSpace(ViewModel.Search.Value))" />
+    <RadzenTextBox Placeholder="Suche:" @bind-Value=@ViewModel.Search.Value />
+</MenuBar>
+
+<main class="tracking">
+    <AsyncContent IsLoading="@ViewModel.IsLoading.Value" Error="@ViewModel.LoadError.Value?.ToString()">
+        @System.Text.Json.JsonSerializer.Serialize(ViewModel.Worklogs);
+    </AsyncContent>
+</main>*@

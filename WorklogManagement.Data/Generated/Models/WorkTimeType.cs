@@ -14,6 +14,8 @@ public partial class WorkTimeType
     [StringLength(255)]
     public string Name { get; set; } = null!;
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [InverseProperty("WorkTimeType")]
     public virtual ICollection<WorkTime> WorkTimes { get; set; } = new List<WorkTime>();
 }

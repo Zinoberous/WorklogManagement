@@ -6,17 +6,17 @@ WorklogManagement.Data als Startprojekt einstellen
 
 cd .\WorklogManagement.Data
 
-Scaffold-DbContext -Connection "Server=<Server>;Database=WorklogManagement;User Id=<user>;Password=<password>;TrustServerCertificate=true;" -Provider "Microsoft.EntityFrameworkCore.SqlServer" -OutputDir ".\Generated\Models" -ContextDir ".\Generated\Context" -Namespace "WorklogManagement.Data.Models" -ContextNamespace "WorklogManagement.Data.Context" -DataAnnotations -NoOnConfiguring -Force
+Scaffold-DbContext -Connection "Server=<ConnectionString>" -Provider "Microsoft.EntityFrameworkCore.SqlServer" -OutputDir ".\Generated\Models" -ContextDir ".\Generated\Context" -Namespace "WorklogManagement.Data.Models" -ContextNamespace "WorklogManagement.Data.Context" -Context "WorklogManagementContext" -DataAnnotations -NoOnConfiguring -Force
 
 ## migration erzeugen
 
-- Aus WorklogManagement.UI alle dateien mit local.db löschen
-- Aus WorklogManagement.Data alles aus ./Migrations löschen
-- Paket-Manager-Konsole öffnen
-	- WorklogManagement.Data als Startprojekt auswählen
+- Aus WorklogManagement.UI alle dateien mit local.db lÃ¶schen
+- Aus WorklogManagement.Data alles aus ./Migrations lÃ¶schen
+- Paket-Manager-Konsole Ã¶ffnen
+	- WorklogManagement.Data als Startprojekt auswÃ¤hlen
 	- cd .\WorklogManagement.Data
 	- dotnet ef migrations add InitialCreate --context WorklogManagementContext --startup-project ../WorklogManagement.UI
-	- In *_InitialCreate.cs in Up() am Ende unten stehenden Code ergänzen
+	- In *_InitialCreate.cs in Up() am Ende unten stehenden Code ergÃ¤nzen
 	- dotnet ef database update --context WorklogManagementContext --startup-project ../WorklogManagement.UI
 
 *_InitialCreate.cs:

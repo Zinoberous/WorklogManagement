@@ -18,6 +18,8 @@ public partial class TicketAttachment
 
     public string? Comment { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [ForeignKey("TicketId")]
     [InverseProperty("TicketAttachments")]
     public virtual Ticket Ticket { get; set; } = null!;

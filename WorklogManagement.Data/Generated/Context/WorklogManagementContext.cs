@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Data.Context;
@@ -36,6 +36,10 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_Absence_Id");
 
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+
             entity.HasOne(d => d.AbsenceType).WithMany(p => p.Absences)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Absence_AbsenceTypeId_AbsenceType_Id");
@@ -44,6 +48,10 @@ public partial class WorklogManagementContext : DbContext
         modelBuilder.Entity<AbsenceType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_AbsenceType_Id");
+
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
         });
 
         modelBuilder.Entity<Ticket>(entity =>
@@ -51,6 +59,9 @@ public partial class WorklogManagementContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_Ticket_Id");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
 
             entity.HasOne(d => d.Ref).WithMany(p => p.InverseRef).HasConstraintName("FK_Ticket_RefId_Ticket_Id");
 
@@ -63,18 +74,29 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_TicketAttachment_Id");
 
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+
             entity.HasOne(d => d.Ticket).WithMany(p => p.TicketAttachments).HasConstraintName("FK_TicketAttachment_TicketId_Ticket_Id");
         });
 
         modelBuilder.Entity<TicketStatus>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_TicketStatus_Id");
+
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
         });
 
         modelBuilder.Entity<TicketStatusLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_TicketStatusLog_Id");
 
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
             entity.Property(e => e.StartedAt).HasDefaultValueSql("(getutcdate())");
 
             entity.HasOne(d => d.Ticket).WithMany(p => p.TicketStatusLogs).HasConstraintName("FK_TicketStatusLog_TicketId_Ticket_Id");
@@ -88,6 +110,10 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_WorkTime_Id");
 
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+
             entity.HasOne(d => d.WorkTimeType).WithMany(p => p.WorkTimes)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_WorkTime_WorkTimeTypeId_WorkTimeType_Id");
@@ -96,11 +122,19 @@ public partial class WorklogManagementContext : DbContext
         modelBuilder.Entity<WorkTimeType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_WorkTimeType_Id");
+
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
         });
 
         modelBuilder.Entity<Worklog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_Worklog_Id");
+
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
 
             entity.HasOne(d => d.Ticket).WithMany(p => p.Worklogs).HasConstraintName("FK_Worklog_TicketId_Ticket_Id");
         });
@@ -108,6 +142,10 @@ public partial class WorklogManagementContext : DbContext
         modelBuilder.Entity<WorklogAttachment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_WorklogAttachment_Id");
+
+            entity.Property(e => e.RowVersion)
+                .IsRowVersion()
+                .IsConcurrencyToken();
 
             entity.HasOne(d => d.Worklog).WithMany(p => p.WorklogAttachments).HasConstraintName("FK_WorklogAttachment_WorklogId_Worklog_Id");
         });

@@ -21,6 +21,8 @@ public partial class Ticket
     [Column(TypeName = "datetime")]
     public DateTime CreatedAt { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [InverseProperty("Ref")]
     public virtual ICollection<Ticket> InverseRef { get; set; } = new List<Ticket>();
 

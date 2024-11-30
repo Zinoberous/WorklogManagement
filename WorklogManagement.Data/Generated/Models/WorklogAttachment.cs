@@ -18,6 +18,8 @@ public partial class WorklogAttachment
 
     public string? Comment { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [ForeignKey("WorklogId")]
     [InverseProperty("WorklogAttachments")]
     public virtual Worklog Worklog { get; set; } = null!;

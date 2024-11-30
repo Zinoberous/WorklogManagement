@@ -14,6 +14,8 @@ public partial class AbsenceType
     [StringLength(255)]
     public string Name { get; set; } = null!;
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [InverseProperty("AbsenceType")]
     public virtual ICollection<Absence> Absences { get; set; } = new List<Absence>();
 }

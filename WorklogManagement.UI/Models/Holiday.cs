@@ -1,4 +1,4 @@
-﻿namespace WorklogManagement.UI.Models;
+namespace WorklogManagement.UI.Models;
 
 /// <summary>
 /// Holidays, die in der UI angezeigt werden.

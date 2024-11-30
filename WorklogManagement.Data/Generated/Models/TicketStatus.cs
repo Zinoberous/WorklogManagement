@@ -14,6 +14,8 @@ public partial class TicketStatus
     [StringLength(255)]
     public string Name { get; set; } = null!;
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [InverseProperty("TicketStatus")]
     public virtual ICollection<TicketStatusLog> TicketStatusLogs { get; set; } = new List<TicketStatusLog>();
 

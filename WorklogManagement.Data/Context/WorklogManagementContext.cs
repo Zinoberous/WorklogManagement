@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Models;
 
 namespace WorklogManagement.Data.Context;

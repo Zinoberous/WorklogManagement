@@ -19,6 +19,8 @@ public partial class WorkTime
 
     public string? Note { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [ForeignKey("WorkTimeTypeId")]
     [InverseProperty("WorkTimes")]
     public virtual WorkTimeType WorkTimeType { get; set; } = null!;

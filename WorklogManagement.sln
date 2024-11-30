@@ -9,12 +9,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.Data", "W
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "WorklogManagement.Database", "WorklogManagement.Database\WorklogManagement.Database.sqlproj", "{C975A765-2543-4B29-B499-DA945E5337BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.Service", "WorklogManagement.Service\WorklogManagement.Service.csproj", "{62C8844D-E7F1-4EF3-A869-CEB1E68DF6D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.Shared", "WorklogManagement.Shared\WorklogManagement.Shared.csproj", "{62C8844D-E7F1-4EF3-A869-CEB1E68DF6D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F35EDF70-ABA0-452A-BB4D-640169CB6963}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		CalendarEntryTransformation.sql = CalendarEntryTransformation.sql
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.API", "WorklogManagement.API\WorklogManagement.API.csproj", "{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +44,10 @@ Global
 		{62C8844D-E7F1-4EF3-A869-CEB1E68DF6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62C8844D-E7F1-4EF3-A869-CEB1E68DF6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62C8844D-E7F1-4EF3-A869-CEB1E68DF6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

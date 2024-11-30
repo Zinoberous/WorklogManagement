@@ -19,6 +19,8 @@ public partial class Worklog
 
     public int TimeSpentSeconds { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [ForeignKey("TicketId")]
     [InverseProperty("Worklogs")]
     public virtual Ticket Ticket { get; set; } = null!;

@@ -1,11 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using Radzen;
-using WorklogManagement.Data.Context;
-using WorklogManagement.Service;
-using WorklogManagement.Service.Common;
 using WorklogManagement.UI.Components;
+using WorklogManagement.UI.Components.Pages.Home;
 using WorklogManagement.UI.Models;
-using WorklogManagement.UI.ViewModels;
+
+#if DEBUG
+Console.Title = "WorklogManagement.UI";
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,33 +27,15 @@ services
     .AddScoped<ThemeService>()
     .AddScoped<NotificationService>();
 
-services
-    .AddHttpClient()
-    .AddTransient<IWorklogManagementService, WorklogManagementService>()
-    .AddDbContextFactory<WorklogManagementContext>(options =>
-    {
-        var conStr = config.GetConnectionString("WorklogManagement");
-
-        options.UseSqlServer(conStr);
-
-        options
-            .EnableDetailedErrors(isDevelopment)
-            .EnableSensitiveDataLogging(isDevelopment);
-    });
+services.AddHttpClient();
 
 services
-    .AddScoped<HomeViewModel>()
-    .AddScoped<CheckInViewModel>();
+    .AddScoped<HomeViewModel>();
 
 services
+    .AddTransient<IDataService, DataService>()
     .AddTransient<INotifier, Notifier>()
     .AddTransient<INavigator, Navigator>();
-
-var attachmentsBaseDir = string.IsNullOrWhiteSpace(config.GetValue<string>("AttachmentsBaseDir"))
-    ? Path.Combine(".", "Attachments")
-    : config.GetValue<string>("AttachmentsBaseDir")!;
-
-Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
 
 var app = builder.Build();
 

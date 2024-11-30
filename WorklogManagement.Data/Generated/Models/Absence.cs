@@ -17,6 +17,8 @@ public partial class Absence
 
     public string? Note { get; set; }
 
+    public byte[] RowVersion { get; set; } = null!;
+
     [ForeignKey("AbsenceTypeId")]
     [InverseProperty("Absences")]
     public virtual AbsenceType AbsenceType { get; set; } = null!;
