@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Components;
-using WorklogManagement.Shared.Models;
 
-namespace WorklogManagement.UI.Components.Pages.CheckIn;
+namespace WorklogManagement.UI.Components.Shared;
 
-public partial class CheckInDialog
+public partial class Dialog
 {
     [Parameter]
     public bool IsOpen { get; set; }
@@ -12,13 +11,10 @@ public partial class CheckInDialog
     public EventCallback<bool> IsOpenChanged { get; set; }
 
     [Parameter]
-    public DateOnly Date { get; set; }
+    public string? Title { get; set; }
 
     [Parameter]
-    public EventCallback<WorkTime> OnSaveWorkTime { get; set; }
-
-    [Parameter]
-    public EventCallback<Absence> OnSaveAbsence { get; set; }
+    public required RenderFragment ChildContent { get; set; }
 
     private async Task Close()
     {

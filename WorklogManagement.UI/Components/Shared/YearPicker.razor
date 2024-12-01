@@ -1,4 +1,4 @@
-<div class="yearpicker" @onfocusout="TryCloseAsync">
+<div class="yearpicker" @onfocusout="TryClose">
     <RadzenTextBox @ref="_input" class="yearpicker-value" Value="@Value.ToString()" ReadOnly="true" @onclick="Open" />
     <div class="yearpicker-menu" style="display: @(_isOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
         <RadzenRow Gap="0" RowGap="0">
@@ -30,7 +30,7 @@
                     else
                     {
                 
-                        <div class="yearpicker-btn" @onclick="(() => SelectAsync(currentYear))">@currentYear</div>
+                        <div class="yearpicker-btn" @onclick="(() => Select(currentYear))">@currentYear</div>
                     }
                 </RadzenColumn>
             }

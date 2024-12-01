@@ -1,0 +1,19 @@
+@if (!IsOpen)
+{
+    return;
+}
+
+<div class="rz-dialog-wrapper">
+    <div class="rz-dialog">
+        <div class="rz-dialog-titlebar">
+            <div class="rz-dialog-title">@Title</div>
+            <a role="button" class="rz-dialog-titlebar-icon rz-dialog-titlebar-close" @onclick="Close">
+                <span class="notranslate rzi rzi-times" />
+            </a>
+        </div>
+        <div class="rz-dialog-content">
+            @ChildContent
+        </div>
+    </div>
+    <div class="rz-dialog-mask" />
+</div>

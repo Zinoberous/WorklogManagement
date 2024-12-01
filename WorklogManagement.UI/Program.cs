@@ -26,7 +26,8 @@ services
 services
     .AddRadzenComponents()
     .AddScoped<ThemeService>()
-    .AddScoped<NotificationService>();
+    .AddScoped<NotificationService>()
+    .AddScoped<DialogService>();
 
 services.AddHttpClient();
 

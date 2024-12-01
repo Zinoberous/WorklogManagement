@@ -4,11 +4,17 @@
 <PageTitle>Stechuhr</PageTitle>
 
 <MenuBar>
-    <RadzenButton>Erstellen</RadzenButton>
-    <RadzenDatePicker @bind-Value="@ViewModel.Date" />
+    <RadzenButton Click="@(() => ViewModel.IsDialogOpen = true)">Erstellen</RadzenButton>
+    <RadzenDatePicker @bind-Value="@ViewModel.SelectedDate" />
 </MenuBar>
 
 <main class="checkin">
+    <CheckInDialog
+        @bind-IsOpen="ViewModel.IsDialogOpen"
+        Date="@ViewModel.SelectedDate"
+        OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
+        OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
+    />
     <AsyncContent IsLoading="@ViewModel.IsLoading" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
         @System.Text.Json.JsonSerializer.Serialize(ViewModel.WorkTimes)
         @System.Text.Json.JsonSerializer.Serialize(ViewModel.Absences)

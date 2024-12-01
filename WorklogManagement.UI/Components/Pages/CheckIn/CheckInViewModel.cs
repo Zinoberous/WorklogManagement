@@ -9,13 +9,20 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
     private readonly IDataService _dataService = dataService;
     private readonly INavigator _navigator = navigator;
 
-    private DateOnly _date = DateOnly.FromDateTime(DateTime.Today);
-    public DateOnly Date
+    private bool _dialogIsOpen = false;
+    public bool IsDialogOpen
     {
-        get => _date;
+        get => _dialogIsOpen;
+        set => SetValue(ref _dialogIsOpen, value);
+    }
+
+    private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
+    public DateOnly SelectedDate
+    {
+        get => _selectedDate;
         set
         {
-            if (SetValue(ref _date, value))
+            if (SetValue(ref _selectedDate, value))
             {
                 _ = OnDateChangedAsync();
             }
@@ -47,7 +54,7 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
     {
         if (initialDate.HasValue)
         {
-            Date = initialDate.Value;
+            SelectedDate = initialDate.Value;
         }
 
         await LoadWorkTimesAndAbsencesAsync();
@@ -59,8 +66,8 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
 
         try
         {
-            WorkTimes = await _dataService.GetWorkTimesAsync(Date);
-            Absences = await _dataService.GetAbsencesAsync(Date);
+            WorkTimes = await _dataService.GetWorkTimesAsync(SelectedDate);
+            Absences = await _dataService.GetAbsencesAsync(SelectedDate);
         }
         finally
         {
@@ -68,9 +75,23 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
         }
     }
 
+    public async Task SaveWorkTimeAsync(WorkTime _)
+    {
+        // TODO: SaveWorkTimeAsync
+
+        await Task.CompletedTask;
+    }
+
+    public async Task SaveAbsenceAsync(Absence _)
+    {
+        // TODO: SaveAbsenceAsync
+
+        await Task.CompletedTask;
+    }
+
     private async Task OnDateChangedAsync()
     {
-        _navigator.UpdateQuery("date", $"{Date:yyyy-MM-dd}");
+        _navigator.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
 
         await LoadWorkTimesAndAbsencesAsync();
     }

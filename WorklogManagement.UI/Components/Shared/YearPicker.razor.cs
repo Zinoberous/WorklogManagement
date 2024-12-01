@@ -47,7 +47,7 @@ public partial class YearPicker
 
     private void NextPage() => SetPageIndex(_pageIndex + 1);
 
-    private async Task SelectAsync(int year)
+    private async Task Select(int year)
     {
         Value = year;
 
@@ -56,7 +56,7 @@ public partial class YearPicker
 
     private void Close() => _isOpen = false;
 
-    private async Task TryCloseAsync()
+    private async Task TryClose()
     {
         if (!_isMouseInside)
         {
