@@ -15,8 +15,29 @@
         OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
         OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
     />
-    <AsyncContent IsLoading="@ViewModel.IsLoading" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-        @System.Text.Json.JsonSerializer.Serialize(ViewModel.WorkTimes)
-        @System.Text.Json.JsonSerializer.Serialize(ViewModel.Absences)
+    <AsyncContent IsLoading="@ViewModel.IsLoading">
+        @if (ViewModel.WorkTimes.Count + ViewModel.Absences.Count == 0)
+        {
+            <RadzenRow>
+                <RadzenColumn>
+                    Keine Einträge vorhanden.
+                </RadzenColumn>
+            </RadzenRow>
+        }
+        @foreach (var workTime in ViewModel.WorkTimes)
+        {
+            <CheckInEntry SelectedType="@workTime.Type.ToString()"
+                          TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
+                          Actual="@(new TimeOnly(workTime.ActualMinutes / 60, workTime.ActualMinutes % 60, 0))"
+                          Expected="@(new TimeOnly(workTime.ExpectedMinutes / 60, workTime.ExpectedMinutes % 60, 0))"
+                          Note="@workTime.Note" />
+        }
+        @foreach (var absence in ViewModel.Absences)
+        {
+            <CheckInEntry SelectedType="@absence.Type.ToString()"
+                          TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
+                          Actual="@(new TimeOnly(absence.DurationMinutes / 60, absence.DurationMinutes % 60, 0))"
+                          Note="@absence.Note" />
+        }
     </AsyncContent>
 </main>

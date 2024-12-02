@@ -36,15 +36,15 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
         set => SetValue(ref _isLoading, value);
     }
 
-    private IEnumerable<WorkTime> _workTimes = [];
-    public IEnumerable<WorkTime> WorkTimes
+    private ICollection<WorkTime> _workTimes = [];
+    public ICollection<WorkTime> WorkTimes
     {
         get => _workTimes;
         set => SetValue(ref _workTimes, value);
     }
 
-    private IEnumerable<Absence> _absences = [];
-    public IEnumerable<Absence> Absences
+    private ICollection<Absence> _absences = [];
+    public ICollection<Absence> Absences
     {
         get => _absences;
         set => SetValue(ref _absences, value);
@@ -75,16 +75,30 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
         }
     }
 
-    public async Task SaveWorkTimeAsync(WorkTime _)
+    public async Task SaveWorkTimeAsync(WorkTime workTime)
     {
         // TODO: SaveWorkTimeAsync
+
+        if (!WorkTimes.Any(x => x.Id == workTime.Id))
+        {
+            WorkTimes.Add(workTime);
+        }
+
+        OnPropertyChanged(nameof(WorkTimes));
 
         await Task.CompletedTask;
     }
 
-    public async Task SaveAbsenceAsync(Absence _)
+    public async Task SaveAbsenceAsync(Absence absence)
     {
         // TODO: SaveAbsenceAsync
+
+        if (!Absences.Any(x => x.Id == absence.Id))
+        {
+            Absences.Add(absence);
+        }
+
+        OnPropertyChanged(nameof(Absences));
 
         await Task.CompletedTask;
     }

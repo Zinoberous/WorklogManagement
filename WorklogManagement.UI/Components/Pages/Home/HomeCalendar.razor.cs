@@ -17,6 +17,4 @@ public partial class HomeCalendar
 
     [Parameter]
     public required IEnumerable<Holiday> Holidays { get; set; }
-
-    private static readonly string[] _monthLabelShorts = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 }

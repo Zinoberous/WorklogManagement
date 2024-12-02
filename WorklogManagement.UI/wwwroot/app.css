@@ -29,10 +29,6 @@
     border-bottom: unset !important;
 }
 
-.menubar ~ main {
-    margin-top: var(--header-height);
-}
-
 main {
     padding: var(--rz-row-gap);
 }

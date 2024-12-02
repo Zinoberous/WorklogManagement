@@ -8,56 +8,50 @@
 <PageTitle>Startseite</PageTitle>
 
 <main class="home">
-    <RadzenRow>
-        <RadzenColumn>
-            <RadzenCard>
-                <RadzenText>Überstunden:</RadzenText>
-                <AsyncContent IsLoading="@ViewModel.LoadOvertime" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-                    <div class="overtime">
-                        <div>@MinutesToTime(ViewModel.Overtime.TotalMinutes)</div>
-                        <div>
-                            @_workTimeLabels[WorkTimeType.Office]: @MinutesToTime(ViewModel.Overtime.OfficeMinutes) /
-                            @_workTimeLabels[WorkTimeType.Mobile]: @MinutesToTime(ViewModel.Overtime.MobileMinutes)
-                        </div>
+    <div class="flex-row">
+        <RadzenCard>
+            <RadzenText>Überstunden:</RadzenText>
+            <AsyncContent IsLoading="@ViewModel.LoadOvertime" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+                <div class="overtime">
+                    <div>@MinutesToTime(ViewModel.Overtime.TotalMinutes)</div>
+                    <div>
+                        @WorkTimeLabels[WorkTimeType.Office]: @MinutesToTime(ViewModel.Overtime.OfficeMinutes) /
+                        @WorkTimeLabels[WorkTimeType.Mobile]: @MinutesToTime(ViewModel.Overtime.MobileMinutes)
                     </div>
-                </AsyncContent>
-            </RadzenCard>
-        </RadzenColumn>
-        <RadzenColumn>
-            <RadzenCard>
-                <RadzenText>Tage:</RadzenText>
-                <AsyncContent IsLoading="@ViewModel.LoadCalendarStatistics" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-                    <ul>
-                        <li>Arbeitstage: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Workday]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Workday]</strong></li>
-                        <li />
-                        <li>Büro: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Office]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Office]</strong></li>
-                        <li>Mobil: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Mobile]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Mobile]</strong></li>
-                        <li>Feiertage: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Holiday]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Holiday]</strong></li>
-                        <li>Urlaub: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Vacation]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Vacation]</strong></li>
-                        <li>Zeitausgleich: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.TimeCompensation]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.TimeCompensation]</strong></li>
-                        <li>Krank: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Ill]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Ill]</strong></li>
-                    </ul>
-                </AsyncContent>
-            </RadzenCard>
-        </RadzenColumn>
-        <RadzenColumn>
-            <RadzenCard>
-                <RadzenText>Tickets:</RadzenText>
-                <AsyncContent IsLoading="@ViewModel.LoadTicketStatistics" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-                    <ul>
-                        <li>Gesamt: <strong>@ViewModel.TicketStatistics.Sum(x => x.Value)</strong></li>
-                        <li>Offen: <strong>@ViewModel.TicketStatistics[TicketStatus.Todo]</strong></li>
-                        <li>In Bearbeitung: <strong>@ViewModel.TicketStatistics[TicketStatus.Running]</strong></li>
-                        <li>Dauerauftrag: <strong>@ViewModel.TicketStatistics[TicketStatus.Continuous]</strong></li>
-                        <li>Pausiert: <strong>@ViewModel.TicketStatistics[TicketStatus.Paused]</strong></li>
-                        <li>Blockiert: <strong>@ViewModel.TicketStatistics[TicketStatus.Blocked]</strong></li>
-                        <li>Erledigt: <strong>@ViewModel.TicketStatistics[TicketStatus.Done]</strong></li>
-                        <li>Abgebrochen: <strong>@ViewModel.TicketStatistics[TicketStatus.Canceled]</strong></li>
-                    </ul>
-                </AsyncContent>
-            </RadzenCard>
-        </RadzenColumn>
-    </RadzenRow>
+                </div>
+            </AsyncContent>
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText>Tage:</RadzenText>
+            <AsyncContent IsLoading="@ViewModel.LoadCalendarStatistics" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+                <ul>
+                    <li>Arbeitstage: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Workday]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Workday]</strong></li>
+                    <li />
+                    <li>Büro: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Office]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Office]</strong></li>
+                    <li>Mobil: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Mobile]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Mobile]</strong></li>
+                    <li>Feiertage: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Holiday]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Holiday]</strong></li>
+                    <li>Urlaub: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Vacation]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Vacation]</strong></li>
+                    <li>Zeitausgleich: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.TimeCompensation]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.TimeCompensation]</strong></li>
+                    <li>Krank: <strong>@ViewModel.CalendarStatisticsYear[CalendarEntryType.Ill]/@ViewModel.CalendarStatisticsAll[CalendarEntryType.Ill]</strong></li>
+                </ul>
+            </AsyncContent>
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenText>Tickets:</RadzenText>
+            <AsyncContent IsLoading="@ViewModel.LoadTicketStatistics" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+                <ul>
+                    <li>Gesamt: <strong>@ViewModel.TicketStatistics.Sum(x => x.Value)</strong></li>
+                    <li>Offen: <strong>@ViewModel.TicketStatistics[TicketStatus.Todo]</strong></li>
+                    <li>In Bearbeitung: <strong>@ViewModel.TicketStatistics[TicketStatus.Running]</strong></li>
+                    <li>Dauerauftrag: <strong>@ViewModel.TicketStatistics[TicketStatus.Continuous]</strong></li>
+                    <li>Pausiert: <strong>@ViewModel.TicketStatistics[TicketStatus.Paused]</strong></li>
+                    <li>Blockiert: <strong>@ViewModel.TicketStatistics[TicketStatus.Blocked]</strong></li>
+                    <li>Erledigt: <strong>@ViewModel.TicketStatistics[TicketStatus.Done]</strong></li>
+                    <li>Abgebrochen: <strong>@ViewModel.TicketStatistics[TicketStatus.Canceled]</strong></li>
+                </ul>
+            </AsyncContent>
+        </RadzenCard>
+    </div>
     <RadzenRow>
         <RadzenColumn Size="12">
             <RadzenPanel>
@@ -66,7 +60,7 @@
                         <YearPicker @bind-Value="ViewModel.SelectedYear" />
                     </RadzenColumn>
                     <RadzenColumn>
-                        <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" Data="@_federalStates" ValueProperty="Key" TextProperty="Value" />
+                        <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" Data="@FederalStates" ValueProperty="Key" TextProperty="Value" />
                     </RadzenColumn>
                 </RadzenRow>
                 <RadzenRow>

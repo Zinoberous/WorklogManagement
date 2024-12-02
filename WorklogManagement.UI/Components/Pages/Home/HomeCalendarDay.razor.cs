@@ -19,8 +19,6 @@ public partial class HomeCalendarDay
     [Parameter]
     public Holiday? Holiday { get; set; }
 
-    private static readonly string[] _dayLabelShorts = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-
     private static readonly string _timeCompensationIcon = "timer_off";
 
     private static readonly Dictionary<WorkTimeType, string> _workTimeIcons = new()

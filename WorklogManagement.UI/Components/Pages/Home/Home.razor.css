@@ -1,6 +1,13 @@
-::deep .rz-card {
-    height: 150px;
-    min-width: 400px;
+.flex-row {
+    margin: var(--rz-row-gap) 0px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--rz-row-gap);
+}
+
+::deep .flex-row > div {
+    flex-grow: 1;
 }
 
 ::deep .rz-text-body1 {

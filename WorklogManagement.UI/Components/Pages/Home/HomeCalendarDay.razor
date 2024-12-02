@@ -5,7 +5,7 @@
 <div class="day" title="@Holiday?.Name" style="@GetDayColoring()">
     <div>
         <span class="@GetWeekDayClassName()" title="@GetWeekDayTitle()">
-            @_dayLabelShorts[(int)Date.DayOfWeek]
+            @DayLabelShorts[(int)Date.DayOfWeek]
         </span>
         @if (Date.DayOfWeek == DayOfWeek.Monday)
         {

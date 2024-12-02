@@ -1,0 +1,7 @@
+.row {
+    margin: var(--rz-row-gap) 0px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--rz-row-gap);
+}
