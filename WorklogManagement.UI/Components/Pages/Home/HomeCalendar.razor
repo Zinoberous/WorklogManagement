@@ -10,7 +10,7 @@
                             </span>
                         </div>
                     </th>
-                    @for (int day = 1; day <= 31; day++)
+                    @for (var day = 1; day <= 31; day++)
                     {
                         <th>
                             <div>
@@ -25,7 +25,37 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int month = 1; month <= 12; month++)
+                @* last month of previous year *@
+                <tr class="rz-data-row">
+                    <td style="padding: 0; text-align: center;">
+                        <span class="rz-cell-data">
+                            @MonthLabelShorts[11]
+                        </span>
+                    </td>
+                    @for (var day = 1; day <= 31; day++)
+                    {
+                        <td style="padding: 0;">
+                            @try
+                            {
+                                DateOnly date = new(Year - 1, 12, day);
+
+                                var workTimes = WorkTimes.Where(x => x.Date == date).ToArray();
+
+                                var absences = Absences.Where(x => x.Date == date).ToArray();
+
+                                var holiday = Holidays.FirstOrDefault(x => x.Date == date);
+
+                                <HomeCalendarDay Date="date" WorkTimes="workTimes" Absences="absences" Holiday="holiday" />
+                            }
+                            catch
+                            {
+                                // invalid date = nothing to render
+                            }
+                        </td>
+                    }
+                </tr>
+                @* current year *@
+                @for (var month = 1; month <= 12; month++)
                 {
                     <tr class="rz-data-row">
                         <td style="padding: 0; text-align: center;">
@@ -33,7 +63,7 @@
                                 @MonthLabelShorts[month - 1]
                             </span>
                         </td>
-                        @for (int day = 1; day <= 31; day++)
+                        @for (var day = 1; day <= 31; day++)
                         {
                             <td style="padding: 0;">
                                 @try
@@ -56,6 +86,35 @@
                         }
                     </tr>
                 }
+                @* first month of next year *@
+                <tr class="rz-data-row">
+                    <td style="padding: 0; text-align: center;">
+                        <span class="rz-cell-data">
+                            @MonthLabelShorts[0]
+                        </span>
+                    </td>
+                    @for (var day = 1; day <= 31; day++)
+                    {
+                        <td style="padding: 0;">
+                            @try
+                            {
+                                DateOnly date = new(Year + 1, 1, day);
+
+                                var workTimes = WorkTimes.Where(x => x.Date == date).ToArray();
+
+                                var absences = Absences.Where(x => x.Date == date).ToArray();
+
+                                var holiday = Holidays.FirstOrDefault(x => x.Date == date);
+
+                                <HomeCalendarDay Date="date" WorkTimes="workTimes" Absences="absences" Holiday="holiday" />
+                            }
+                            catch
+                            {
+                                // invalid date = nothing to render
+                            }
+                        </td>
+                    }
+                </tr>
             </tbody>
         </table>
     </div>

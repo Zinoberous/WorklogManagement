@@ -78,21 +78,21 @@ if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 
 var app = builder.Build();
 
-app.Use(async (context, next) =>
-{
-    if (context.Request.Path.ToString().Contains("swagger", StringComparison.InvariantCultureIgnoreCase))
-    {
-        await next.Invoke();
-        return;
-    }
+//app.Use(async (context, next) =>
+//{
+//    if (context.Request.Path.ToString().Contains("swagger", StringComparison.InvariantCultureIgnoreCase))
+//    {
+//        await next.Invoke();
+//        return;
+//    }
 
-    var stopwatch = Stopwatch.StartNew();
-    await next.Invoke();
-    stopwatch.Stop();
-    var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-    logger.LogInformation("Request {Method} {Path} executed in {ElapsedMilliseconds}ms", context.Request.Method, context.Request.Path, elapsedMilliseconds);
-});
+//    var stopwatch = Stopwatch.StartNew();
+//    await next.Invoke();
+//    stopwatch.Stop();
+//    var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+//    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+//    logger.LogInformation("Request {Method} {Path} executed in {ElapsedMilliseconds}ms", context.Request.Method, context.Request.Path, elapsedMilliseconds);
+//});
 
 app.UseDelta<WorklogManagementContext>();
 

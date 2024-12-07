@@ -5,10 +5,11 @@ using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
 
-public class CheckInViewModel(IDataService dataService, INavigator navigator) : BaseViewModel
+public class CheckInViewModel(IDataService dataService, INavigator navigator, INotifier notifier) : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
     private readonly INavigator _navigator = navigator;
+    private readonly INotifier _notifier = notifier;
 
     private bool _dialogIsOpen = false;
     public bool IsDialogOpen
@@ -68,8 +69,16 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
 
         try
         {
-            WorkTimes = await _dataService.GetWorkTimesAsync(SelectedDate);
-            Absences = await _dataService.GetAbsencesAsync(SelectedDate);
+            var workTimes = await _dataService.GetWorkTimesAsync(SelectedDate);
+            var absences = await _dataService.GetAbsencesAsync(SelectedDate);
+
+            // nachträgliche Zuweisung der Werte, so werden die Werte entweder ganz oder gar nicht angezeigt, wenn ein Fehler auftritt
+            WorkTimes = workTimes;
+            Absences = absences;
+        }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Kalendareinträge!", ex);
         }
         finally
         {

@@ -12,7 +12,7 @@ public interface IDataService
 
     Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
 
-    Task<List<Holiday>> GetHolidaysAsync(int year, string federalState);
+    Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState);
 
     Task<List<WorkTime>> GetWorkTimesAsync(DateOnly date) => GetWorkTimesAsync(date, date);
     Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to);
@@ -35,134 +35,88 @@ public interface IDataService
     //Task DeleteAsync<TDataModel>(int id) where TDataModel : IDataModel;
 }
 
-public class DataService(IHttpClientFactory httpClientFactory, INotifier notifier) : IDataService
+public class DataService(IHttpClientFactory httpClientFactory) : IDataService
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-    private readonly INotifier _notifier = notifier;
 
     public async Task<OvertimeInfo> GetOvertimeAsync()
     {
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
+        using var client = _httpClientFactory.CreateClient();
 
-            var res = await client.GetAsync($"https://localhost:7182/statistics/overtime");
+        var res = await client.GetAsync($"https://localhost:7182/statistics/overtime");
 
-            res.EnsureSuccessStatusCode();
+        res.EnsureSuccessStatusCode();
 
-            return (await res.Content.ReadFromJsonAsync<OvertimeInfo>())!;
-        }
-        catch (Exception ex)
-        {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Überstunden!", ex);
-
-            throw;
-        }
+        return (await res.Content.ReadFromJsonAsync<OvertimeInfo>())!;
     }
 
     public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
     {
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
+        using var client = _httpClientFactory.CreateClient();
 
-            var res = await client.GetAsync($"https://localhost:7182/statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}");
+        var res = await client.GetAsync($"https://localhost:7182/statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}");
 
-            res.EnsureSuccessStatusCode();
+        res.EnsureSuccessStatusCode();
 
-            return (await res.Content.ReadFromJsonAsync<Dictionary<CalendarEntryType, int>>())!;
-        }
-        catch (Exception ex)
-        {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Kalendereinträge!", ex);
-
-            throw;
-        }
+        return (await res.Content.ReadFromJsonAsync<Dictionary<CalendarEntryType, int>>())!;
     }
 
     public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
     {
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
+        using var client = _httpClientFactory.CreateClient();
 
-            var res = await client.GetAsync($"https://localhost:7182/statistics/tickets");
+        var res = await client.GetAsync($"https://localhost:7182/statistics/tickets");
 
-            res.EnsureSuccessStatusCode();
+        res.EnsureSuccessStatusCode();
 
-            return (await res.Content.ReadFromJsonAsync<Dictionary<TicketStatus, int>>())!;
-        }
-        catch (Exception ex)
-        {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Tickets!", ex);
-
-            throw;
-        }
+        return (await res.Content.ReadFromJsonAsync<Dictionary<TicketStatus, int>>())!;
     }
 
-    public async Task<List<Holiday>> GetHolidaysAsync(int year, string federalState)
+    public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
     {
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
+        using var client = _httpClientFactory.CreateClient();
 
+        List<Holiday> holidays = new();
+
+        for (var year = from.Year; year <= to.Year; year++)
+        {
             var res = await client.GetAsync($"https://date.nager.at/api/v3/PublicHolidays/{year}/DE");
 
             res.EnsureSuccessStatusCode();
 
-            var holidays = await res.Content.ReadFromJsonAsync<IEnumerable<HolidayDto>>();
+            var yearHolidays = await res.Content.ReadFromJsonAsync<IEnumerable<HolidayDto>>();
 
-            return holidays?
-                .Where(h => h.Counties == null || h.Counties.Contains(federalState))
-                .Select(x => new Holiday { Date = x.Date, Name = x.LocalName })
-                .ToList() ?? [];
+            if (yearHolidays != null)
+            {
+                holidays.AddRange(yearHolidays
+                    .Where(h => h.Date >= from && h.Date <= to && (h.Counties == null || h.Counties.Contains(federalState)))
+                    .Select(x => new Holiday { Date = x.Date, Name = x.LocalName }));
+            }
         }
-        catch (Exception ex)
-        {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Feiertage!", ex);
 
-            throw;
-        }
+        return holidays;
     }
 
     public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
     {
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
+        using var client = _httpClientFactory.CreateClient();
 
-            var res = await client.GetAsync($"https://localhost:7182/worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
+        var res = await client.GetAsync($"https://localhost:7182/worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
 
-            res.EnsureSuccessStatusCode();
+        res.EnsureSuccessStatusCode();
 
-            return (await res.Content.ReadFromJsonAsync<List<WorkTime>>())!;
-        }
-        catch (Exception ex)
-        {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Arbeitszeiten!", ex);
-
-            throw;
-        }
+        return (await res.Content.ReadFromJsonAsync<List<WorkTime>>())!;
     }
 
     public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
-        try
-        {
-            using var client = _httpClientFactory.CreateClient();
+        using var client = _httpClientFactory.CreateClient();
 
-            var res = await client.GetAsync($"https://localhost:7182/absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}");
+        var res = await client.GetAsync($"https://localhost:7182/absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}");
 
-            res.EnsureSuccessStatusCode();
+        res.EnsureSuccessStatusCode();
 
-            return (await res.Content.ReadFromJsonAsync<List<Absence>>())!;
-        }
-        catch (Exception ex)
-        {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Abwesenheiten!", ex);
-
-            throw;
-        }
+        return (await res.Content.ReadFromJsonAsync<List<Absence>>())!;
     }
 
     //public async Task<TDataModel> SaveAsync<TDataModel>(TDataModel item)

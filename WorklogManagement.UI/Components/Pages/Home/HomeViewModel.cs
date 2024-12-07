@@ -6,9 +6,10 @@ using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.Home;
 
-public class HomeViewModel(IDataService dataService) : BaseViewModel
+public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
+    private readonly INotifier _notifier = notifier;
 
     private bool _loadOvertime = true;
     public bool LoadOvertime
@@ -74,6 +75,9 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
             LoadAbsencesAsync(),
         ]);
     }
+
+    private DateOnly LoadDataFrom => new(SelectedYear - 1, 12, 1);
+    private DateOnly LoadDataTo => new(SelectedYear + 1, 1, 31);
 
     private string _selectedFederalState = "DE-HE";
     public string SelectedFederalState
@@ -157,6 +161,10 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
         {
             Overtime = await _dataService.GetOvertimeAsync();
         }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Überstunden!", ex);
+        }
         finally
         {
             LoadOvertime = false;
@@ -167,14 +175,51 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
     {
         LoadCalendarStatistics = true;
 
+        await LoadCalendarYearStatisticsAsync();
+        await LoadCalendarAllStatisticsAsync();
+
+        LoadCalendarStatistics = false;
+    }
+
+    private async Task LoadCalendarYearStatisticsAsync()
+    {
         try
         {
             CalendarStatisticsYear = await _dataService.GetCalendarStaticsAsync(SelectedYear);
+        }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!", ex);
+
+            Dictionary<CalendarEntryType, int> calendarStatistics = [];
+
+            foreach (var type in Enum.GetValues<CalendarEntryType>())
+            {
+                calendarStatistics[type] = 0;
+            }
+
+            CalendarStatisticsYear = calendarStatistics;
+        }
+    }
+
+    private async Task LoadCalendarAllStatisticsAsync()
+    {
+        try
+        {
             CalendarStatisticsAll = await _dataService.GetCalendarStaticsAsync();
         }
-        finally
+        catch (Exception ex)
         {
-            LoadCalendarStatistics = false;
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Kalendarstatistiken!", ex);
+
+            Dictionary<CalendarEntryType, int> calendarStatistics = [];
+
+            foreach (var type in Enum.GetValues<CalendarEntryType>())
+            {
+                calendarStatistics[type] = 0;
+            }
+
+            CalendarStatisticsAll = calendarStatistics;
         }
     }
 
@@ -185,6 +230,19 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
         try
         {
             TicketStatistics = await _dataService.GetTicketStatisticsAsync();
+        }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Ticketstatistiken!", ex);
+
+            Dictionary<TicketStatus, int> ticketStatistics = [];
+
+            foreach (var type in Enum.GetValues<TicketStatus>())
+            {
+                ticketStatistics[type] = 0;
+            }
+
+            TicketStatistics = ticketStatistics;
         }
         finally
         {
@@ -198,7 +256,11 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
 
         try
         {
-            WorkTimes = await _dataService.GetWorkTimesAsync(new(SelectedYear, 1, 1), new(SelectedYear, 12, 31));
+            WorkTimes = await _dataService.GetWorkTimesAsync(LoadDataFrom, LoadDataTo);
+        }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Arbeitszeiten!", ex);
         }
         finally
         {
@@ -212,7 +274,11 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
 
         try
         {
-            Absences = await _dataService.GetAbsencesAsync(new(SelectedYear, 1, 1), new(SelectedYear, 12, 31));
+            Absences = await _dataService.GetAbsencesAsync(LoadDataFrom, LoadDataTo);
+        }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Abwesenheiten!", ex);
         }
         finally
         {
@@ -226,30 +292,15 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
 
         try
         {
-            Holidays = await _dataService.GetHolidaysAsync(SelectedYear, SelectedFederalState);
+            Holidays = await _dataService.GetHolidaysAsync(LoadDataFrom, LoadDataTo, SelectedFederalState);
+        }
+        catch (Exception ex)
+        {
+            await _notifier.NotifyErrorAsync("Fehler beim Laden der Feiertage!", ex);
         }
         finally
         {
             LoadHolidays = false;
-        }
-    }
-
-    private async Task LoadCalendarYearStatisticsAsync()
-    {
-        try
-        {
-            CalendarStatisticsYear = await _dataService.GetCalendarStaticsAsync(SelectedYear);
-        }
-        catch
-        {
-            Dictionary<CalendarEntryType, int> calendarStatistics = [];
-
-            foreach (CalendarEntryType type in Enum.GetValues<CalendarEntryType>())
-            {
-                calendarStatistics[type] = 0;
-            }
-
-            CalendarStatisticsYear = calendarStatistics;
         }
     }
 }
