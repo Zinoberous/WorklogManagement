@@ -63,26 +63,28 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
     public int SelectedYear
     {
         get => _selectedYear;
-        set
-        {
-            if (SetValue(ref _selectedYear, value))
-            {
-                _ = OnSelectedYearChangedAsync();
-            }
-        }
+        set => SetValue(ref _selectedYear, value);
+    }
+
+    public async Task OnSelectedYearChanged()
+    {
+        await Task.WhenAll([
+            LoadCalendarYearStatisticsAsync(),
+            LoadWorkTimesAsync(),
+            LoadAbsencesAsync(),
+        ]);
     }
 
     private string _selectedFederalState = "DE-HE";
     public string SelectedFederalState
     {
         get => _selectedFederalState;
-        set
-        {
-            if (SetValue(ref _selectedFederalState, value))
-            {
-                _ = OnSelectedFederalStateChangedAsync();
-            }
-        }
+        set => SetValue(ref _selectedFederalState, value);
+    }
+
+    public async Task OnSelectedFederalStateChanged()
+    {
+        await LoadHolidaysAsync();
     }
 
     public bool LoadCalendar => LoadWorkTimes || LoadAbsences || LoadHolidays;
@@ -230,20 +232,6 @@ public class HomeViewModel(IDataService dataService) : BaseViewModel
         {
             LoadHolidays = false;
         }
-    }
-
-    private async Task OnSelectedYearChangedAsync()
-    {
-        await Task.WhenAll([
-            LoadCalendarYearStatisticsAsync(),
-            LoadWorkTimesAsync(),
-            LoadAbsencesAsync(),
-        ]);
-    }
-
-    private async Task OnSelectedFederalStateChangedAsync()
-    {
-        await LoadHolidaysAsync();
     }
 
     private async Task LoadCalendarYearStatisticsAsync()

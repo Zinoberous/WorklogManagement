@@ -7,13 +7,13 @@ namespace WorklogManagement.UI.Components.Shared;
 
 public partial class Editor
 {
-    private RadzenHtmlEditor _editor = null!;
-
     [Parameter]
     public string Value { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }
+
+    private RadzenHtmlEditor _editor = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

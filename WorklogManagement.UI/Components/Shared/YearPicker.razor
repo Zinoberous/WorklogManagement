@@ -1,9 +1,9 @@
 <div class="yearpicker" @onfocusout="TryClose">
     <RadzenTextBox @ref="_input" class="yearpicker-value" Value="@Value.ToString()" ReadOnly="true" @onclick="Open" />
-    <div class="yearpicker-menu" style="display: @(_isOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
+    <div class="yearpicker-menu" style="display: @(IsOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
         <RadzenRow Gap="0" RowGap="0">
             <RadzenColumn Size="4">
-                @if (_pageIndex == 0)
+                @if (PageIndex == 0)
                 {
                     <div/>
                 }
@@ -18,7 +18,7 @@
             </RadzenColumn>
         </RadzenRow>
         <RadzenRow Gap="0" RowGap="0">
-            @for (var year = _firstYearOfPage; year <= _lastYearOfPage; year++)
+            @for (var year = FirstYearOfPage; year <= LastYearOfPage; year++)
             {
                 var currentYear = year;
 

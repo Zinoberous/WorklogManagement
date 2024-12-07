@@ -57,10 +57,10 @@
             <RadzenPanel>
                 <RadzenRow>
                     <RadzenColumn Style="max-width: 70px;">
-                        <YearPicker @bind-Value="ViewModel.SelectedYear" />
+                        <YearPicker @bind-Value="ViewModel.SelectedYear" OnChanged="@ViewModel.OnSelectedYearChanged" />
                     </RadzenColumn>
                     <RadzenColumn>
-                        <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" Data="@FederalStates" ValueProperty="Key" TextProperty="Value" />
+                        <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" SelectedItemChanged="@ViewModel.OnSelectedFederalStateChanged" Data="@FederalStates" ValueProperty="Key" TextProperty="Value" />
                     </RadzenColumn>
                 </RadzenRow>
                 <RadzenRow>

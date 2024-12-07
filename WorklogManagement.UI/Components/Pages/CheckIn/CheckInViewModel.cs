@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
@@ -20,13 +21,14 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
     public DateOnly SelectedDate
     {
         get => _selectedDate;
-        set
-        {
-            if (SetValue(ref _selectedDate, value))
-            {
-                _ = OnDateChangedAsync();
-            }
-        }
+        set => SetValue(ref _selectedDate, value);
+    }
+
+    public async Task OnSelectedDateChanged()
+    {
+        _navigator.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
+
+        await LoadWorkTimesAndAbsencesAsync();
     }
 
     private bool _isLoading = true;
@@ -101,12 +103,5 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator) : 
         OnPropertyChanged(nameof(Absences));
 
         await Task.CompletedTask;
-    }
-
-    private async Task OnDateChangedAsync()
-    {
-        _navigator.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
-
-        await LoadWorkTimesAndAbsencesAsync();
     }
 }

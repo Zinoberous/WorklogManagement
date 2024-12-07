@@ -8,8 +8,8 @@ public partial class CheckIn
     [SupplyParameterFromQuery(Name = "date")]
     public DateOnly? InitialDate { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _ = ViewModel.InitAsync(InitialDate);
+        await ViewModel.InitAsync(InitialDate);
     }
 }

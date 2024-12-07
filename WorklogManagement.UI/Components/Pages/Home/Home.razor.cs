@@ -2,9 +2,9 @@ namespace WorklogManagement.UI.Components.Pages.Home;
 
 public partial class Home
 {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _ = Task.WhenAll([
+        await Task.WhenAll([
             ViewModel.LoadOvertimeAsync(),
             ViewModel.LoadCalendarStatisticsAsync(),
             ViewModel.LoadTicketStatisticsAsync(),
