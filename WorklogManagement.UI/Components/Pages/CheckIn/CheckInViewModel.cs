@@ -31,6 +31,13 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         await LoadWorkTimesAndAbsencesAsync();
     }
 
+    private ICollection<DateOnly> _datesWithEntries = [];
+    public ICollection<DateOnly> DatesWithEntries
+    {
+        get => _datesWithEntries;
+        set => SetValue(ref _datesWithEntries, value);
+    }
+
     private bool _isLoading = true;
     public bool IsLoading
     {
@@ -59,7 +66,22 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
             SelectedDate = initialDate.Value;
         }
 
-        await LoadWorkTimesAndAbsencesAsync();
+        await Task.WhenAll([
+            LoadDatesWithEntriesAsync(),
+            LoadWorkTimesAndAbsencesAsync()
+        ]);
+    }
+
+    public async Task LoadDatesWithEntriesAsync()
+    {
+        try
+        {
+            DatesWithEntries = await _dataService.GetDatesWithEntriesAsync();
+        }
+        catch
+        {
+            // hat nur Auswirkungen auf die Darstellung, nicht auf die Funktionalität
+        }
     }
 
     public async Task LoadWorkTimesAndAbsencesAsync()
@@ -92,9 +114,14 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         if (!WorkTimes.Any(x => x.Id == workTime.Id))
         {
             WorkTimes.Add(workTime);
+            OnPropertyChanged(nameof(WorkTimes));
         }
 
-        OnPropertyChanged(nameof(WorkTimes));
+        if (DatesWithEntries.Contains(workTime.Date))
+        {
+            DatesWithEntries.Add(workTime.Date);
+            OnPropertyChanged(nameof(DatesWithEntries));
+        }
 
         await Task.CompletedTask;
     }
@@ -106,9 +133,14 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         if (!Absences.Any(x => x.Id == absence.Id))
         {
             Absences.Add(absence);
+            OnPropertyChanged(nameof(Absences));
         }
 
-        OnPropertyChanged(nameof(Absences));
+        if (DatesWithEntries.Contains(absence.Date))
+        {
+            DatesWithEntries.Add(absence.Date);
+            OnPropertyChanged(nameof(DatesWithEntries));
+        }
 
         await Task.CompletedTask;
     }

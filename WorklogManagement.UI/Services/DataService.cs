@@ -11,6 +11,8 @@ public interface IDataService
 
     Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
 
+    Task<List<DateOnly>> GetDatesWithEntriesAsync();
+
     Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState);
 
     Task<List<WorkTime>> GetWorkTimesAsync(DateOnly date) => GetWorkTimesAsync(date, date);
@@ -71,6 +73,17 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
         res.EnsureSuccessStatusCode();
 
         return (await res.Content.ReadFromJsonAsync<Dictionary<TicketStatus, int>>())!;
+    }
+
+    public async Task<List<DateOnly>> GetDatesWithEntriesAsync()
+    {
+        using var client = CreateClient();
+
+        var res = await client.GetAsync("statistics/dateswithentries");
+
+        res.EnsureSuccessStatusCode();
+
+        return (await res.Content.ReadFromJsonAsync<List<DateOnly>>())!;
     }
 
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
