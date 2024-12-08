@@ -1,6 +1,5 @@
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Models;
 
 namespace WorklogManagement.UI.Services;
 
@@ -39,11 +38,13 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
+    private HttpClient CreateClient() => _httpClientFactory.CreateClient(nameof(WorklogManagement));
+
     public async Task<OvertimeInfo> GetOvertimeAsync()
     {
-        using var client = _httpClientFactory.CreateClient();
+        using var client = CreateClient();
 
-        var res = await client.GetAsync($"https://localhost:7182/statistics/overtime");
+        var res = await client.GetAsync("statistics/overtime");
 
         res.EnsureSuccessStatusCode();
 
@@ -52,9 +53,9 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
 
     public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
     {
-        using var client = _httpClientFactory.CreateClient();
+        using var client = CreateClient();
 
-        var res = await client.GetAsync($"https://localhost:7182/statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}");
+        var res = await client.GetAsync($"statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}");
 
         res.EnsureSuccessStatusCode();
 
@@ -63,9 +64,9 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
 
     public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
     {
-        using var client = _httpClientFactory.CreateClient();
+        using var client = CreateClient();
 
-        var res = await client.GetAsync($"https://localhost:7182/statistics/tickets");
+        var res = await client.GetAsync("statistics/tickets");
 
         res.EnsureSuccessStatusCode();
 
@@ -74,34 +75,20 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
 
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
     {
-        using var client = _httpClientFactory.CreateClient();
+        using var client = CreateClient();
 
-        List<Holiday> holidays = new();
+        var res = await client.GetAsync($"holidays/{federalState}?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
 
-        for (var year = from.Year; year <= to.Year; year++)
-        {
-            var res = await client.GetAsync($"https://date.nager.at/api/v3/PublicHolidays/{year}/DE");
+        res.EnsureSuccessStatusCode();
 
-            res.EnsureSuccessStatusCode();
-
-            var yearHolidays = await res.Content.ReadFromJsonAsync<IEnumerable<HolidayDto>>();
-
-            if (yearHolidays != null)
-            {
-                holidays.AddRange(yearHolidays
-                    .Where(h => h.Date >= from && h.Date <= to && (h.Counties == null || h.Counties.Contains(federalState)))
-                    .Select(x => new Holiday { Date = x.Date, Name = x.LocalName }));
-            }
-        }
-
-        return holidays;
+        return (await res.Content.ReadFromJsonAsync<List<Holiday>>())!;
     }
 
     public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
     {
-        using var client = _httpClientFactory.CreateClient();
+        using var client = CreateClient();
 
-        var res = await client.GetAsync($"https://localhost:7182/worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
+        var res = await client.GetAsync($"worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
 
         res.EnsureSuccessStatusCode();
 
@@ -110,9 +97,9 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
 
     public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
-        using var client = _httpClientFactory.CreateClient();
+        using var client = CreateClient();
 
-        var res = await client.GetAsync($"https://localhost:7182/absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}");
+        var res = await client.GetAsync($"absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}");
 
         res.EnsureSuccessStatusCode();
 

@@ -58,6 +58,8 @@ services.AddSwaggerGen(options =>
 //    ];
 //});
 
+services.AddHttpClient();
+
 services.AddDbContext<WorklogManagementContext>(options =>
 {
     var conStr = config.GetConnectionString("WorklogManagement");

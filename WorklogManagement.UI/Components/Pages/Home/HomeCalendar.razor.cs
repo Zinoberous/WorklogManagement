@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Models;
 
 namespace WorklogManagement.UI.Components.Pages.Home;
 

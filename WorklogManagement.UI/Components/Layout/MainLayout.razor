@@ -1,4 +1,4 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 
 <RadzenComponents />
 
@@ -11,3 +11,16 @@
         @Body
     </RadzenBody>
 </RadzenLayout>
+
+@code {
+    [Inject]
+    public INotifier Notifier { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Notifier.MarkRenderingCompleteAsync();
+        }
+    }
+}

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Models;
 using static WorklogManagement.UI.Helper.DisplayHelper;
 
 namespace WorklogManagement.UI.Components.Pages.Home;

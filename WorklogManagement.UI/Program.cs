@@ -29,7 +29,7 @@ services
     .AddScoped<NotificationService>()
     .AddScoped<DialogService>();
 
-services.AddHttpClient();
+services.AddHttpClient(nameof(WorklogManagement), client => client.BaseAddress = new(config.GetValue<string>($"{nameof(WorklogManagement)}{nameof(HttpClient.BaseAddress)}")!));
 
 services
     .AddScoped<HomeViewModel>()
