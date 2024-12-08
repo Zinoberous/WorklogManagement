@@ -150,15 +150,4 @@ public class StatisticsController(WorklogManagementContext context) : Controller
 
         return statistics;
     }
-
-    [HttpGet("dateswithentries")]
-    public async Task<List<DateOnly>> GetDatesWithEntries()
-    {
-        var dates = await _context.WorkTimes.Select(x => x.Date)
-            .Union(_context.Absences.Select(x => x.Date))
-            .Distinct()
-            .ToListAsync();
-
-        return dates;
-    }
 }

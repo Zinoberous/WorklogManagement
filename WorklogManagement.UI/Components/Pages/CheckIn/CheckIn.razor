@@ -4,7 +4,7 @@
 <PageTitle>Stechuhr</PageTitle>
 
 <MenuBar>
-    <RadzenButton Click="@(() => ViewModel.IsDialogOpen = true)">Erstellen</RadzenButton>
+    <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
     <RadzenDatePicker @bind-Value="ViewModel.SelectedDate" Change="@ViewModel.OnSelectedDateChanged" DateFormat="dd.MM.yyyy" ShowCalendarWeek DateRender="@DateRender" />
 </MenuBar>
 

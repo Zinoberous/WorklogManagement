@@ -16,9 +16,27 @@ public partial class CheckIn
 
     private void DateRender(DateRenderEventArgs args)
     {
-        if (ViewModel.DatesWithEntries.Contains(DateOnly.FromDateTime(args.Date.Date)))
+        ICollection<string> background = [];
+
+        if (ViewModel.DatesWithWorkTimes.Contains(DateOnly.FromDateTime(args.Date.Date)))
         {
-            args.Attributes.Add("style", "background: var(--rz-primary);");
+            background.Add("steelblue");
+        }
+        if (ViewModel.DatesWithAbsences.Contains(DateOnly.FromDateTime(args.Date.Date)))
+        {
+            background.Add("lightcoral");
+        }
+
+        switch (background.Count)
+        {
+            case 0:
+                break;
+            case 1:
+                args.Attributes.Add("style", $"background: {background.ElementAt(0)};");
+                break;
+            default:
+                args.Attributes.Add("style", $"background: linear-gradient(to right, {string.Join(", ", background)});");
+                break;
         }
     }
 }

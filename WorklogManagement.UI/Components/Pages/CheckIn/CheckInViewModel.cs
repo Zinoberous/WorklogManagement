@@ -17,6 +17,11 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         set => SetValue(ref _dialogIsOpen, value);
     }
 
+    public void OpenDialog()
+    {
+        IsDialogOpen = true;
+    }
+
     private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
     public DateOnly SelectedDate
     {
@@ -31,11 +36,18 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         await LoadWorkTimesAndAbsencesAsync();
     }
 
-    private ICollection<DateOnly> _datesWithEntries = [];
-    public ICollection<DateOnly> DatesWithEntries
+    private ICollection<DateOnly> _datesWithWorkTimes = [];
+    public ICollection<DateOnly> DatesWithWorkTimes
     {
-        get => _datesWithEntries;
-        set => SetValue(ref _datesWithEntries, value);
+        get => _datesWithWorkTimes;
+        set => SetValue(ref _datesWithWorkTimes, value);
+    }
+
+    private ICollection<DateOnly> _datesWithAbsences = [];
+    public ICollection<DateOnly> DatesWithAbsences
+    {
+        get => _datesWithAbsences;
+        set => SetValue(ref _datesWithAbsences, value);
     }
 
     private bool _isLoading = true;
@@ -67,16 +79,29 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         }
 
         await Task.WhenAll([
-            LoadDatesWithEntriesAsync(),
+            LoadDatesWithWorkTimesAsync(),
+            LoadDatesWithAbsencesAsync(),
             LoadWorkTimesAndAbsencesAsync()
         ]);
     }
 
-    public async Task LoadDatesWithEntriesAsync()
+    public async Task LoadDatesWithWorkTimesAsync()
     {
         try
         {
-            DatesWithEntries = await _dataService.GetDatesWithEntriesAsync();
+            DatesWithWorkTimes = await _dataService.GetDatesWithWorkTimesAsync();
+        }
+        catch
+        {
+            // hat nur Auswirkungen auf die Darstellung, nicht auf die Funktionalität
+        }
+    }
+
+    public async Task LoadDatesWithAbsencesAsync()
+    {
+        try
+        {
+            DatesWithAbsences = await _dataService.GetDatesWithAbsencesAsync();
         }
         catch
         {
@@ -109,39 +134,35 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
 
     public async Task SaveWorkTimeAsync(WorkTime workTime)
     {
-        // TODO: SaveWorkTimeAsync
+        var savedWorkTime = await _dataService.SaveWorkTimeAsync(workTime);
 
-        if (!WorkTimes.Any(x => x.Id == workTime.Id))
+        if (!WorkTimes.Any(x => x.Id == savedWorkTime.Id))
         {
-            WorkTimes.Add(workTime);
+            WorkTimes.Add(savedWorkTime);
             OnPropertyChanged(nameof(WorkTimes));
         }
 
-        if (DatesWithEntries.Contains(workTime.Date))
+        if (DatesWithAbsences.Contains(savedWorkTime.Date))
         {
-            DatesWithEntries.Add(workTime.Date);
-            OnPropertyChanged(nameof(DatesWithEntries));
+            DatesWithAbsences.Add(savedWorkTime.Date);
+            OnPropertyChanged(nameof(DatesWithAbsences));
         }
-
-        await Task.CompletedTask;
     }
 
     public async Task SaveAbsenceAsync(Absence absence)
     {
-        // TODO: SaveAbsenceAsync
+        var savedAbsence = await _dataService.SaveAbsenceAsync(absence);
 
-        if (!Absences.Any(x => x.Id == absence.Id))
+        if (!Absences.Any(x => x.Id == savedAbsence.Id))
         {
-            Absences.Add(absence);
+            Absences.Add(savedAbsence);
             OnPropertyChanged(nameof(Absences));
         }
 
-        if (DatesWithEntries.Contains(absence.Date))
+        if (DatesWithAbsences.Contains(savedAbsence.Date))
         {
-            DatesWithEntries.Add(absence.Date);
-            OnPropertyChanged(nameof(DatesWithEntries));
+            DatesWithAbsences.Add(savedAbsence.Date);
+            OnPropertyChanged(nameof(DatesWithAbsences));
         }
-
-        await Task.CompletedTask;
     }
 }

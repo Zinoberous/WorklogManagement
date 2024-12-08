@@ -1,20 +1,26 @@
 <Row>
-    <Col>
+    <Column>
         <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" />
-    </Col>
-    <Col>
-        <RadzenDatePicker @bind-Value="ActualValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
-    </Col>
-    @* @if (ExpectedValue.HasValue)
+    </Column>
+    @if (ExpectedValue.HasValue)
     {
-        <Col>
+        <Column Style="width: 100px;">
+            <RadzenDatePicker @bind-Value="ActualValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
+        </Column>
+        <Column Style="width: 100px;">
             <RadzenDatePicker @bind-Value="ExpectedValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
-        </Col>
-    } *@
-    <Col Fill="true">
+        </Column>
+    }
+    else
+    {
+        <Column Style="width: calc(200px + var(--rz-row-gap))">
+            <RadzenDatePicker @bind-Value="ActualValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
+        </Column>
+    }
+    <Column Fill="true">
         <RadzenTextBox @bind-Value="Note" Placeholder="Anmerkung:" />
-    </Col>
-    <Col>
+    </Column>
+    <Column>
         <RadzenIcon Icon="delete" Style="cursor: pointer" />
-    </Col>
+    </Column>
 </Row>

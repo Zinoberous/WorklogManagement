@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace WorklogManagement.UI.Components.Shared;
 
-public partial class Row
+public partial class Column
 {
+    [Parameter]
+    public bool Fill { get; set; }
+
     [Parameter]
     public string? ClassName { get; set; }
 
@@ -13,5 +16,5 @@ public partial class Row
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    private string CssClass => $"row {ClassName}";
+    private string CssClass => $"{(Fill ? "col col-fill" : "col")} {ClassName}";
 }

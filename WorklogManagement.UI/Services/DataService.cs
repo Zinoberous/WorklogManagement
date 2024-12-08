@@ -11,15 +11,21 @@ public interface IDataService
 
     Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
 
-    Task<List<DateOnly>> GetDatesWithEntriesAsync();
-
     Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState);
 
     Task<List<WorkTime>> GetWorkTimesAsync(DateOnly date) => GetWorkTimesAsync(date, date);
     Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to);
 
+    Task<List<DateOnly>> GetDatesWithWorkTimesAsync();
+
+    Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime);
+
     Task<List<Absence>> GetAbsencesAsync(DateOnly date) => GetAbsencesAsync(date, date);
     Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to);
+
+    Task<List<DateOnly>> GetDatesWithAbsencesAsync();
+
+    Task<Absence> SaveAbsenceAsync(Absence absence);
 
     // TODO: Tickets
 
@@ -75,17 +81,6 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
         return (await res.Content.ReadFromJsonAsync<Dictionary<TicketStatus, int>>())!;
     }
 
-    public async Task<List<DateOnly>> GetDatesWithEntriesAsync()
-    {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync("statistics/dateswithentries");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<List<DateOnly>>())!;
-    }
-
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
     {
         using var client = CreateClient();
@@ -108,6 +103,28 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
         return (await res.Content.ReadFromJsonAsync<List<WorkTime>>())!;
     }
 
+    public async Task<List<DateOnly>> GetDatesWithWorkTimesAsync()
+    {
+        using var client = CreateClient();
+
+        var res = await client.GetAsync("worktimes/dates");
+
+        res.EnsureSuccessStatusCode();
+
+        return (await res.Content.ReadFromJsonAsync<List<DateOnly>>())!;
+    }
+
+    public async Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime)
+    {
+        using var client = CreateClient();
+
+        var res = await client.PostAsJsonAsync("worktimes", workTime);
+
+        res.EnsureSuccessStatusCode();
+
+        return (await res.Content.ReadFromJsonAsync<WorkTime>())!;
+    }
+
     public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
         using var client = CreateClient();
@@ -119,25 +136,25 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
         return (await res.Content.ReadFromJsonAsync<List<Absence>>())!;
     }
 
-    //public async Task<TDataModel> SaveAsync<TDataModel>(TDataModel item)
-    //    where TDataModel : IDataModel
-    //{
-    //    await ExecuteAsync(context =>
-    //        (Task)typeof(TDataModel)
-    //            .GetMethod("SaveAsync", BindingFlags.Instance | BindingFlags.NonPublic)!
-    //            .Invoke(item, [context])!
-    //    );
+    public async Task<List<DateOnly>> GetDatesWithAbsencesAsync()
+    {
+        using var client = CreateClient();
 
-    //    return item;
-    //}
+        var res = await client.GetAsync("absences/dates");
 
-    //public async Task DeleteAsync<TDataModel>(int id)
-    //    where TDataModel : IDataModel
-    //{
-    //    await ExecuteAsync(context =>
-    //        (Task)typeof(TDataModel)
-    //            .GetMethod("DeleteAsync", BindingFlags.Static | BindingFlags.NonPublic)!
-    //            .Invoke(null, [context, id])!
-    //    );
-    //}
+        res.EnsureSuccessStatusCode();
+
+        return (await res.Content.ReadFromJsonAsync<List<DateOnly>>())!;
+    }
+
+    public async Task<Absence> SaveAbsenceAsync(Absence absence)
+    {
+        using var client = CreateClient();
+
+        var res = await client.PostAsJsonAsync("absences", absence);
+
+        res.EnsureSuccessStatusCode();
+
+        return (await res.Content.ReadFromJsonAsync<Absence>())!;
+    }
 }

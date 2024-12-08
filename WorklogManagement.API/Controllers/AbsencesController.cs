@@ -19,4 +19,23 @@ public class AbsencesController(WorklogManagementContext context) : ControllerBa
             .Select(x => Absence.Map(x))
             .ToListAsync();
     }
+
+    [HttpGet("dates")]
+    public async Task<List<DateOnly>> GetDatesWithAbsences()
+    {
+        var dates = await _context.Absences
+            .Select(x => x.Date)
+            .Distinct()
+            .ToListAsync();
+
+        return dates;
+    }
+
+    [HttpPost]
+    public async Task<Absence> Post(Absence absence)
+    {
+        await absence.SaveAsync(_context);
+
+        return absence;
+    }
 }
