@@ -1,6 +1,6 @@
 namespace WorklogManagement.API.Models;
 
-internal class CalendarEntry
+internal record CalendarEntry
 {
     internal required string Type { get; init; }
     internal required int TypeId { get; init; }

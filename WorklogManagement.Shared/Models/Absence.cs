@@ -1,6 +1,6 @@
 namespace WorklogManagement.Shared.Models;
 
-public class Absence : IDataModel
+public record Absence : IDataModel
 {
     public int? Id { get; init; }
 

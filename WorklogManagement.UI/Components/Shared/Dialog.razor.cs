@@ -14,7 +14,7 @@ public partial class Dialog
     public string? Title { get; set; }
 
     [Parameter]
-    public required RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     private async Task Close()
     {

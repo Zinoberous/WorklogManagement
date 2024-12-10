@@ -5,7 +5,14 @@
 
 <MenuBar>
     <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
-    <RadzenDatePicker @bind-Value="ViewModel.SelectedDate" Change="@ViewModel.OnSelectedDateChanged" DateFormat="dd.MM.yyyy" ShowCalendarWeek DateRender="@DateRender" />
+    <RadzenDatePicker
+        @bind-Value="ViewModel.SelectedDate"
+        Change="@ViewModel.OnSelectedDateChanged"
+        DateFormat="dd.MM.yyyy"
+        ShowCalendarWeek
+        DateRender="@DateRender"
+        Style="width: 140px;"
+    />
 </MenuBar>
 
 <main class="checkin">

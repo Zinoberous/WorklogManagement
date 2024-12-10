@@ -6,7 +6,7 @@ using Shd = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Models;
 
-public partial class WorklogAttachment : Shd.WorklogAttachment
+public record WorklogAttachment : Shd.WorklogAttachment
 {
     private int? _id;
     public new int? Id { get => _id; init => _id = value; }

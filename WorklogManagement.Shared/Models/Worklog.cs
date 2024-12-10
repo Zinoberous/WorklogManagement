@@ -1,6 +1,6 @@
 namespace WorklogManagement.Shared.Models;
 
-public class Worklog : IDataModel
+public record Worklog : IDataModel
 {
     public int? Id { get; init; }
 

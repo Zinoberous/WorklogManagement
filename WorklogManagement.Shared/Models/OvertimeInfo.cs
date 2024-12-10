@@ -1,6 +1,6 @@
-﻿namespace WorklogManagement.Shared.Models;
+namespace WorklogManagement.Shared.Models;
 
-public class OvertimeInfo
+public record OvertimeInfo
 {
     public required int TotalMinutes { get; init; }
 

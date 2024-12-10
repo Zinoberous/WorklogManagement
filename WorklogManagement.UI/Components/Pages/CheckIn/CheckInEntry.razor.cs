@@ -5,7 +5,7 @@ namespace WorklogManagement.UI.Components.Pages.CheckIn;
 public partial class CheckInEntry
 {
     [Parameter]
-    public string SelectedType { get; set; } = null!;
+    public string? SelectedType { get; set; } 
 
     [Parameter]
     public EventCallback<string> SelectedTypeChanged { get; set; }
@@ -23,7 +23,17 @@ public partial class CheckInEntry
     public TimeOnly? Expected { get; set; }
 
     [Parameter]
-    public EventCallback<TimeOnly>? ExpectedChanged { get; set; }
+    public EventCallback<TimeOnly> ExpectedChanged { get; set; }
+
+    private TimeOnly ExpectedValue
+    {
+        get => Expected ?? TimeOnly.MinValue;
+        set
+        {
+            Expected = value;
+            _ = ExpectedChanged.InvokeAsync(Expected!.Value);
+        }
+    }
 
     [Parameter]
     public string? Note { get; set; }
@@ -33,24 +43,4 @@ public partial class CheckInEntry
 
     [Parameter]
     public EventCallback OnDelte { get; set; }
-
-    private DateTime ActualValue
-    {
-        get => new(new(), Actual);
-        set
-        {
-            Actual = TimeOnly.FromDateTime(value);
-            _ = ActualChanged.InvokeAsync(Actual);
-        }
-    }
-
-    private DateTime? ExpectedValue
-    {
-        get => Expected.HasValue ? new(new(), Expected.Value) : null;
-        set
-        {
-            Expected = TimeOnly.FromDateTime(value!.Value);
-            _ = ExpectedChanged?.InvokeAsync(Expected!.Value);
-        }
-    }
 }

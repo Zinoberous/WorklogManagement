@@ -1,6 +1,6 @@
 namespace WorklogManagement.Shared.Models;
 
-public class Ticket : IDataModel
+public record Ticket : IDataModel
 {
     public int? Id { get; init; }
 

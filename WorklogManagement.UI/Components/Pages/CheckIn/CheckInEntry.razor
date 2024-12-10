@@ -2,19 +2,19 @@
     <Column>
         <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" />
     </Column>
-    @if (ExpectedValue.HasValue)
+    @if (Expected.HasValue)
     {
-        <Column Style="width: 100px;">
-            <RadzenDatePicker @bind-Value="ActualValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
+        <Column Style="width: 75px;">
+            <DurationPicker @bind-Value="Actual" />
         </Column>
-        <Column Style="width: 100px;">
-            <RadzenDatePicker @bind-Value="ExpectedValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
+        <Column Style="width: 75px;">
+            <DurationPicker @bind-Value="ExpectedValue" />
         </Column>
     }
     else
     {
-        <Column Style="width: calc(200px + var(--rz-row-gap))">
-            <RadzenDatePicker @bind-Value="ActualValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" />
+        <Column Style="width: calc(150px + var(--rz-row-gap))">
+            <DurationPicker @bind-Value="Actual" />
         </Column>
     }
     <Column Fill="true">

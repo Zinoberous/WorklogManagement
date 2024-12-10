@@ -6,7 +6,7 @@ using Shd = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Models;
 
-public class Absence : Shd.Absence
+public record Absence : Shd.Absence
 {
     private int? _id;
     public new int? Id { get => _id; init => _id = value; }

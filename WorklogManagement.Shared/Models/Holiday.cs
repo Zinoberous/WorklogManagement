@@ -1,6 +1,6 @@
 namespace WorklogManagement.Shared.Models;
 
-public class Holiday
+public record Holiday
 {
     public required DateOnly Date { get; init; }
 

@@ -1,6 +1,6 @@
-﻿namespace WorklogManagement.Shared.Models;
+namespace WorklogManagement.Shared.Models;
 
-public class Page<TDataModel>
+public record Page<TDataModel>
     where TDataModel : IDataModel
 {
     public required int PageSize { get; init; }

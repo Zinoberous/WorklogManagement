@@ -1,6 +1,6 @@
 namespace WorklogManagement.Shared.Models;
 
-public class Attachment : IDataModel
+public record Attachment : IDataModel
 {
     public int? Id { get; init; }
 

@@ -9,11 +9,11 @@ public partial class HomeCalendar
     public required int Year { get; set; }
 
     [Parameter]
-    public required IEnumerable<WorkTime> WorkTimes { get; set; }
+    public IEnumerable<WorkTime> WorkTimes { get; set; } = [];
 
     [Parameter]
-    public required IEnumerable<Absence> Absences { get; set; }
+    public IEnumerable<Absence> Absences { get; set; } = [];
 
     [Parameter]
-    public required IEnumerable<Holiday> Holidays { get; set; }
+    public IEnumerable<Holiday> Holidays { get; set; } = [];
 }

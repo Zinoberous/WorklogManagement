@@ -6,7 +6,7 @@ using Shd = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Models;
 
-public partial class TicketStatusLog : Shd.TicketStatusLog
+public record TicketStatusLog : Shd.TicketStatusLog
 {
     internal static TicketStatusLog Map(DB.TicketStatusLog log)
     {

@@ -1,6 +1,6 @@
 namespace WorklogManagement.API.Models;
 
-public class HolidayDto
+public record HolidayDto
 {
     public required DateOnly Date { get; init; }
 

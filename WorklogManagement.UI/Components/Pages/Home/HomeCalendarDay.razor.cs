@@ -10,10 +10,10 @@ public partial class HomeCalendarDay
     public required DateOnly Date { get; set; }
 
     [Parameter]
-    public required IEnumerable<WorkTime> WorkTimes { get; set; }
+    public IEnumerable<WorkTime> WorkTimes { get; set; } = [];
 
     [Parameter]
-    public required IEnumerable<Absence> Absences { get; set; }
+    public IEnumerable<Absence> Absences { get; set; } = [];
 
     [Parameter]
     public Holiday? Holiday { get; set; }
