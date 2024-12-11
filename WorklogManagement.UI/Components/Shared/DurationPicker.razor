@@ -1,3 +1,9 @@
-<div>
-    <RadzenDatePicker @bind-Value="ShownValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" MinutesStep="15"  />
+<div class="duration-picker">
+    <div>
+        <RadzenDatePicker @bind-Value="ShownValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" MinutesStep="15" />
+    </div>
+    <div>
+        <span class="@(Value == TimeOnly.MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="Increment" /></span>
+        <span class="@(Value == TimeOnly.MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="Decrement" /></span>
+    </div>
 </div>
