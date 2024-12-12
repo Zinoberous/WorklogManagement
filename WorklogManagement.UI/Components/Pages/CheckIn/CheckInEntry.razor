@@ -4,16 +4,16 @@
     </Column>
     @if (Expected.HasValue)
     {
-        <Column Style="width: 75px;">
+        <Column Style="width: 100px;">
             <DurationPicker @bind-Value="Actual" />
         </Column>
-        <Column Style="width: 75px;">
+        <Column Style="width: 100px;">
             <DurationPicker @bind-Value="ExpectedValue" />
         </Column>
     }
     else
     {
-        <Column Style="width: calc(150px + var(--rz-row-gap))">
+        <Column Style="width: calc(200px + var(--rz-row-gap))">
             <DurationPicker @bind-Value="Actual" />
         </Column>
     }

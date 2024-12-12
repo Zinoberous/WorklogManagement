@@ -28,11 +28,7 @@ public partial class CheckInEntry
     private TimeOnly ExpectedValue
     {
         get => Expected ?? TimeOnly.MinValue;
-        set
-        {
-            Expected = value;
-            _ = ExpectedChanged.InvokeAsync(Expected!.Value);
-        }
+        set => ExpectedChanged.InvokeAsync(value);
     }
 
     [Parameter]

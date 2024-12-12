@@ -22,8 +22,6 @@ public partial class CheckInDialog
 
     private async Task Close()
     {
-        IsOpen = false;
-
-        await IsOpenChanged.InvokeAsync(IsOpen);
+        await IsOpenChanged.InvokeAsync(false);
     }
 }

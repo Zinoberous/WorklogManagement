@@ -63,10 +63,8 @@ public partial class YearPicker
 
     private async Task Select(int year)
     {
-        Value = year;
-
-        await ValueChanged.InvokeAsync(Value);
-        await OnChanged.InvokeAsync(Value);
+        await ValueChanged.InvokeAsync(year);
+        await OnChanged.InvokeAsync(year);
     }
 
     private void Close() => IsOpen = false;

@@ -18,8 +18,6 @@ public partial class Dialog
 
     private async Task Close()
     {
-        IsOpen = false;
-
-        await IsOpenChanged.InvokeAsync(IsOpen);
+        await IsOpenChanged.InvokeAsync(false);
     }
 }
