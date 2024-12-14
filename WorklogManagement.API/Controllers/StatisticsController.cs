@@ -17,39 +17,44 @@ public class StatisticsController(WorklogManagementContext context) : Controller
     [HttpGet("overtime")]
     public async Task<OvertimeInfo> GetOvertime()
     {
-        var totalOvertimeMinutes = 0;
-        var officeOvertimeMinutes = 0;
-        var mobileOvertimeMinutes = 0;
+        var totalOvertime = TimeSpan.Zero;
+        var officeOvertime = TimeSpan.Zero;
+        var mobileOvertime = TimeSpan.Zero;
 
         var workTimes = await _context.WorkTimes
             .Where(x => x.ActualMinutes != x.ExpectedMinutes)
-            .Select(x => new { x.ExpectedMinutes, x.ActualMinutes, x.WorkTimeTypeId })
+            .Select(x => new { Expected = x.ExpectedSpan, Actual = x.ActualSpan, x.WorkTimeTypeId })
             .ToListAsync();
+
+        object lockObj = new();
 
         workTimes.AsParallel().ForAll(entry =>
         {
-            var expectedMinutes = entry.ExpectedMinutes;
-            var actualMinutes = entry.ActualMinutes;
+            var expected = entry.Expected;
+            var actual = entry.Actual;
 
-            var overtimeMinutes = (actualMinutes - expectedMinutes);
+            var overtime = actual - expected;
 
-            Interlocked.Add(ref totalOvertimeMinutes, overtimeMinutes);
-
-            if (entry.WorkTimeTypeId == (int)WorkTimeType.Office)
+            lock (lockObj)
             {
-                Interlocked.Add(ref officeOvertimeMinutes, overtimeMinutes);
-            }
-            else if (entry.WorkTimeTypeId == (int)WorkTimeType.Mobile)
-            {
-                Interlocked.Add(ref mobileOvertimeMinutes, overtimeMinutes);
+                totalOvertime += overtime;
+
+                if (entry.WorkTimeTypeId == (int)WorkTimeType.Office)
+                {
+                    officeOvertime += overtime;
+                }
+                else if (entry.WorkTimeTypeId == (int)WorkTimeType.Mobile)
+                {
+                    mobileOvertime += overtime;
+                }
             }
         });
 
         return new()
         {
-            TotalMinutes = totalOvertimeMinutes,
-            OfficeMinutes = officeOvertimeMinutes,
-            MobileMinutes = mobileOvertimeMinutes,
+            Total = totalOvertime,
+            Office = officeOvertime,
+            Mobile = mobileOvertime,
         };
     }
 
@@ -69,15 +74,15 @@ public class StatisticsController(WorklogManagementContext context) : Controller
             {
                 Type = nameof(DB.WorkTime),
                 TypeId = x.WorkTimeTypeId,
+                x.Date,
                 DurationMinutes = x.ActualMinutes,
-                x.Date
             })
             .Union(_context.Absences.Select(x => new
             {
                 Type = nameof(DB.Absence),
                 TypeId = x.AbsenceTypeId,
+                x.Date,
                 x.DurationMinutes,
-                x.Date
             }));
 
         var calendarEntries = rawEntries
@@ -86,8 +91,8 @@ public class StatisticsController(WorklogManagementContext context) : Controller
             {
                 Type = x.Type,
                 TypeId = x.TypeId,
+                Date = x.Date,
                 DurationMinutes = x.DurationMinutes,
-                Date = x.Date
             });
 
         Dictionary<CalendarEntryType, IQueryable<CalendarEntry>> entries = new()

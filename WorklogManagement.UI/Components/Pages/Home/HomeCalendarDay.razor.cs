@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using static WorklogManagement.UI.Helper.DisplayHelper;
+using WorklogManagement.UI.Extensions;
 
 namespace WorklogManagement.UI.Components.Pages.Home;
 public partial class HomeCalendarDay
@@ -62,14 +62,14 @@ public partial class HomeCalendarDay
 
     private string GetWeekDayClassName()
     {
-        var actualMinutes = WorkTimes.Sum(x => x.ActualMinutes);
-        var expectedMinutes = WorkTimes.Sum(x => x.ExpectedMinutes);
+        var actual = TimeSpan.FromTicks(WorkTimes.Sum(x => x.Actual.Ticks));
+        var expected = TimeSpan.FromTicks(WorkTimes.Sum(x => x.Expected.Ticks));
 
-        if (actualMinutes > expectedMinutes)
+        if (actual > expected)
         {
             return "overtime";
         }
-        else if (actualMinutes < expectedMinutes)
+        else if (actual < expected)
         {
             return "undertime";
         }
@@ -79,23 +79,23 @@ public partial class HomeCalendarDay
 
     private string GetWeekDayTitle()
     {
-        var actualMinutes = WorkTimes.Sum(x => x.ActualMinutes);
-        var expectedMinutes = WorkTimes.Sum(x => x.ExpectedMinutes);
+        var actual = TimeSpan.FromTicks(WorkTimes.Sum(x => x.Actual.Ticks));
+        var expected = TimeSpan.FromTicks(WorkTimes.Sum(x => x.Expected.Ticks));
 
-        if (actualMinutes > expectedMinutes)
+        if (actual > expected)
         {
-            return $"Überstunden: {MinutesToTime(actualMinutes - expectedMinutes)}";
+            return $"Überstunden: {actual - expected}";
         }
-        else if (actualMinutes < expectedMinutes)
+        else if (actual < expected)
         {
-            return $"Minusstunden: {MinutesToTime(expectedMinutes - actualMinutes)}";
+            return $"Minusstunden: {expected - actual}";
         }
 
         return string.Empty;
     }
 
-    private static string GetIconTitle(string label, int durationMinutes, string? note)
+    private static string GetIconTitle(string label, TimeSpan duration, string? note)
     {
-        return $"{label}: {MinutesToTime(durationMinutes)}{(string.IsNullOrWhiteSpace(note) ? string.Empty : $"\n{note}")}";
+        return $"{label}: {duration.ToTimeString()}{(string.IsNullOrWhiteSpace(note) ? string.Empty : $"\n{note}")}";
     }
 }

@@ -8,7 +8,7 @@ public record Absence : IDataModel
 
     public required DateOnly Date { get; init; }
 
-    public required int DurationMinutes { get; set; }
+    public required TimeSpan Duration { get; set; }
 
     public string? Note { get; set; }
 }

@@ -33,18 +33,22 @@
         }
         @foreach (var workTime in ViewModel.WorkTimes)
         {
-            <CheckInEntry SelectedType="@workTime.Type.ToString()"
-                          TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
-                          Actual="@(new TimeOnly(workTime.ActualMinutes / 60, workTime.ActualMinutes % 60, 0))"
-                          Expected="@(new TimeOnly(workTime.ExpectedMinutes / 60, workTime.ExpectedMinutes % 60, 0))"
-                          Note="@workTime.Note" />
+            <CheckInEntry
+                SelectedType="@workTime.Type.ToString()"
+                TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
+                Actual="@workTime.Actual"
+                Expected="@workTime.Expected"
+                Note="@workTime.Note"
+            />
         }
         @foreach (var absence in ViewModel.Absences)
         {
-            <CheckInEntry SelectedType="@absence.Type.ToString()"
-                          TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
-                          Actual="@(new TimeOnly(absence.DurationMinutes / 60, absence.DurationMinutes % 60, 0))"
-                          Note="@absence.Note" />
+            <CheckInEntry
+                SelectedType="@absence.Type.ToString()"
+                TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
+                Actual="@absence.Duration"
+                Note="@absence.Note"
+            />
         }
     </AsyncContent>
 </main>

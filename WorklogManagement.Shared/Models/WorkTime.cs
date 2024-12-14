@@ -8,9 +8,9 @@ public record WorkTime : IDataModel
 
     public required DateOnly Date { get; init; }
 
-    public required int ExpectedMinutes { get; set; }
+    public required TimeSpan Expected { get; set; }
 
-    public required int ActualMinutes { get; set; }
+    public required TimeSpan Actual { get; set; }
 
     public string? Note { get; set; }
 }

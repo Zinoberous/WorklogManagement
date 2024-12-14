@@ -2,9 +2,9 @@ namespace WorklogManagement.Shared.Models;
 
 public record OvertimeInfo
 {
-    public required int TotalMinutes { get; init; }
+    public TimeSpan Total { get; init; } = TimeSpan.Zero;
 
-    public required int OfficeMinutes { get; init; }
+    public TimeSpan Office { get; init; } = TimeSpan.Zero;
 
-    public required int MobileMinutes { get; init; }
+    public TimeSpan Mobile { get; init; } = TimeSpan.Zero;
 }

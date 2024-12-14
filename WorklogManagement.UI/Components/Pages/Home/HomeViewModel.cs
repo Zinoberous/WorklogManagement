@@ -17,7 +17,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         set => SetValue(ref _loadOvertime, value);
     }
 
-    private OvertimeInfo _overtime = new() { TotalMinutes = 0, OfficeMinutes = 0, MobileMinutes = 0 };
+    private OvertimeInfo _overtime = new();
     public OvertimeInfo Overtime
     {
         get => _overtime;

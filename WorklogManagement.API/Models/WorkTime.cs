@@ -18,8 +18,8 @@ public record WorkTime : Shd.WorkTime
             Id = workTime.Id,
             Type = (WorkTimeType)workTime.WorkTimeTypeId,
             Date = workTime.Date,
-            ExpectedMinutes = workTime.ExpectedMinutes,
-            ActualMinutes = workTime.ActualMinutes,
+            Expected = workTime.ExpectedSpan,
+            Actual = workTime.ActualSpan,
             Note = workTime.Note,
         };
     }
@@ -34,8 +34,8 @@ public record WorkTime : Shd.WorkTime
             {
                 WorkTimeTypeId = (int)Type,
                 Date = Date,
-                ExpectedMinutes = ExpectedMinutes,
-                ActualMinutes = ActualMinutes,
+                ExpectedSpan = Expected,
+                ActualSpan = Actual,
                 Note = Note,
             };
 
@@ -51,8 +51,8 @@ public record WorkTime : Shd.WorkTime
 
             workTime.WorkTimeTypeId = (int)Type;
             workTime.Date = Date;
-            workTime.ExpectedMinutes = ExpectedMinutes;
-            workTime.ActualMinutes = ActualMinutes;
+            workTime.ExpectedSpan = Expected;
+            workTime.ActualSpan = Actual;
             workTime.Note = Note;
 
             await context.SaveChangesAsync();

@@ -1,6 +1,5 @@
 @using WorklogManagement.Shared.Enums
 @using WorklogManagement.UI.Extensions
-@using static WorklogManagement.UI.Helper.DisplayHelper
 
 <div class="day" title="@Holiday?.Name" style="@GetDayColoring()">
     <div>
@@ -15,22 +14,22 @@
         }
     </div>
     <div>
-        @if (WorkTimes.Any(x => x.ActualMinutes == 0))
+        @if (WorkTimes.Any(x => x.Actual == TimeSpan.Zero))
         {
-            var timeCompensations = WorkTimes.Where(x => x.ActualMinutes == 0).ToArray();
+            var timeCompensations = WorkTimes.Where(x => x.Actual == TimeSpan.Zero).ToArray();
 
-            var durationMinutes = timeCompensations.Sum(x => x.ExpectedMinutes);
+            var duration = TimeSpan.FromTicks(timeCompensations.Sum(x => x.Expected.Ticks));
 
             var notes = timeCompensations
                 .Where(x => !string.IsNullOrWhiteSpace(x.Note) && !x.Note.Equals("Zeitausgleich", StringComparison.OrdinalIgnoreCase))
-                .Select(x => $"{MinutesToTime(x.ExpectedMinutes)} => {x.Note}")
+                .Select(x => $"{x.Expected:HH:mm} => {x.Note}")
                 .ToArray();
 
             var note = string.Join("\n", notes);
 
-            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle("Zeitausgleich", durationMinutes, note)" />
+            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle("Zeitausgleich", duration, note)" />
         }
-        @foreach(var workTime in WorkTimes.Where(x => x.ActualMinutes > 0).OrderBy(x => x.Type))
+        @foreach(var workTime in WorkTimes.Where(x => x.Actual > TimeSpan.Zero).OrderBy(x => x.Type))
         {
             var label = workTime.Type switch
             {
@@ -39,7 +38,7 @@
                 _ => "Unbekannt"
             };
 
-            <RadzenIcon Icon="@_workTimeIcons[workTime.Type]" title="@GetIconTitle(label, workTime.ActualMinutes, workTime.Note)" />
+            <RadzenIcon Icon="@_workTimeIcons[workTime.Type]" title="@GetIconTitle(label, workTime.Actual, workTime.Note)" />
         }
         @foreach (var absence in Absences.OrderBy(x => x.Type))
         {
@@ -51,7 +50,7 @@
                 _ => "Unbekannt"
             };
 
-            <RadzenIcon Icon="@_absenceIcons[absence.Type]" title="@GetIconTitle(label, absence.DurationMinutes, absence.Note)" />
+            <RadzenIcon Icon="@_absenceIcons[absence.Type]" title="@GetIconTitle(label, absence.Duration, absence.Note)" />
         }
     </div>
 </div>

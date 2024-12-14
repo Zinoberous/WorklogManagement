@@ -5,7 +5,7 @@
     @if (Expected.HasValue)
     {
         <Column Style="width: 100px;">
-            <DurationPicker @bind-Value="Actual" />
+            <DurationPicker @bind-Value="ActualValue" />
         </Column>
         <Column Style="width: 100px;">
             <DurationPicker @bind-Value="ExpectedValue" />
@@ -14,7 +14,7 @@
     else
     {
         <Column Style="width: calc(200px + var(--rz-row-gap))">
-            <DurationPicker @bind-Value="Actual" />
+            <DurationPicker @bind-Value="ActualValue" />
         </Column>
     }
     <Column Fill="true">

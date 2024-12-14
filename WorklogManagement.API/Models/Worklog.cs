@@ -19,7 +19,7 @@ public record Worklog : Shd.Worklog
             TicketId = worklog.TicketId,
             TicketTitle = worklog.Ticket.Title,
             Description = worklog.Description,
-            TimeSpentMinutes = worklog.TimeSpentMinutes,
+            TimeSpent = worklog.TimeSpentSpan,
             AttachmentsCount = worklog.WorklogAttachments.Count
         };
     }
@@ -35,7 +35,7 @@ public record Worklog : Shd.Worklog
                 Date = Date,
                 TicketId = TicketId,
                 Description = Description,
-                TimeSpentMinutes = TimeSpentMinutes
+                TimeSpentSpan = TimeSpent
             };
 
             await context.Worklogs.AddAsync(worklog);
@@ -51,7 +51,7 @@ public record Worklog : Shd.Worklog
             worklog.Date = Date;
             worklog.TicketId = TicketId;
             worklog.Description = Description;
-            worklog.TimeSpentSeconds = TimeSpentMinutes;
+            worklog.TimeSpentSpan = TimeSpent;
 
             await context.SaveChangesAsync();
         }

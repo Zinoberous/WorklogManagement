@@ -16,7 +16,7 @@ public record Ticket : IDataModel
 
     public DateTime? CreatedAt { get; init; }
 
-    public required int TimeSpentMinutes { get; init; }
+    public required TimeSpan TimeSpent { get; init; }
 
     public required int AttachmentsCount { get; init; }
 }

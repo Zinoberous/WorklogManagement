@@ -12,7 +12,7 @@ public record Worklog : IDataModel
 
     public string? Description { get; init; }
 
-    public required int TimeSpentMinutes { get; init; }
+    public required TimeSpan TimeSpent { get; init; }
 
     public int AttachmentsCount { get; init; }
 }

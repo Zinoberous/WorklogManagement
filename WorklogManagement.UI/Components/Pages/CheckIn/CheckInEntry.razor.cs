@@ -5,30 +5,44 @@ namespace WorklogManagement.UI.Components.Pages.CheckIn;
 public partial class CheckInEntry
 {
     [Parameter]
+    public IEnumerable<string> TypeOptions { get; set; } = [];
+
+    [Parameter]
     public string? SelectedType { get; set; } 
 
     [Parameter]
     public EventCallback<string> SelectedTypeChanged { get; set; }
 
     [Parameter]
-    public IEnumerable<string> TypeOptions { get; set; } = [];
+    public TimeSpan Actual { get; set; }
 
     [Parameter]
-    public TimeOnly Actual { get; set; }
+    public EventCallback<TimeSpan> ActualChanged { get; set; }
+
+    private TimeOnly ActualValue
+    {
+        get => TimeOnly.FromTimeSpan(Actual);
+        set
+        {
+            Actual = value.ToTimeSpan();
+            ActualChanged.InvokeAsync(Actual);
+        }
+    }
 
     [Parameter]
-    public EventCallback<TimeOnly> ActualChanged { get; set; }
+    public TimeSpan? Expected { get; set; }
 
     [Parameter]
-    public TimeOnly? Expected { get; set; }
-
-    [Parameter]
-    public EventCallback<TimeOnly> ExpectedChanged { get; set; }
+    public EventCallback<TimeSpan> ExpectedChanged { get; set; }
 
     private TimeOnly ExpectedValue
     {
-        get => Expected ?? TimeOnly.MinValue;
-        set => ExpectedChanged.InvokeAsync(value);
+        get => TimeOnly.FromTimeSpan(Expected ?? TimeSpan.Zero);
+        set
+        {
+            Expected = value.ToTimeSpan();
+            ExpectedChanged.InvokeAsync(Expected.Value);
+        }
     }
 
     [Parameter]

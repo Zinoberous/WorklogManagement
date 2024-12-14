@@ -2,7 +2,7 @@
 @inherits BasePage<HomeViewModel>
 
 @using WorklogManagement.Shared.Enums
-@using static WorklogManagement.UI.Helper.DisplayHelper
+@using WorklogManagement.UI.Extensions
 
 <PageTitle>Startseite</PageTitle>
 
@@ -12,10 +12,10 @@
             <RadzenText>Überstunden:</RadzenText>
             <AsyncContent IsLoading="@ViewModel.LoadOvertime" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
                 <div class="overtime">
-                    <div>@MinutesToTime(ViewModel.Overtime.TotalMinutes)</div>
+                    <div>@ViewModel.Overtime.Total.ToTimeString()</div>
                     <div>
-                        @WorkTimeLabels[WorkTimeType.Office]: @MinutesToTime(ViewModel.Overtime.OfficeMinutes) /
-                        @WorkTimeLabels[WorkTimeType.Mobile]: @MinutesToTime(ViewModel.Overtime.MobileMinutes)
+                        @WorkTimeLabels[WorkTimeType.Office]: @ViewModel.Overtime.Office.ToTimeString() /
+                        @WorkTimeLabels[WorkTimeType.Mobile]: @ViewModel.Overtime.Mobile.ToTimeString()
                     </div>
                 </div>
             </AsyncContent>

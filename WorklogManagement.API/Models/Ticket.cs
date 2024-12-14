@@ -25,7 +25,7 @@ public record Ticket : Shd.Ticket
             Status = (TicketStatus)ticket.TicketStatusId,
             StatusNote = ticket.TicketStatusLogs.Last().Note,
             CreatedAt = ticket.CreatedAt,
-            TimeSpentMinutes = ticket.Worklogs.Sum(x => x.TimeSpentMinutes),
+            TimeSpent = TimeSpan.FromTicks(ticket.Worklogs.Sum(x => x.TimeSpent.Ticks)),
             AttachmentsCount = ticket.TicketAttachments.Count,
         };
     }

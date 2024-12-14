@@ -18,8 +18,8 @@ public record Absence : Shd.Absence
             Id = absence.Id,
             Type = (AbsenceType)absence.AbsenceTypeId,
             Date = absence.Date,
-            DurationMinutes = absence.DurationMinutes,
-            Note = absence.Note,
+            Duration = absence.DurationSpan,
+            Note = absence.Note
         };
     }
 
@@ -33,7 +33,7 @@ public record Absence : Shd.Absence
             {
                 AbsenceTypeId = (int)Type,
                 Date = Date,
-                DurationMinutes = DurationMinutes,
+                DurationSpan = Duration,
                 Note = Note,
             };
 
@@ -49,7 +49,7 @@ public record Absence : Shd.Absence
 
             absence.AbsenceTypeId = (int)Type;
             absence.Date = Date;
-            absence.DurationMinutes = DurationMinutes;
+            absence.DurationSpan = Duration;
             absence.Note = Note;
 
             await context.SaveChangesAsync();
