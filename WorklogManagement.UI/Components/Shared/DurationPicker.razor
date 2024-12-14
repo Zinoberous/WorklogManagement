@@ -1,6 +1,6 @@
-<div class="duration-picker">
+<div class="@CssClass" style="@Style">
     <div>
-        <RadzenDatePicker @bind-Value="TimeValue" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" ShowTimeOkButton="@false" />
+        <RadzenDatePicker @bind-Value="TimeValue" ShowTime TimeOnly DateFormat="HH:mm" ShowTimeOkButton="false" />
     </div>
     <div>
         <span class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="Increment" /></span>

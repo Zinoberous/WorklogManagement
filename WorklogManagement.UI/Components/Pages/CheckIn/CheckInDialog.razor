@@ -1,4 +1,40 @@
 <Dialog IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Title="Neuer Eintrag">
-    TBD
-    <RadzenButton Click="@Close">Abbrechen</RadzenButton>
+    <Row>
+        <Column>
+            <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" />
+        </Column>
+        <Column>
+            <RadzenDatePicker
+                @bind-Value="Date"
+                DateFormat="dd.MM.yyyy"
+                ReadOnly
+            />
+        </Column>
+        @if (WorkTimeLabels.Values.Contains(SelectedType))
+        {
+            <Column Style="display: flex; gap: 5px; align-items: center;">
+                <DurationPicker @bind-Value="Actual" Style="width: 85px;" />
+                <span style="width: 5px;">&#47;</span>
+                <DurationPicker @bind-Value="Expected" Style="width: 85px;" />
+            </Column>
+        }
+        else
+        {
+            <Column>
+                <DurationPicker @bind-Value="Actual" Style="width: 185px" />
+            </Column>
+        }
+    </Row>
+    <Row>
+        <Column Fill>
+            <RadzenTextBox Placeholder="Anmerkung:" />
+        </Column>
+    </Row>
+    <Row Style="justify-content: space-between;">
+        <Column><RadzenButton Click="@Close">Abbrechen</RadzenButton></Column>
+        <Column>
+            <RadzenButton Click="@Save" Disabled="@(TypeOptions.Count() == 1)">Speichern</RadzenButton>
+            <RadzenButton Click="@SaveAndClose">Speichern & schließen</RadzenButton>
+        </Column>
+    </Row>
 </Dialog>

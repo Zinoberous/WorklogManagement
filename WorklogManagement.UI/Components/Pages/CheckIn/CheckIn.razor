@@ -19,6 +19,7 @@
     <CheckInDialog
         @bind-IsOpen="ViewModel.IsDialogOpen"
         Date="@ViewModel.SelectedDate"
+        TypeOptions="@ViewModel.TypeOptions"
         OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
         OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
     />
@@ -34,24 +35,24 @@
         @foreach (var workTime in ViewModel.WorkTimes)
         {
             <CheckInEntry
-                SelectedType="@workTime.Type.ToString()"
-                TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
+                Type="@workTime.Type.ToString()"
                 Actual="@workTime.Actual"
                 ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
                 Expected="@workTime.Expected"
                 ExpectedChanged="@(expected => ViewModel.SaveWorkTimeAsync(workTime with { Expected = expected }))"
                 Note="@workTime.Note"
+                NoteChanged="@(note => ViewModel.SaveWorkTimeAsync(workTime with { Note = note }))"
                 OnDelte="@(() => ViewModel.DeleteWorkTimeAsync(workTime))"
             />
         }
         @foreach (var absence in ViewModel.Absences)
         {
             <CheckInEntry
-                SelectedType="@absence.Type.ToString()"
-                TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
+                Type="@absence.Type.ToString()"
                 Actual="@absence.Duration"
                 ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
                 Note="@absence.Note"
+                NoteChanged="@(note => ViewModel.SaveAbsenceAsync(absence with { Note = note }))"
                 OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
             />
         }

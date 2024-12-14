@@ -1,24 +1,23 @@
 <Row>
     <Column>
-        <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" />
+        <RadzenTextBox Value="@Type" ReadOnly />
     </Column>
     @if (Expected.HasValue)
     {
-        <Column Style="width: 100px;">
-            <DurationPicker @bind-Value="ActualValue" />
-        </Column>
-        <Column Style="width: 100px;">
-            <DurationPicker @bind-Value="ExpectedValue" />
+        <Column Style="display: flex; gap: 5px; align-items: center;">
+            <DurationPicker @bind-Value="ActualValue" Style="width: 85px;" />
+            <span style="width: 5px;">&#47;</span>
+            <DurationPicker @bind-Value="ExpectedValue" Style="width: 85px;" />
         </Column>
     }
     else
     {
-        <Column Style="width: calc(200px + var(--rz-row-gap))">
-            <DurationPicker @bind-Value="ActualValue" />
+        <Column>
+            <DurationPicker @bind-Value="ActualValue" Style="width: 185px" />
         </Column>
     }
-    <Column Fill="true">
-        <RadzenTextBox @bind-Value="Note" Placeholder="Anmerkung:" />
+    <Column Fill>
+        <RadzenTextBox @bind-Value="NoteValue" Placeholder="Anmerkung:" />
     </Column>
     <Column>
         <RadzenIcon Icon="delete" Style="cursor: pointer" @onclick="OnDelte" />

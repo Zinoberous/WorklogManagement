@@ -5,6 +5,14 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class DurationPicker
 {
     [Parameter]
+    public string? ClassName { get; set; }
+
+    private string CssClass => $"duration-picker {ClassName}";
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter]
     public TimeSpan Value { get; set; }
 
     [Parameter]

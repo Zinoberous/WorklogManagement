@@ -5,13 +5,7 @@ namespace WorklogManagement.UI.Components.Pages.CheckIn;
 public partial class CheckInEntry
 {
     [Parameter]
-    public IEnumerable<string> TypeOptions { get; set; } = [];
-
-    [Parameter]
-    public string? SelectedType { get; set; } 
-
-    [Parameter]
-    public EventCallback<string> SelectedTypeChanged { get; set; }
+    public string? Type { get; set; }
 
     [Parameter]
     public TimeSpan Actual { get; set; }
@@ -50,6 +44,16 @@ public partial class CheckInEntry
 
     [Parameter]
     public EventCallback<string?> NoteChanged { get; set; }
+
+    private string? NoteValue
+    {
+        get => Note;
+        set
+        {
+            Note = value;
+            NoteChanged.InvokeAsync(Note);
+        }
+    }
 
     [Parameter]
     public EventCallback OnDelte { get; set; }

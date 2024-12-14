@@ -1,4 +1,5 @@
 using WorklogManagement.Shared.Models;
+using WorklogManagement.UI.Common;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
 
@@ -16,6 +17,17 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         get => _dialogIsOpen;
         set => SetValue(ref _dialogIsOpen, value);
     }
+
+    public IEnumerable<string> TypeOptions =>
+        Constant.WorkTimeLabels.Values
+        .Concat(Constant.AbsenceLabels.Values)
+        .Where(x => !UsedTypes.Contains(x))
+        .ToArray();
+
+    private IEnumerable<string> UsedTypes =>
+        WorkTimes.Select(x => x.Type.ToString())
+        .Concat(Absences.Select(x => x.Type.ToString()))
+        .ToArray();
 
     public void OpenDialog()
     {

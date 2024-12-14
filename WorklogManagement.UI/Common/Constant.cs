@@ -6,8 +6,8 @@ internal static class Constant
 {
     internal static readonly Dictionary<WorkTimeType, string> WorkTimeLabels = new()
     {
-        { WorkTimeType.Office, "Büro" },
         { WorkTimeType.Mobile, "Mobil" },
+        { WorkTimeType.Office, "Büro" },
     };
 
     internal static readonly Dictionary<AbsenceType, string> AbsenceLabels = new()
