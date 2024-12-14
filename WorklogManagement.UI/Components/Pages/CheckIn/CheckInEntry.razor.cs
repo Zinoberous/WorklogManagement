@@ -19,12 +19,12 @@ public partial class CheckInEntry
     [Parameter]
     public EventCallback<TimeSpan> ActualChanged { get; set; }
 
-    private TimeOnly ActualValue
+    private TimeSpan ActualValue
     {
-        get => TimeOnly.FromTimeSpan(Actual);
+        get => Actual;
         set
         {
-            Actual = value.ToTimeSpan();
+            Actual = value;
             ActualChanged.InvokeAsync(Actual);
         }
     }
@@ -35,12 +35,12 @@ public partial class CheckInEntry
     [Parameter]
     public EventCallback<TimeSpan> ExpectedChanged { get; set; }
 
-    private TimeOnly ExpectedValue
+    private TimeSpan ExpectedValue
     {
-        get => TimeOnly.FromTimeSpan(Expected ?? TimeSpan.Zero);
+        get => Expected ?? TimeSpan.Zero;
         set
         {
-            Expected = value.ToTimeSpan();
+            Expected = value;
             ExpectedChanged.InvokeAsync(Expected.Value);
         }
     }
