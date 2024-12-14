@@ -37,8 +37,11 @@
                 SelectedType="@workTime.Type.ToString()"
                 TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
                 Actual="@workTime.Actual"
+                ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
                 Expected="@workTime.Expected"
+                ExpectedChanged="@(expected => ViewModel.SaveWorkTimeAsync(workTime with { Expected = expected }))"
                 Note="@workTime.Note"
+                OnDelte="@(() => ViewModel.DeleteWorkTimeAsync(workTime))"
             />
         }
         @foreach (var absence in ViewModel.Absences)
@@ -47,7 +50,9 @@
                 SelectedType="@absence.Type.ToString()"
                 TypeOptions="@WorkTimeLabels.Values.Concat(AbsenceLabels.Values).ToList()"
                 Actual="@absence.Duration"
+                ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
                 Note="@absence.Note"
+                OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
             />
         }
     </AsyncContent>

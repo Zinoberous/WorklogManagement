@@ -134,34 +134,74 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
 
     public async Task SaveWorkTimeAsync(WorkTime workTime)
     {
-        var savedWorkTime = await _dataService.SaveWorkTimeAsync(workTime);
+        // TODO: var savedWorkTime = await _dataService.SaveWorkTimeAsync(workTime);
+        var savedWorkTime = await Task.FromResult(workTime);
 
-        if (!WorkTimes.Any(x => x.Id == savedWorkTime.Id))
+        var oldWorkTime = WorkTimes.FirstOrDefault(x => x.Id == savedWorkTime.Id);
+
+        if (oldWorkTime is not null)
         {
-            WorkTimes.Add(savedWorkTime);
-            OnPropertyChanged(nameof(WorkTimes));
+            WorkTimes.Remove(oldWorkTime);
         }
 
-        if (DatesWithAbsences.Contains(savedWorkTime.Date))
+        WorkTimes.Add(savedWorkTime);
+        OnPropertyChanged(nameof(WorkTimes));
+
+        if (!DatesWithWorkTimes.Contains(SelectedDate))
         {
-            DatesWithAbsences.Add(savedWorkTime.Date);
+            DatesWithWorkTimes.Add(SelectedDate);
             OnPropertyChanged(nameof(DatesWithAbsences));
+        }
+    }
+
+    public async Task DeleteWorkTimeAsync(WorkTime workTime)
+    {
+        // TODO: Implement deletion
+        await Task.CompletedTask;
+
+        WorkTimes.Remove(workTime);
+        OnPropertyChanged(nameof(WorkTimes));
+
+        if (WorkTimes.Count == 0)
+        {
+            DatesWithWorkTimes.Remove(SelectedDate);
+            OnPropertyChanged(nameof(DatesWithWorkTimes));
         }
     }
 
     public async Task SaveAbsenceAsync(Absence absence)
     {
-        var savedAbsence = await _dataService.SaveAbsenceAsync(absence);
+        // TODO: var savedAbsence = await _dataService.SaveAbsenceAsync(absence);
+        var savedAbsence = await Task.FromResult(absence);
 
-        if (!Absences.Any(x => x.Id == savedAbsence.Id))
+        var oldAbsence = Absences.FirstOrDefault(x => x.Id == savedAbsence.Id);
+
+        if (oldAbsence is not null)
         {
-            Absences.Add(savedAbsence);
-            OnPropertyChanged(nameof(Absences));
+            Absences.Remove(oldAbsence);
         }
 
-        if (DatesWithAbsences.Contains(savedAbsence.Date))
+        Absences.Add(savedAbsence);
+        OnPropertyChanged(nameof(Absences));
+
+        if (!DatesWithAbsences.Contains(SelectedDate))
         {
-            DatesWithAbsences.Add(savedAbsence.Date);
+            DatesWithAbsences.Add(SelectedDate);
+            OnPropertyChanged(nameof(DatesWithAbsences));
+        }
+    }
+
+    public async Task DeleteAbsenceAsync(Absence absence)
+    {
+        // TODO: Implement deletion
+        await Task.CompletedTask;
+
+        Absences.Remove(absence);
+        OnPropertyChanged(nameof(Absences));
+
+        if (Absences.Count == 0)
+        {
+            DatesWithAbsences.Remove(SelectedDate);
             OnPropertyChanged(nameof(DatesWithAbsences));
         }
     }
