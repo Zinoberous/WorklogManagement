@@ -1,15 +1,9 @@
 using Microsoft.AspNetCore.Components;
-using WorklogManagement.UI.Common;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
 
-public partial class CheckInEntry
+public partial class CheckInDurationPicker
 {
-    [Parameter]
-    public string? Type { get; set; }
-
-    private string @TypeStyle => $"color: black; background-color: {Constant.CalendarEntryColor[Type ?? string.Empty]}";
-
     [Parameter]
     public TimeSpan Actual { get; set; }
 
@@ -41,23 +35,4 @@ public partial class CheckInEntry
             ExpectedChanged.InvokeAsync(Expected.Value);
         }
     }
-
-    [Parameter]
-    public string? Note { get; set; }
-
-    [Parameter]
-    public EventCallback<string?> NoteChanged { get; set; }
-
-    private string? NoteValue
-    {
-        get => Note;
-        set
-        {
-            Note = value;
-            NoteChanged.InvokeAsync(Note);
-        }
-    }
-
-    [Parameter]
-    public EventCallback OnDelte { get; set; }
 }

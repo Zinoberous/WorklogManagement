@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Common;
 
@@ -21,18 +22,34 @@ public partial class CheckInDialog
     [Parameter]
     public IEnumerable<string> TypeOptions { get; set; } = [];
 
-    [Parameter]
-    public EventCallback<WorkTime> OnSaveWorkTime { get; set; }
-
-    [Parameter]
-    public EventCallback<Absence> OnSaveAbsence { get; set; }
-
     private string? _selectedType;
     private string? SelectedType
     {
         get => _selectedType ?? TypeOptions.FirstOrDefault();
         set => _selectedType = value;
     }
+
+    private string @TypeStyle => $"color: black; background-color: {Constant.CalendarEntryColor[SelectedType ?? string.Empty]}";
+
+    private void TypeRender(DropDownItemRenderEventArgs<string?> args)
+    {
+        var type = args.Item.ToString();
+
+        if (type == SelectedType)
+        {
+            args.Attributes.Add("style", "display: none;");
+        }
+        else if (!string.IsNullOrWhiteSpace(type))
+        {
+            args.Attributes.Add("style", $"color: black; background-color: {Constant.CalendarEntryColor[type]};");
+        }
+    }
+
+    [Parameter]
+    public EventCallback<WorkTime> OnSaveWorkTime { get; set; }
+
+    [Parameter]
+    public EventCallback<Absence> OnSaveAbsence { get; set; }
 
     private TimeSpan Actual { get; set; } = TimeSpan.FromHours(8);
     private TimeSpan Expected { get; set; } = TimeSpan.FromHours(8);

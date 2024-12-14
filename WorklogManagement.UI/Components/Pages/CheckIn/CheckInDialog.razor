@@ -1,7 +1,7 @@
 <Dialog IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Title="Neuer Eintrag">
     <Row>
         <Column>
-            <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" />
+            <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" ItemRender="@TypeRender" Style="@TypeStyle" />
         </Column>
         <Column>
             <RadzenDatePicker
@@ -12,17 +12,11 @@
         </Column>
         @if (WorkTimeLabels.Values.Contains(SelectedType))
         {
-            <Column Style="display: flex; gap: 5px; align-items: center;">
-                <DurationPicker @bind-Value="Actual" Style="width: 85px;" />
-                <span style="width: 5px;">&#47;</span>
-                <DurationPicker @bind-Value="Expected" Style="width: 85px;" />
-            </Column>
+            <CheckInDurationPicker @bind-Actual="Actual" @bind-Expected="Expected" />
         }
         else
         {
-            <Column>
-                <DurationPicker @bind-Value="Actual" Style="width: 185px" />
-            </Column>
+            <CheckInDurationPicker @bind-Actual="Actual" />
         }
     </Row>
     <Row>

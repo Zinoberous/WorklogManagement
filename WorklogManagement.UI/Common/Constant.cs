@@ -17,6 +17,15 @@ internal static class Constant
         { AbsenceType.Ill, "Krank" },
     };
 
+    internal static readonly Dictionary<string, string> CalendarEntryColor = new()
+    {
+        { WorkTimeLabels[WorkTimeType.Mobile], "#8dd0ff" },
+        { WorkTimeLabels[WorkTimeType.Office], "green" },
+        { AbsenceLabels[AbsenceType.Holiday], "lightgreen" },
+        { AbsenceLabels[AbsenceType.Vacation], "lightblue" },
+        { AbsenceLabels[AbsenceType.Ill], "lightcoral" },
+    };
+
     internal static readonly Dictionary<string, string> FederalStates = new()
     {
         { "DE-BW", "Baden-Württemberg" },

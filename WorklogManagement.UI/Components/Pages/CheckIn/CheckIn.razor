@@ -35,7 +35,7 @@
         @foreach (var workTime in ViewModel.WorkTimes)
         {
             <CheckInEntry
-                Type="@workTime.Type.ToString()"
+                Type="@WorkTimeLabels[workTime.Type]"
                 Actual="@workTime.Actual"
                 ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
                 Expected="@workTime.Expected"
@@ -48,7 +48,7 @@
         @foreach (var absence in ViewModel.Absences)
         {
             <CheckInEntry
-                Type="@absence.Type.ToString()"
+                Type="@AbsenceLabels[absence.Type]"
                 Actual="@absence.Duration"
                 ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
                 Note="@absence.Note"

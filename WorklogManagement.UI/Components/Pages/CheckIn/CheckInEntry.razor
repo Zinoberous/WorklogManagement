@@ -1,20 +1,14 @@
 <Row>
     <Column>
-        <RadzenTextBox Value="@Type" ReadOnly />
+        <RadzenTextBox Value="@Type" ReadOnly Style="@TypeStyle" />
     </Column>
     @if (Expected.HasValue)
     {
-        <Column Style="display: flex; gap: 5px; align-items: center;">
-            <DurationPicker @bind-Value="ActualValue" Style="width: 85px;" />
-            <span style="width: 5px;">&#47;</span>
-            <DurationPicker @bind-Value="ExpectedValue" Style="width: 85px;" />
-        </Column>
+        <CheckInDurationPicker @bind-Actual="ActualValue" @bind-Expected="ExpectedValue" />
     }
     else
     {
-        <Column>
-            <DurationPicker @bind-Value="ActualValue" Style="width: 185px" />
-        </Column>
+        <CheckInDurationPicker @bind-Actual="ActualValue" />
     }
     <Column Fill>
         <RadzenTextBox @bind-Value="NoteValue" Placeholder="Anmerkung:" />
