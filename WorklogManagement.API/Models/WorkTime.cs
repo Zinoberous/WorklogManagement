@@ -8,8 +8,8 @@ namespace WorklogManagement.API.Models;
 
 public record WorkTime : Shd.WorkTime
 {
-    private int? _id;
-    public new int? Id { get => _id; init => _id = value; }
+    private int _id;
+    public new int Id { get => _id; init => _id = value; }
 
     internal static WorkTime Map(DB.WorkTime workTime)
     {
@@ -26,9 +26,9 @@ public record WorkTime : Shd.WorkTime
 
     internal async Task SaveAsync(WorklogManagementContext context)
     {
-        DB.WorkTime workTime;
+        var workTime = await context.WorkTimes.SingleOrDefaultAsync(x => x.Id == _id);
 
-        if (_id is null)
+        if (workTime is null)
         {
             workTime = new()
             {
@@ -47,8 +47,6 @@ public record WorkTime : Shd.WorkTime
         }
         else
         {
-            workTime = await context.WorkTimes.SingleAsync(x => x.Id == _id);
-
             workTime.WorkTimeTypeId = (int)Type;
             workTime.Date = Date;
             workTime.ExpectedSpan = Expected;

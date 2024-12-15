@@ -4,14 +4,11 @@
 <PageTitle>Stechuhr</PageTitle>
 
 <MenuBar>
-    <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
-    <RadzenDatePicker
+    <RadzenButton Click="@ViewModel.OpenDialog" Disabled="@ViewModel.CreateNewDisabled">Erstellen</RadzenButton>
+    <DatePicker
         @bind-Value="ViewModel.SelectedDate"
-        Change="@ViewModel.OnSelectedDateChanged"
-        DateFormat="dd.MM.yyyy"
-        ShowCalendarWeek
+        OnChanged="@ViewModel.OnSelectedDateChanged"
         DateRender="@DateRender"
-        Style="width: 140px;"
     />
 </MenuBar>
 
@@ -19,12 +16,12 @@
     <CheckInDialog
         @bind-IsOpen="ViewModel.IsDialogOpen"
         Date="@ViewModel.SelectedDate"
-        TypeOptions="@ViewModel.TypeOptions"
+        UsedTypeOptions="@ViewModel.UsedTypes"
         OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
         OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
     />
     <AsyncContent IsLoading="@ViewModel.IsLoading">
-        @if (ViewModel.WorkTimes.Count + ViewModel.Absences.Count == 0)
+        @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
         {
             <RadzenRow>
                 <RadzenColumn>

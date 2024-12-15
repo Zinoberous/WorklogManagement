@@ -1,3 +1,4 @@
+using Radzen;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Common;
 using WorklogManagement.UI.Components.Pages.Base;
@@ -5,11 +6,12 @@ using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
 
-public class CheckInViewModel(IDataService dataService, INavigator navigator, INotifier notifier) : BaseViewModel
+public class CheckInViewModel(IDataService dataService, INavigationService navigationService, IToastService toastService, IPopupService popupService) : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
-    private readonly INavigator _navigator = navigator;
-    private readonly INotifier _notifier = notifier;
+    private readonly INavigationService _navigationService = navigationService;
+    private readonly IToastService _toastService = toastService;
+    private readonly IPopupService _popupService = popupService;
 
     private bool _dialogIsOpen = false;
     public bool IsDialogOpen
@@ -18,16 +20,15 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         set => SetValue(ref _dialogIsOpen, value);
     }
 
-    public IEnumerable<string> TypeOptions =>
-        Constant.WorkTimeLabels.Values
-        .Concat(Constant.AbsenceLabels.Values)
-        .Where(x => !UsedTypes.Contains(x))
+    public IEnumerable<string> UsedTypes =>
+        WorkTimes.Select(x => Constant.WorkTimeLabels[x.Type])
+        .Concat(Absences.Select(x => Constant.AbsenceLabels[x.Type]))
         .ToArray();
 
-    private IEnumerable<string> UsedTypes =>
-        WorkTimes.Select(x => x.Type.ToString())
-        .Concat(Absences.Select(x => x.Type.ToString()))
-        .ToArray();
+    public bool CreateNewDisabled =>
+        Constant.WorkTimeLabels.Values
+        .Concat(Constant.AbsenceLabels.Values)
+        .Count() == UsedTypes.Count();
 
     public void OpenDialog()
     {
@@ -43,20 +44,20 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
 
     public async Task OnSelectedDateChanged()
     {
-        _navigator.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
+        _navigationService.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
 
         await LoadWorkTimesAndAbsencesAsync();
     }
 
-    private ICollection<DateOnly> _datesWithWorkTimes = [];
-    public ICollection<DateOnly> DatesWithWorkTimes
+    private IEnumerable<DateOnly> _datesWithWorkTimes = [];
+    public IEnumerable<DateOnly> DatesWithWorkTimes
     {
         get => _datesWithWorkTimes;
         set => SetValue(ref _datesWithWorkTimes, value);
     }
 
-    private ICollection<DateOnly> _datesWithAbsences = [];
-    public ICollection<DateOnly> DatesWithAbsences
+    private IEnumerable<DateOnly> _datesWithAbsences = [];
+    public IEnumerable<DateOnly> DatesWithAbsences
     {
         get => _datesWithAbsences;
         set => SetValue(ref _datesWithAbsences, value);
@@ -69,15 +70,15 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         set => SetValue(ref _isLoading, value);
     }
 
-    private ICollection<WorkTime> _workTimes = [];
-    public ICollection<WorkTime> WorkTimes
+    private IEnumerable<WorkTime> _workTimes = [];
+    public IEnumerable<WorkTime> WorkTimes
     {
         get => _workTimes;
         set => SetValue(ref _workTimes, value);
     }
 
-    private ICollection<Absence> _absences = [];
-    public ICollection<Absence> Absences
+    private IEnumerable<Absence> _absences = [];
+    public IEnumerable<Absence> Absences
     {
         get => _absences;
         set => SetValue(ref _absences, value);
@@ -136,7 +137,7 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Kalendareinträge!", ex);
+            await _toastService.Error("Fehler beim Laden der Kalendareinträge!", ex);
         }
         finally
         {
@@ -144,77 +145,105 @@ public class CheckInViewModel(IDataService dataService, INavigator navigator, IN
         }
     }
 
-    public async Task SaveWorkTimeAsync(WorkTime workTime)
+    public async Task<bool> SaveWorkTimeAsync(WorkTime workTime)
     {
-        // TODO: var savedWorkTime = await _dataService.SaveWorkTimeAsync(workTime);
-        var savedWorkTime = await Task.FromResult(workTime);
+        WorkTime savedWorkTime;
 
-        var oldWorkTime = WorkTimes.FirstOrDefault(x => x.Id == savedWorkTime.Id);
-
-        if (oldWorkTime is not null)
+        try
         {
-            WorkTimes.Remove(oldWorkTime);
+            savedWorkTime = await _dataService.SaveWorkTimeAsync(workTime);
+        }
+        catch (Exception ex)
+        {
+            await _toastService.Error("Fehler beim Speichern der Anwesenheit!", ex);
+            return false;
         }
 
-        WorkTimes.Add(savedWorkTime);
-        OnPropertyChanged(nameof(WorkTimes));
+        WorkTimes = WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime).ToArray();
+        DatesWithWorkTimes = DatesWithWorkTimes.Append(SelectedDate).Distinct().ToArray();
 
-        if (!DatesWithWorkTimes.Contains(SelectedDate))
-        {
-            DatesWithWorkTimes.Add(SelectedDate);
-            OnPropertyChanged(nameof(DatesWithAbsences));
-        }
+        _toastService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
+
+        return true;
     }
 
-    public async Task DeleteWorkTimeAsync(WorkTime workTime)
+    public async Task<bool> DeleteWorkTimeAsync(WorkTime workTime)
     {
-        // TODO: Implement deletion
-        await Task.CompletedTask;
-
-        WorkTimes.Remove(workTime);
-        OnPropertyChanged(nameof(WorkTimes));
-
-        if (WorkTimes.Count == 0)
+        if (!(await _popupService.Confim("Eintrag löschen", "Möchtest du den Eintrag wirklich löschen?")))
         {
-            DatesWithWorkTimes.Remove(SelectedDate);
-            OnPropertyChanged(nameof(DatesWithWorkTimes));
+            return false;
         }
+
+        try
+        {
+            await _dataService.DeleteWorkTimeAsync(workTime.Id);
+        }
+        catch (Exception ex)
+        {
+            await _toastService.Error("Fehler beim Löschen der Anwesenheit!", ex);
+            return false;
+        }
+
+        WorkTimes = WorkTimes.Where(x => x.Id != workTime.Id).ToArray();
+
+        if (!WorkTimes.Any())
+        {
+            DatesWithWorkTimes = DatesWithWorkTimes.Where(x => x != SelectedDate).ToArray();
+        }
+
+        _toastService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht");
+
+        return true;
     }
 
-    public async Task SaveAbsenceAsync(Absence absence)
+    public async Task<bool> SaveAbsenceAsync(Absence absence)
     {
-        // TODO: var savedAbsence = await _dataService.SaveAbsenceAsync(absence);
-        var savedAbsence = await Task.FromResult(absence);
+        Absence savedAbsence;
 
-        var oldAbsence = Absences.FirstOrDefault(x => x.Id == savedAbsence.Id);
-
-        if (oldAbsence is not null)
+        try
         {
-            Absences.Remove(oldAbsence);
+            savedAbsence = await _dataService.SaveAbsenceAsync(absence);
+        }
+        catch (Exception ex)
+        {
+            await _toastService.Error("Fehler beim Speichern der Abwesenheit!", ex);
+            return false;
         }
 
-        Absences.Add(savedAbsence);
-        OnPropertyChanged(nameof(Absences));
+        Absences = Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence).ToArray();
+        DatesWithAbsences = DatesWithAbsences.Append(SelectedDate).Distinct().ToArray();
 
-        if (!DatesWithAbsences.Contains(SelectedDate))
-        {
-            DatesWithAbsences.Add(SelectedDate);
-            OnPropertyChanged(nameof(DatesWithAbsences));
-        }
+        _toastService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
+
+        return true;
     }
 
-    public async Task DeleteAbsenceAsync(Absence absence)
+    public async Task<bool> DeleteAbsenceAsync(Absence absence)
     {
-        // TODO: Implement deletion
-        await Task.CompletedTask;
-
-        Absences.Remove(absence);
-        OnPropertyChanged(nameof(Absences));
-
-        if (Absences.Count == 0)
+        if (!(await _popupService.Confim("Eintrag löschen", "Möchtest du den Eintrag wirklich löschen?")))
         {
-            DatesWithAbsences.Remove(SelectedDate);
-            OnPropertyChanged(nameof(DatesWithAbsences));
+            return false;
         }
+
+        try
+        {
+            await _dataService.DeleteAbsenceAsync(absence.Id);
+        }
+        catch (Exception ex)
+        {
+            await _toastService.Error("Fehler beim Löschen der Abwesenheit!", ex);
+            return false;
+        }
+
+        Absences = Absences.Where(x => x.Id != absence.Id).ToArray();
+
+        if (!Absences.Any())
+        {
+            DatesWithAbsences = DatesWithAbsences.Where(x => x != SelectedDate).ToArray();
+        }
+
+        _toastService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht");
+
+        return true;
     }
 }

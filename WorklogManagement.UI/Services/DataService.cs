@@ -20,12 +20,16 @@ public interface IDataService
 
     Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime);
 
+    Task DeleteWorkTimeAsync(int id);
+
     Task<List<Absence>> GetAbsencesAsync(DateOnly date) => GetAbsencesAsync(date, date);
     Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to);
 
     Task<List<DateOnly>> GetDatesWithAbsencesAsync();
 
     Task<Absence> SaveAbsenceAsync(Absence absence);
+
+    Task DeleteAbsenceAsync(int id);
 
     // TODO: Tickets
 
@@ -125,6 +129,15 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
         return (await res.Content.ReadFromJsonAsync<WorkTime>())!;
     }
 
+    public async Task DeleteAbsenceAsync(int id)
+    {
+        using var client = CreateClient();
+
+        var res = await client.DeleteAsync($"absences/{id}");
+
+        res.EnsureSuccessStatusCode();
+    }
+
     public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
         using var client = CreateClient();
@@ -156,5 +169,14 @@ public class DataService(IHttpClientFactory httpClientFactory) : IDataService
         res.EnsureSuccessStatusCode();
 
         return (await res.Content.ReadFromJsonAsync<Absence>())!;
+    }
+
+    public async Task DeleteWorkTimeAsync(int id)
+    {
+        using var client = CreateClient();
+
+        var res = await client.DeleteAsync($"worktimes/{id}");
+
+        res.EnsureSuccessStatusCode();
     }
 }

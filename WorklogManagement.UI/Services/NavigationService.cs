@@ -3,12 +3,12 @@ using System.Web;
 
 namespace WorklogManagement.UI.Services;
 
-public interface INavigator
+public interface INavigationService
 {
     void UpdateQuery(string key, string? value);
 }
 
-public class Navigator(NavigationManager navigationManager) : INavigator
+public class NavigationService(NavigationManager navigationManager) : INavigationService
 {
     private readonly NavigationManager _navigationManager = navigationManager;
 

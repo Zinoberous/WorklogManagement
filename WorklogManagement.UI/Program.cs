@@ -37,8 +37,9 @@ services
 
 services
     .AddTransient<IDataService, DataService>()
-    .AddTransient<INotifier, Notifier>()
-    .AddTransient<INavigator, Navigator>();
+    .AddTransient<INavigationService, NavigationService>()
+    .AddTransient<IToastService, ToastService>()
+    .AddTransient<IPopupService, PopupService>();
 
 var app = builder.Build();
 

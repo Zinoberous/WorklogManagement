@@ -14,13 +14,13 @@
 
 @code {
     [Inject]
-    public INotifier Notifier { get; set; } = null!;
+    public IToastService ToastService { get; set; } = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Notifier.MarkRenderingCompleteAsync();
+            await ToastService.MarkRenderingCompleteAsync();
         }
     }
 }

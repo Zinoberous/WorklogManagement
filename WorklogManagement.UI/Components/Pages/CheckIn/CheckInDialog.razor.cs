@@ -14,18 +14,18 @@ public partial class CheckInDialog
     public EventCallback<bool> IsOpenChanged { get; set; }
 
     [Parameter]
-    public DateOnly Date { get; set; }
+    public IEnumerable<string> UsedTypeOptions { get; set; } = [];
 
-    [Parameter]
-    public EventCallback<DateOnly> DateChanged { get; set; }
-
-    [Parameter]
-    public IEnumerable<string> TypeOptions { get; set; } = [];
+    private IEnumerable<string> TypeOptions =>
+        Constant.WorkTimeLabels.Values
+        .Concat(Constant.AbsenceLabels.Values)
+        .Where(value => !UsedTypeOptions.Contains(value))
+        .ToArray();
 
     private string? _selectedType;
-    private string? SelectedType
+    private string SelectedType
     {
-        get => _selectedType ?? TypeOptions.FirstOrDefault();
+        get => _selectedType ?? TypeOptions.First();
         set => _selectedType = value;
     }
 
@@ -46,21 +46,63 @@ public partial class CheckInDialog
     }
 
     [Parameter]
-    public EventCallback<WorkTime> OnSaveWorkTime { get; set; }
+    public DateOnly Date { get; set; }
 
     [Parameter]
-    public EventCallback<Absence> OnSaveAbsence { get; set; }
+    public EventCallback<DateOnly> DateChanged { get; set; }
 
     private TimeSpan Actual { get; set; } = TimeSpan.FromHours(8);
+
     private TimeSpan Expected { get; set; } = TimeSpan.FromHours(8);
+
+    private string? Note { get; set; }
+
+    [Parameter]
+    public Func<WorkTime, Task<bool>> OnSaveWorkTime { get; set; } = _ => Task.FromResult(false);
+
+    [Parameter]
+    public Func<Absence, Task<bool>> OnSaveAbsence { get; set; } = _ => Task.FromResult(false);
 
     private async Task Save()
     {
-        // TODO: if SelectedType is WorkTime then call OnSaveWorkTime
-        // TODO: if SelectedType is Absence then call OnSaveAbsence
-        await Task.CompletedTask;
+        var saved = false;
 
-        TypeOptions = TypeOptions.Where(x => x != SelectedType).ToArray();
+        if (Constant.WorkTimeLabels.ContainsValue(SelectedType))
+        {
+            WorkTime workTime = new()
+            {
+                Type = Constant.WorkTimeLabels.First(x => x.Value == SelectedType).Key,
+                Date = Date,
+                Actual = Actual,
+                Expected = Expected,
+                Note = string.IsNullOrWhiteSpace(Note)
+                    ? null
+                    : Note
+            };
+
+            saved = await OnSaveWorkTime.Invoke(workTime);
+        }
+        else // Constant.AbsenceLabels.ContainsValue(SelectedType)
+        {
+            Absence absence = new()
+            {
+                Type = Constant.AbsenceLabels.First(x => x.Value == SelectedType).Key,
+                Date = Date,
+                Duration = Actual,
+                Note = string.IsNullOrWhiteSpace(Note)
+                    ? null
+                    : Note
+            };
+
+            saved = await OnSaveAbsence.Invoke(absence);
+        }
+
+        if (!saved)
+        {
+            return;
+        }
+
+        UsedTypeOptions = UsedTypeOptions.Append(SelectedType).ToArray();
 
         _selectedType = null;
     }

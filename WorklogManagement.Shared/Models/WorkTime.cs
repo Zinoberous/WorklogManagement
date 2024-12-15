@@ -2,7 +2,7 @@ namespace WorklogManagement.Shared.Models;
 
 public record WorkTime : IDataModel
 {
-    public int? Id { get; init; }
+    public int Id { get; init; }
 
     public required Enums.WorkTimeType Type { get; set; }
 

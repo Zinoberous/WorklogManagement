@@ -8,8 +8,8 @@ namespace WorklogManagement.API.Models;
 
 public record TicketAttachment : Shd.TicketAttachment
 {
-    private int? _id;
-    public new int? Id { get => _id; init => _id = value; }
+    private int _id;
+    public new int Id { get => _id; init => _id = value; }
 
     private string Directory => GetDirectory(TicketId);
 
@@ -40,14 +40,14 @@ public record TicketAttachment : Shd.TicketAttachment
 
     internal async Task SaveAsync(WorklogManagementContext context)
     {
-        DB.TicketAttachment attachment;
-
         if (!System.IO.Directory.Exists(Directory))
         {
             System.IO.Directory.CreateDirectory(Directory);
         }
 
-        if (_id is null)
+        var attachment = await context.TicketAttachments.SingleOrDefaultAsync(x => x.Id == _id);
+
+        if (attachment is null)
         {
             await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
@@ -66,8 +66,6 @@ public record TicketAttachment : Shd.TicketAttachment
         }
         else
         {
-            attachment = await context.TicketAttachments.SingleAsync(x => x.Id == _id);
-
             // alte Datei löschen
             File.Delete(Path.Combine(Directory, attachment.Name));
 

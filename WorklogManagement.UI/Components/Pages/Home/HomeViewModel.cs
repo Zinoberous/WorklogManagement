@@ -5,10 +5,10 @@ using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.Home;
 
-public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseViewModel
+public class HomeViewModel(IDataService dataService, IToastService toastService) : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
-    private readonly INotifier _notifier = notifier;
+    private readonly IToastService _toastService = toastService;
 
     private bool _loadOvertime = true;
     public bool LoadOvertime
@@ -162,7 +162,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Überstunden!", ex);
+            await _toastService.Error("Fehler beim Laden der Überstunden!", ex);
         }
         finally
         {
@@ -188,7 +188,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!", ex);
+            await _toastService.Error($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!", ex);
 
             Dictionary<CalendarEntryType, int> calendarStatistics = [];
 
@@ -209,7 +209,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Kalendarstatistiken!", ex);
+            await _toastService.Error("Fehler beim Laden der Kalendarstatistiken!", ex);
 
             Dictionary<CalendarEntryType, int> calendarStatistics = [];
 
@@ -232,7 +232,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Ticketstatistiken!", ex);
+            await _toastService.Error("Fehler beim Laden der Ticketstatistiken!", ex);
 
             Dictionary<TicketStatus, int> ticketStatistics = [];
 
@@ -259,7 +259,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Arbeitszeiten!", ex);
+            await _toastService.Error("Fehler beim Laden der Arbeitszeiten!", ex);
         }
         finally
         {
@@ -277,7 +277,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Abwesenheiten!", ex);
+            await _toastService.Error("Fehler beim Laden der Abwesenheiten!", ex);
         }
         finally
         {
@@ -295,7 +295,7 @@ public class HomeViewModel(IDataService dataService, INotifier notifier) : BaseV
         }
         catch (Exception ex)
         {
-            await _notifier.NotifyErrorAsync("Fehler beim Laden der Feiertage!", ex);
+            await _toastService.Error("Fehler beim Laden der Feiertage!", ex);
         }
         finally
         {

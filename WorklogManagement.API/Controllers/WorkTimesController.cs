@@ -38,4 +38,10 @@ public class WorkTimesController(WorklogManagementContext context) : ControllerB
 
         return workTime;
     }
+
+    [HttpDelete("{id}")]
+    public async Task Delete(int id)
+    {
+        await WorkTime.DeleteAsync(_context, id);
+    }
 }

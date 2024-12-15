@@ -4,14 +4,17 @@ using System.Collections.Concurrent;
 
 namespace WorklogManagement.UI.Services;
 
-public interface INotifier
+public interface IToastService
 {
     Task MarkRenderingCompleteAsync();
 
-    Task NotifyErrorAsync(string message, Exception ex);
+    void Info(string message);
+    void Success(string message);
+    void Warning(string message);
+    Task Error(string message, Exception ex);
 }
 
-public class Notifier(NotificationService notificationService, IJSRuntime jsRuntime) : INotifier
+public class ToastService(NotificationService notificationService, IJSRuntime jsRuntime) : IToastService
 {
     private readonly NotificationService _notificationService = notificationService;
     private readonly IJSRuntime _jsRuntime = jsRuntime;
@@ -30,7 +33,22 @@ public class Notifier(NotificationService notificationService, IJSRuntime jsRunt
         }
     }
 
-    public async Task NotifyErrorAsync(string message, Exception ex)
+    public void Info(string message)
+    {
+        _notificationService.Notify(NotificationSeverity.Info, message);
+    }
+
+    public void Success(string message)
+    {
+        _notificationService.Notify(NotificationSeverity.Success, message);
+    }
+
+    public void Warning(string message)
+    {
+        _notificationService.Notify(NotificationSeverity.Warning, message);
+    }
+
+    public async Task Error(string message, Exception ex)
     {
         _notificationService.Notify(NotificationSeverity.Error, message);
 

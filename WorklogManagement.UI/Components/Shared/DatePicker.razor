@@ -1,0 +1,11 @@
+<RadzenDatePicker
+    @bind-Value="Date"
+    DateFormat="dd.MM.yyyy"
+    ShowCalendarWeek
+    DateRender="@DateRender"
+    Style="width: 140px;"
+>
+    <FooterTemplate>
+        <RadzenButton Click=@(args => Date = DateOnly.FromDateTime(DateTime.Now)) Text="Heute" Style="width: 100%;" class="rz-my-4" />
+    </FooterTemplate>
+</RadzenDatePicker>

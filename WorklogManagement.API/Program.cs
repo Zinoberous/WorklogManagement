@@ -1,7 +1,6 @@
 using Delta;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System.Diagnostics;
 using WorklogManagement.API.Common;
 using WorklogManagement.Data.Context;
 

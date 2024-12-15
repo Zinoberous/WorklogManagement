@@ -38,4 +38,10 @@ public class AbsencesController(WorklogManagementContext context) : ControllerBa
 
         return absence;
     }
+
+    [HttpDelete("{id}")]
+    public async Task Delete(int id)
+    {
+        await Absence.DeleteAsync(_context, id);
+    }
 }

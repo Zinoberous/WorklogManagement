@@ -2,7 +2,7 @@ namespace WorklogManagement.Shared.Models;
 
 public record TicketStatusLog : IDataModel
 {
-    public int? Id { get; init; }
+    public int Id { get; init; }
 
     public required int TicketId { get; init; }
 

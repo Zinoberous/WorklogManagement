@@ -8,8 +8,8 @@ namespace WorklogManagement.API.Models;
 
 public record Absence : Shd.Absence
 {
-    private int? _id;
-    public new int? Id { get => _id; init => _id = value; }
+    private int _id;
+    public new int Id { get => _id; init => _id = value; }
 
     internal static Absence Map(DB.Absence absence)
     {
@@ -25,9 +25,9 @@ public record Absence : Shd.Absence
 
     internal async Task SaveAsync(WorklogManagementContext context)
     {
-        DB.Absence absence;
+        var absence = await context.Absences.SingleOrDefaultAsync(x => x.Id == _id);
 
-        if (_id is null)
+        if (absence is null)
         {
             absence = new()
             {
@@ -45,8 +45,6 @@ public record Absence : Shd.Absence
         }
         else
         {
-            absence = await context.Absences.SingleAsync(x => x.Id == _id);
-
             absence.AbsenceTypeId = (int)Type;
             absence.Date = Date;
             absence.DurationSpan = Duration;

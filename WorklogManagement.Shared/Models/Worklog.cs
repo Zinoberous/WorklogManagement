@@ -2,7 +2,7 @@ namespace WorklogManagement.Shared.Models;
 
 public record Worklog : IDataModel
 {
-    public int? Id { get; init; }
+    public int Id { get; init; }
 
     public required DateOnly Date { get; init; }
 

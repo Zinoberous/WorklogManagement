@@ -8,8 +8,8 @@ namespace WorklogManagement.API.Models;
 
 public record WorklogAttachment : Shd.WorklogAttachment
 {
-    private int? _id;
-    public new int? Id { get => _id; init => _id = value; }
+    private int _id;
+    public new int Id { get => _id; init => _id = value; }
 
     private string Directory => GetDirectory(WorklogId);
 
@@ -40,14 +40,14 @@ public record WorklogAttachment : Shd.WorklogAttachment
 
     internal async Task SaveAsync(WorklogManagementContext context)
     {
-        DB.WorklogAttachment attachment;
-
         if (!System.IO.Directory.Exists(Directory))
         {
             System.IO.Directory.CreateDirectory(Directory);
         }
 
-        if (_id is null)
+        var attachment = await context.WorklogAttachments.SingleOrDefaultAsync(x => x.Id == Id);
+
+        if (attachment is null)
         {
             await File.WriteAllBytesAsync(Path.Combine(Directory, Name), Convert.FromBase64String(Data));
 
@@ -66,8 +66,6 @@ public record WorklogAttachment : Shd.WorklogAttachment
         }
         else
         {
-            attachment = await context.WorklogAttachments.SingleAsync(x => x.Id == Id);
-
             // alte Datei löschen
             File.Delete(Path.Combine(Directory, attachment.Name));
 

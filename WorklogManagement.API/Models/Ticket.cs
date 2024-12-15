@@ -8,8 +8,8 @@ namespace WorklogManagement.API.Models;
 
 public record Ticket : Shd.Ticket
 {
-    private int? _id;
-    public new int? Id { get => _id; init => _id = value; }
+    private int _id;
+    public new int Id { get => _id; init => _id = value; }
 
     private DateTime? _createdAt;
     public new DateTime? CreatedAt { get => _createdAt; init => _createdAt = value; }
@@ -32,9 +32,11 @@ public record Ticket : Shd.Ticket
 
     internal async Task SaveAsync(WorklogManagementContext context)
     {
-        DB.Ticket ticket;
+        var ticket = await context.Tickets
+            .Include(x => x.TicketStatusLogs)
+            .SingleOrDefaultAsync(x => x.Id == _id);
 
-        if (_id is null)
+        if (ticket is null)
         {
             ticket = new()
             {
@@ -62,10 +64,6 @@ public record Ticket : Shd.Ticket
         }
         else
         {
-            ticket = await context.Tickets
-                .Include(x => x.TicketStatusLogs)
-                .SingleAsync(x => x.Id == _id);
-
             ticket.RefId = RefId;
             ticket.Title = Title;
             ticket.Description = Description;

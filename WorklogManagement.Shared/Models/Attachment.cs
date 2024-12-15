@@ -2,7 +2,7 @@ namespace WorklogManagement.Shared.Models;
 
 public record Attachment : IDataModel
 {
-    public int? Id { get; init; }
+    public int Id { get; init; }
 
     public required string Name { get; init; }
 

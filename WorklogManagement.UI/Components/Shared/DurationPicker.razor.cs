@@ -65,7 +65,7 @@ public partial class DurationPicker
         // 1_425 = 23:45
         if (Value.TotalMinutes > 1_425)
         {
-           await  SetValue(MaxValue);
+            await SetValue(MaxValue);
         }
         else
         {

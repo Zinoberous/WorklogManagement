@@ -7,8 +7,8 @@ namespace WorklogManagement.API.Models;
 
 public record Worklog : Shd.Worklog
 {
-    private int? _id;
-    public new int? Id { get => _id; init => _id = value; }
+    private int _id;
+    public new int Id { get => _id; init => _id = value; }
 
     internal static Worklog Map(DB.Worklog worklog)
     {
@@ -26,9 +26,9 @@ public record Worklog : Shd.Worklog
 
     internal async Task SaveAsync(WorklogManagementContext context)
     {
-        DB.Worklog worklog;
+        var worklog = await context.Worklogs.SingleOrDefaultAsync(x => x.Id == _id);
 
-        if (_id is null)
+        if (worklog is null)
         {
             worklog = new()
             {
@@ -46,8 +46,6 @@ public record Worklog : Shd.Worklog
         }
         else
         {
-            worklog = await context.Worklogs.SingleAsync(x => x.Id == _id);
-
             worklog.Date = Date;
             worklog.TicketId = TicketId;
             worklog.Description = Description;
