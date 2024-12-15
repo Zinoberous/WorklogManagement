@@ -10,11 +10,14 @@ Console.Title = "WorklogManagement.API";
 
 var builder = WebApplication.CreateBuilder(args);
 
+var env = builder.Environment;
+
 var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
+config.AddJsonFile($"local.settings.{env.EnvironmentName}.json", true);
 
-var isDevelopment = builder.Environment.IsDevelopment();
+var isDevelopment = env.IsDevelopment();
 
 var services = builder.Services;
 
