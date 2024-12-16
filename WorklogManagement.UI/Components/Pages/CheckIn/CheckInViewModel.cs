@@ -159,10 +159,14 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             return false;
         }
 
+        // nur wenn neuer Eintrag
+        if (savedWorkTime.Id != workTime.Id)
+        {
+            _toastService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
+        }
+
         WorkTimes = WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime).ToArray();
         DatesWithWorkTimes = DatesWithWorkTimes.Append(SelectedDate).Distinct().ToArray();
-
-        _toastService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
 
         return true;
     }
@@ -210,10 +214,14 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             return false;
         }
 
+        // nur wenn neuer Eintrag
+        if (savedAbsence.Id != absence.Id)
+        {
+            _toastService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
+        }
+
         Absences = Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence).ToArray();
         DatesWithAbsences = DatesWithAbsences.Append(SelectedDate).Distinct().ToArray();
-
-        _toastService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
 
         return true;
     }

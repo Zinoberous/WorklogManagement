@@ -46,137 +46,103 @@ public interface IDataService
     //Task DeleteAsync<TDataModel>(int id) where TDataModel : IDataModel;
 }
 
-public class DataService(IHttpClientFactory httpClientFactory) : IDataService
+public class DataService(IHttpClientFactory httpClientFactory, IGlobalDataStateService dataStateService) : IDataService
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly IGlobalDataStateService _dataStateService = dataStateService;
 
     private HttpClient CreateClient() => _httpClientFactory.CreateClient(nameof(WorklogManagement));
 
     public async Task<OvertimeInfo> GetOvertimeAsync()
     {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync("statistics/overtime");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<OvertimeInfo>())!;
+        return await ExecuteWithDataStateAsync<OvertimeInfo>(async client => await client.GetAsync("statistics/overtime"));
     }
 
     public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
     {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync($"statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<Dictionary<CalendarEntryType, int>>())!;
+        return await ExecuteWithDataStateAsync<Dictionary<CalendarEntryType, int>>(async client => await client.GetAsync($"statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}"));
     }
 
     public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
     {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync("statistics/tickets");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<Dictionary<TicketStatus, int>>())!;
+        return await ExecuteWithDataStateAsync<Dictionary<TicketStatus, int>>(async client => await client.GetAsync("statistics/tickets"));
     }
 
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
     {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync($"holidays/{federalState}?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<List<Holiday>>())!;
+        return await ExecuteWithDataStateAsync<List<Holiday>>(async client => await client.GetAsync($"holidays/{federalState}?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}"));
     }
 
     public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
     {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync($"worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<List<WorkTime>>())!;
+        return await ExecuteWithDataStateAsync<List<WorkTime>>(async client => await client.GetAsync($"worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}"));
     }
 
     public async Task<List<DateOnly>> GetDatesWithWorkTimesAsync()
     {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync("worktimes/dates");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<List<DateOnly>>())!;
+        return await ExecuteWithDataStateAsync<List<DateOnly>>(async client => await client.GetAsync("worktimes/dates"));
     }
 
     public async Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime)
     {
-        using var client = CreateClient();
-
-        var res = await client.PostAsJsonAsync("worktimes", workTime);
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<WorkTime>())!;
-    }
-
-    public async Task DeleteAbsenceAsync(int id)
-    {
-        using var client = CreateClient();
-
-        var res = await client.DeleteAsync($"absences/{id}");
-
-        res.EnsureSuccessStatusCode();
-    }
-
-    public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
-    {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync($"absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<List<Absence>>())!;
-    }
-
-    public async Task<List<DateOnly>> GetDatesWithAbsencesAsync()
-    {
-        using var client = CreateClient();
-
-        var res = await client.GetAsync("absences/dates");
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<List<DateOnly>>())!;
-    }
-
-    public async Task<Absence> SaveAbsenceAsync(Absence absence)
-    {
-        using var client = CreateClient();
-
-        var res = await client.PostAsJsonAsync("absences", absence);
-
-        res.EnsureSuccessStatusCode();
-
-        return (await res.Content.ReadFromJsonAsync<Absence>())!;
+        return await ExecuteWithDataStateAsync<WorkTime>(async client => await client.PostAsJsonAsync("worktimes", workTime));
     }
 
     public async Task DeleteWorkTimeAsync(int id)
     {
+        await ExecuteWithDataStateAsync(async client => await client.DeleteAsync($"worktimes/{id}"));
+    }
+
+    public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
+    {
+        return await ExecuteWithDataStateAsync<List<Absence>>(async client => await client.GetAsync($"absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}"));
+    }
+
+    public async Task<List<DateOnly>> GetDatesWithAbsencesAsync()
+    {
+        return await ExecuteWithDataStateAsync<List<DateOnly>>(async client => await client.GetAsync("absences/dates"));
+    }
+
+    public async Task<Absence> SaveAbsenceAsync(Absence absence)
+    {
+        return await ExecuteWithDataStateAsync<Absence>(async client => await client.PostAsJsonAsync("absences", absence));
+    }
+
+    public async Task DeleteAbsenceAsync(int id)
+    {
+        await ExecuteWithDataStateAsync(async client => await client.DeleteAsync($"absences/{id}"));
+    }
+
+    private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(Func<HttpClient, Task<HttpResponseMessage>> action)
+        => await ExecuteWithDataStateAsync<HttpResponseMessage>(action);
+
+    private async Task<T> ExecuteWithDataStateAsync<T>(Func<HttpClient, Task<HttpResponseMessage>> action)
+    {
         using var client = CreateClient();
 
-        var res = await client.DeleteAsync($"worktimes/{id}");
+        _dataStateService.StartOperation();
 
-        res.EnsureSuccessStatusCode();
+        try
+        {
+            var res = await action(client);
+
+            res.EnsureSuccessStatusCode();
+
+            if (typeof(T) == typeof(HttpResponseMessage))
+            {
+                return (T)(object)res;
+            }
+
+            return (await res.Content.ReadFromJsonAsync<T>())!;
+        }
+        catch
+        {
+            _dataStateService.SetError();
+            throw;
+        }
+        finally
+        {
+            _dataStateService.EndOperation();
+        }
     }
 }

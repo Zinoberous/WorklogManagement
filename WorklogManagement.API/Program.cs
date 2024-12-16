@@ -1,6 +1,5 @@
 using Delta;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 using WorklogManagement.API.Common;
 using WorklogManagement.Data.Context;
 
@@ -21,30 +20,17 @@ var isDevelopment = env.IsDevelopment();
 
 var services = builder.Services;
 
-services.AddLogging(logBuilder =>
-{
-    var logger = new LoggerConfiguration()
-        .Enrich.FromLogContext()
-        .MinimumLevel.Information()
-        //.Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().StartsWith($"\"{nameof(WorklogManagement)}"))
-        .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().StartsWith($"\"{nameof(Program)}"))
-        .WriteTo.Console()
-        .CreateLogger();
-
-    logBuilder.ClearProviders();
-    logBuilder.AddSerilog(logger);
-});
-
 services.AddControllers();
 
 services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.SetIsOriginAllowed(_ => true);
-        builder.AllowCredentials();
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
+        builder
+            .SetIsOriginAllowed(_ => true)
+            .AllowCredentials()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -81,22 +67,6 @@ if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 }
 
 var app = builder.Build();
-
-//app.Use(async (context, next) =>
-//{
-//    if (context.Request.Path.ToString().Contains("swagger", StringComparison.InvariantCultureIgnoreCase))
-//    {
-//        await next.Invoke();
-//        return;
-//    }
-
-//    var stopwatch = Stopwatch.StartNew();
-//    await next.Invoke();
-//    stopwatch.Stop();
-//    var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-//    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-//    logger.LogInformation("Request {Method} {Path} executed in {ElapsedMilliseconds}ms", context.Request.Method, context.Request.Path, elapsedMilliseconds);
-//});
 
 app.UseDelta<WorklogManagementContext>();
 

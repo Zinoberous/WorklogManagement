@@ -37,6 +37,7 @@ services
 
 services
     .AddTransient<IDataService, DataService>()
+    .AddScoped<IGlobalDataStateService, GlobaleDataStateService>()
     .AddTransient<INavigationService, NavigationService>()
     .AddTransient<IToastService, ToastService>()
     .AddTransient<IPopupService, PopupService>();

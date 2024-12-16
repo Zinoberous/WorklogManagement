@@ -9,11 +9,9 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
     [Inject]
     protected TViewModel ViewModel { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-
-        await base.OnInitializedAsync();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

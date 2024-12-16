@@ -4,23 +4,27 @@
 
 <RadzenLayout>
     <RadzenSidebar>
-        <div class="sidebar-top" />
+        <div class="sidebar-top">
+            @if (DataStateService.IsLoading)
+            {
+                <Loader />
+            }
+            else if (DataStateService.HasError)
+            {
+                <RadzenIcon Icon="error" Style="color: red; height: 100%; width: 100%; font-size: xxx-large;" />
+            }
+            else
+            {
+                <RadzenIcon Icon="check_circle" Style="color: green; height: 100%; width: 100%; font-size: xxx-large;" />
+            }
+        </div>
         <NavMenu />
     </RadzenSidebar>
     <RadzenBody Style="padding: 0">
+        @if (DataStateService.HasError)
+        {
+            <div class="body-block" />
+        }
         @Body
     </RadzenBody>
 </RadzenLayout>
-
-@code {
-    [Inject]
-    public IToastService ToastService { get; set; } = null!;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await ToastService.MarkRenderingCompleteAsync();
-        }
-    }
-}
