@@ -6,11 +6,10 @@ using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
 
-public class CheckInViewModel(IDataService dataService, INavigationService navigationService, IToastService toastService, IPopupService popupService) : BaseViewModel
+public class CheckInViewModel(IDataService dataService, INavigationService navigationService, IPopupService popupService) : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
     private readonly INavigationService _navigationService = navigationService;
-    private readonly IToastService _toastService = toastService;
     private readonly IPopupService _popupService = popupService;
 
     private bool _dialogIsOpen = false;
@@ -46,7 +45,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
     {
         _navigationService.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
 
-        await LoadWorkTimesAndAbsencesAsync();
+        await LoadCalendarEntriesAsync();
     }
 
     private IEnumerable<DateOnly> _datesWithWorkTimes = [];
@@ -63,11 +62,11 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         set => SetValue(ref _datesWithAbsences, value);
     }
 
-    private bool _isLoading = true;
-    public bool IsLoading
+    private bool _loadCalendarEntries = true;
+    public bool LoadCalendarEntries
     {
-        get => _isLoading;
-        set => SetValue(ref _isLoading, value);
+        get => _loadCalendarEntries;
+        set => SetValue(ref _loadCalendarEntries, value);
     }
 
     private IEnumerable<WorkTime> _workTimes = [];
@@ -94,7 +93,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         await Task.WhenAll([
             LoadDatesWithWorkTimesAsync(),
             LoadDatesWithAbsencesAsync(),
-            LoadWorkTimesAndAbsencesAsync()
+            LoadCalendarEntriesAsync()
         ]);
     }
 
@@ -122,9 +121,9 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         }
     }
 
-    public async Task LoadWorkTimesAndAbsencesAsync()
+    public async Task LoadCalendarEntriesAsync()
     {
-        IsLoading = true;
+        LoadCalendarEntries = true;
 
         try
         {
@@ -137,11 +136,11 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         }
         catch (Exception ex)
         {
-            await _toastService.Error("Fehler beim Laden der Kalendareinträge!", ex);
+            await _popupService.Error("Fehler beim Laden der Kalendareinträge!", ex);
         }
         finally
         {
-            IsLoading = false;
+            LoadCalendarEntries = false;
         }
     }
 
@@ -155,14 +154,14 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         }
         catch (Exception ex)
         {
-            await _toastService.Error("Fehler beim Speichern der Anwesenheit!", ex);
+            await _popupService.Error("Fehler beim Speichern der Anwesenheit!", ex);
             return false;
         }
 
         // nur wenn neuer Eintrag
         if (savedWorkTime.Id != workTime.Id)
         {
-            _toastService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
+            _popupService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
         }
 
         WorkTimes = WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime).ToArray();
@@ -184,7 +183,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         }
         catch (Exception ex)
         {
-            await _toastService.Error("Fehler beim Löschen der Anwesenheit!", ex);
+            await _popupService.Error("Fehler beim Löschen der Anwesenheit!", ex);
             return false;
         }
 
@@ -195,7 +194,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             DatesWithWorkTimes = DatesWithWorkTimes.Where(x => x != SelectedDate).ToArray();
         }
 
-        _toastService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht");
+        _popupService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht");
 
         return true;
     }
@@ -210,14 +209,14 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         }
         catch (Exception ex)
         {
-            await _toastService.Error("Fehler beim Speichern der Abwesenheit!", ex);
+            await _popupService.Error("Fehler beim Speichern der Abwesenheit!", ex);
             return false;
         }
 
         // nur wenn neuer Eintrag
         if (savedAbsence.Id != absence.Id)
         {
-            _toastService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
+            _popupService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
         }
 
         Absences = Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence).ToArray();
@@ -239,7 +238,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         }
         catch (Exception ex)
         {
-            await _toastService.Error("Fehler beim Löschen der Abwesenheit!", ex);
+            await _popupService.Error("Fehler beim Löschen der Abwesenheit!", ex);
             return false;
         }
 
@@ -250,7 +249,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             DatesWithAbsences = DatesWithAbsences.Where(x => x != SelectedDate).ToArray();
         }
 
-        _toastService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht");
+        _popupService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht");
 
         return true;
     }

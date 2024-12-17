@@ -2,6 +2,11 @@ using Radzen;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
+using WorklogManagement.UI.Components.Pages.Ticket;
+using WorklogManagement.UI.Components.Pages.TicketBoard;
+using WorklogManagement.UI.Components.Pages.TicketList;
+using WorklogManagement.UI.Components.Pages.Tracking;
+using WorklogManagement.UI.Components.Pages.Worklog;
 using WorklogManagement.UI.Services;
 
 #if DEBUG
@@ -32,14 +37,18 @@ services
 services.AddHttpClient(nameof(WorklogManagement), client => client.BaseAddress = new(config.GetValue<string>($"{nameof(WorklogManagement)}{nameof(HttpClient.BaseAddress)}")!));
 
 services
+    .AddScoped<CheckInViewModel>()
     .AddScoped<HomeViewModel>()
-    .AddScoped<CheckInViewModel>();
+    .AddScoped<TicketViewModel>()
+    .AddScoped<TicketBoardViewModel>()
+    .AddScoped<TicketListViewModel>()
+    .AddScoped<TrackingViewModel>()
+    .AddScoped<WorklogViewModel>();
 
 services
     .AddTransient<IDataService, DataService>()
     .AddScoped<IGlobalDataStateService, GlobaleDataStateService>()
     .AddTransient<INavigationService, NavigationService>()
-    .AddTransient<IToastService, ToastService>()
     .AddTransient<IPopupService, PopupService>();
 
 var app = builder.Build();

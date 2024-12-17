@@ -11,10 +11,10 @@ public partial class MainLayout : IDisposable
     public NavigationManager NavigationManager { get; set; } = null!;
 
     [Inject]
-    public required IGlobalDataStateService DataStateService { get; set; }
+    public required IPopupService PopupService { get; set; }
 
     [Inject]
-    public required IToastService ToastService { get; set; }
+    public required IGlobalDataStateService DataStateService { get; set; }
 
     protected override void OnInitialized()
     {
@@ -38,7 +38,7 @@ public partial class MainLayout : IDisposable
     {
         if (firstRender)
         {
-            await ToastService.MarkRenderingCompleteAsync();
+            await PopupService.MarkRenderingCompleteAsync();
         }
     }
 

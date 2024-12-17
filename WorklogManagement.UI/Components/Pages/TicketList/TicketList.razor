@@ -1,0 +1,10 @@
+@page "/ticket-list"
+@inherits BasePage<TicketListViewModel>
+
+<PageTitle>Tickets</PageTitle>
+
+<main class="ticket-list">
+    <AsyncContent IsLoading="@ViewModel.LoadTickets">
+        TBD
+    </AsyncContent>
+</main>

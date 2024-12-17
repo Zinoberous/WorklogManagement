@@ -20,7 +20,7 @@
         OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
         OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
     />
-    <AsyncContent IsLoading="@ViewModel.IsLoading">
+    <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
         @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
         {
             <RadzenRow>
