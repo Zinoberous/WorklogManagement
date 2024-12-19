@@ -6,9 +6,9 @@ internal static class HolidayEndpoints
 {
     internal static IEndpointRouteBuilder RegisterHolidayEndpoints(this IEndpointRouteBuilder app)
     {
-        var holidayGroup = app.MapGroup("/holidays").WithTags("Holidays");
+        var group = app.MapGroup("/holidays").WithTags("Holidays");
 
-        holidayGroup.MapGet("/{federalState}", Get);
+        group.MapGet("/{federalState}", Get);
 
         return app;
     }

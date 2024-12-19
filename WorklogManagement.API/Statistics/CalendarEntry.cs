@@ -1,4 +1,4 @@
-namespace WorklogManagement.API.Models;
+namespace WorklogManagement.API.Statistics;
 
 internal record CalendarEntry
 {

@@ -3,7 +3,7 @@ using WorklogManagement.Data.Context;
 using DB = WorklogManagement.Data.Models;
 using Shd = WorklogManagement.Shared.Models;
 
-namespace WorklogManagement.API.Models;
+namespace WorklogManagement.API.Worklogs;
 
 public record Worklog : Shd.Worklog
 {

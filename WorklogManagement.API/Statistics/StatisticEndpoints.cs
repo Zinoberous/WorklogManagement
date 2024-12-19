@@ -1,27 +1,31 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WorklogManagement.API.Models;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using DB = WorklogManagement.Data.Models;
 
-namespace WorklogManagement.API.Controllers;
+namespace WorklogManagement.API.Statistics;
 
-[ApiController]
-[Route("[controller]")]
-public class StatisticsController(WorklogManagementContext context) : ControllerBase
+internal static class StatisticEndpoints
 {
-    private readonly WorklogManagementContext _context = context;
+    internal static IEndpointRouteBuilder RegisterStatisticEndpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/statistics").WithTags("Statistics");
 
-    [HttpGet("overtime")]
-    public async Task<OvertimeInfo> GetOvertime()
+        group.MapGet("/overtime", GetOvertime);
+        group.MapGet("/calendar", GetCalendarStatics);
+        group.MapGet("/tickets", GetTicketStatistics);
+
+        return app;
+    }
+
+    private static async Task<OvertimeInfo> GetOvertime(WorklogManagementContext context)
     {
         var totalOvertime = TimeSpan.Zero;
         var officeOvertime = TimeSpan.Zero;
         var mobileOvertime = TimeSpan.Zero;
 
-        var workTimes = await _context.WorkTimes
+        var workTimes = await context.WorkTimes
             .Where(x => x.ActualMinutes != x.ExpectedMinutes)
             .Select(x => new { Expected = x.ExpectedSpan, Actual = x.ActualSpan, x.WorkTimeTypeId })
             .ToListAsync();
@@ -58,8 +62,7 @@ public class StatisticsController(WorklogManagementContext context) : Controller
         };
     }
 
-    [HttpGet("calendar")]
-    public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStatics(int? year = null)
+    private static async Task<Dictionary<CalendarEntryType, int>> GetCalendarStatics(WorklogManagementContext context, int? year = null)
     {
         static Task<int> CountDistinctDatesAsync(IQueryable<CalendarEntry> entries)
         {
@@ -69,7 +72,7 @@ public class StatisticsController(WorklogManagementContext context) : Controller
                 .CountAsync();
         }
 
-        var rawEntries = _context
+        var rawEntries = context
             .WorkTimes.Select(x => new
             {
                 Type = nameof(DB.WorkTime),
@@ -77,7 +80,7 @@ public class StatisticsController(WorklogManagementContext context) : Controller
                 x.Date,
                 DurationMinutes = x.ActualMinutes,
             })
-            .Union(_context.Absences.Select(x => new
+            .Union(context.Absences.Select(x => new
             {
                 Type = nameof(DB.Absence),
                 TypeId = x.AbsenceTypeId,
@@ -136,10 +139,9 @@ public class StatisticsController(WorklogManagementContext context) : Controller
         return result;
     }
 
-    [HttpGet("tickets")]
-    public async Task<Dictionary<TicketStatus, int>> GetTicketStatistics()
+    private static async Task<Dictionary<TicketStatus, int>> GetTicketStatistics(WorklogManagementContext context)
     {
-        var statistics = await _context.Tickets
+        var statistics = await context.Tickets
             .GroupBy(x => x.TicketStatusId)
             .ToDictionaryAsync(x => (TicketStatus)x.Key, x => x.Count());
 

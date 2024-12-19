@@ -4,7 +4,7 @@ using WorklogManagement.Shared.Enums;
 using DB = WorklogManagement.Data.Models;
 using Shd = WorklogManagement.Shared.Models;
 
-namespace WorklogManagement.API.Models;
+namespace WorklogManagement.API.Absences;
 
 public record Absence : Shd.Absence
 {

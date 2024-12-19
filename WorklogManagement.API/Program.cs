@@ -1,7 +1,10 @@
 using Delta;
 using Microsoft.EntityFrameworkCore;
+using WorklogManagement.API.Absences;
 using WorklogManagement.API.Common;
 using WorklogManagement.API.Holidays;
+using WorklogManagement.API.Statistics;
+using WorklogManagement.API.WorkTimes;
 using WorklogManagement.Data.Context;
 
 #if DEBUG
@@ -26,8 +29,6 @@ if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 var isDevelopment = env.IsDevelopment();
 
 var services = builder.Services;
-
-services.AddControllers();
 
 services.AddCors(options =>
 {
@@ -76,10 +77,11 @@ app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapControllers();
-
 app.MapGroup("/health").WithTags("Health").MapGet("", () => Results.Ok());
 
 app.RegisterHolidayEndpoints();
+app.RegisterStatisticEndpoints();
+app.RegisterWorkTimeEndpoints();
+app.RegisterAbsenceEndpoints();
 
 app.Run();
