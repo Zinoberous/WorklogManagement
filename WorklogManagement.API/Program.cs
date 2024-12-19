@@ -4,6 +4,8 @@ using WorklogManagement.API.Absences;
 using WorklogManagement.API.Common;
 using WorklogManagement.API.Holidays;
 using WorklogManagement.API.Statistics;
+using WorklogManagement.API.Tickets;
+using WorklogManagement.API.Worklogs;
 using WorklogManagement.API.WorkTimes;
 using WorklogManagement.Data.Context;
 
@@ -83,5 +85,7 @@ app.RegisterHolidayEndpoints();
 app.RegisterStatisticEndpoints();
 app.RegisterWorkTimeEndpoints();
 app.RegisterAbsenceEndpoints();
+app.RegisterTicketEndpoints();
+app.RegisterWorklogEndpoints();
 
 app.Run();

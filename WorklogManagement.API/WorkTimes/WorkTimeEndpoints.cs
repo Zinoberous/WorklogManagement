@@ -8,12 +8,12 @@ internal static class WorkTimeEndpoints
 {
     internal static IEndpointRouteBuilder RegisterWorkTimeEndpoints(this IEndpointRouteBuilder app)
     {
-        var holidayGroup = app.MapGroup("/worktimes").WithTags("WorkTimes");
+        var group = app.MapGroup("/worktimes").WithTags("WorkTimes");
 
-        holidayGroup.MapGet("", Get);
-        holidayGroup.MapGet("/dates", GetDatesWithWorkTimes);
-        holidayGroup.MapPost("", Save);
-        holidayGroup.MapDelete("/{id}", Delete);
+        group.MapGet("", Get);
+        group.MapGet("/dates", GetDatesWithWorkTimes);
+        group.MapPost("", Save);
+        group.MapDelete("/{id}", Delete);
 
         return app;
     }

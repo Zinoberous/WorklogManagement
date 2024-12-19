@@ -7,12 +7,12 @@ internal static class AbsenceEndpoints
 {
     internal static IEndpointRouteBuilder RegisterAbsenceEndpoints(this IEndpointRouteBuilder app)
     {
-        var holidayGroup = app.MapGroup("/absences").WithTags("Absences");
+        var group = app.MapGroup("/absences").WithTags("Absences");
 
-        holidayGroup.MapGet("", Get);
-        holidayGroup.MapGet("/dates", GetDatesWithAbsences);
-        holidayGroup.MapPost("", Save);
-        holidayGroup.MapDelete("/{id}", Delete);
+        group.MapGet("", Get);
+        group.MapGet("/dates", GetDatesWithAbsences);
+        group.MapPost("", Save);
+        group.MapDelete("/{id}", Delete);
 
         return app;
     }
