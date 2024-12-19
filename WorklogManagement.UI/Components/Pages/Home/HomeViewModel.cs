@@ -72,6 +72,7 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
             LoadCalendarYearStatisticsAsync(),
             LoadWorkTimesAsync(),
             LoadAbsencesAsync(),
+            LoadHolidaysAsync(),
         ]);
     }
 

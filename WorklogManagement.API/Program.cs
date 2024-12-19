@@ -1,6 +1,7 @@
 using Delta;
 using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Common;
+using WorklogManagement.API.Holidays;
 using WorklogManagement.Data.Context;
 
 #if DEBUG
@@ -15,6 +16,12 @@ var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
 config.AddJsonFile($"local.settings.{env.EnvironmentName}.json", true);
+
+var attachmentsBaseDir = config.GetValue<string>("AttachmentsBaseDir");
+if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
+{
+    Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
+}
 
 var isDevelopment = env.IsDevelopment();
 
@@ -34,6 +41,7 @@ services.AddCors(options =>
     });
 });
 
+services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
@@ -59,22 +67,19 @@ services.AddDbContext<WorklogManagementContext>(options =>
     //    .EnableSensitiveDataLogging(isDevelopment);
 });
 
-var attachmentsBaseDir = config.GetValue<string>("AttachmentsBaseDir");
-
-if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
-{
-    Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
-}
-
 var app = builder.Build();
 
 app.UseDelta<WorklogManagementContext>();
-
-app.MapControllers();
 
 app.UseCors();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.MapControllers();
+
+app.MapGroup("/health").WithTags("Health").MapGet("", () => Results.Ok());
+
+app.RegisterHolidayEndpoints();
 
 app.Run();
