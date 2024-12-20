@@ -2,6 +2,8 @@ namespace WorklogManagement.Shared.Models;
 
 public record Absence : IDataModel
 {
+    // TODO: uri self
+
     public int Id { get; init; }
 
     public required Enums.AbsenceType Type { get; set; }

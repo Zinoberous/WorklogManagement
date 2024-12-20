@@ -1,15 +1,27 @@
 namespace WorklogManagement.Shared.Models;
 
-public record Page<TDataModel>
-    where TDataModel : IDataModel
+public record Page<TData>
+    where TData : IDataModel
 {
-    public required int PageSize { get; init; }
+    // TODO: uri first page
 
-    public required int PageIndex { get; init; }
+    // TODO: uri last page
 
-    public required int TotalPages { get; init; }
+    // TODO: uri? next page
 
-    public required int TotalItems { get; init; }
+    // TODO: uri? previous page
 
-    public required IEnumerable<TDataModel> Items { get; init; }
+    public required string SortBy { get; init; }
+
+    public required uint PageSize { get; init; }
+
+    public required uint PageIndex { get; init; }
+
+    // TODO: filter
+
+    public required uint TotalPages { get; init; }
+
+    public required uint TotalItems { get; init; }
+
+    public required IEnumerable<TData> Items { get; init; }
 }

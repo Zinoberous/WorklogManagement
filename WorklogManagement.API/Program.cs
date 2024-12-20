@@ -17,18 +17,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
 
+var isDevelopment = env.IsDevelopment();
+
 var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
-config.AddJsonFile($"local.settings.{env.EnvironmentName}.json", true);
 
 var attachmentsBaseDir = config.GetValue<string>("AttachmentsBaseDir");
 if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 {
     Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
 }
-
-var isDevelopment = env.IsDevelopment();
 
 var services = builder.Services;
 

@@ -1,5 +1,3 @@
-using WorklogManagement.Shared.Models;
-
 namespace WorklogManagement.API.Holidays;
 
 internal static class HolidayEndpoints
@@ -8,12 +6,12 @@ internal static class HolidayEndpoints
     {
         var group = app.MapGroup("/holidays").WithTags("Holidays");
 
-        group.MapGet("/{federalState}", Get);
+        group.MapGet("/{federalState}", GetAsync);
 
         return app;
     }
 
-    private static async Task<List<Holiday>> Get(IHttpClientFactory httpClientFactory, string federalState, DateOnly from, DateOnly to)
+    private static async Task<List<Holiday>> GetAsync(IHttpClientFactory httpClientFactory, string federalState, DateOnly from, DateOnly to)
     {
         using var client = httpClientFactory.CreateClient();
 
@@ -25,7 +23,7 @@ internal static class HolidayEndpoints
 
             res.EnsureSuccessStatusCode();
 
-            var yearHolidays = await res.Content.ReadFromJsonAsync<IEnumerable<HolidayDto>>();
+            var yearHolidays = await res.Content.ReadFromJsonAsync<IEnumerable<HolidaySource>>();
 
             if (yearHolidays != null)
             {

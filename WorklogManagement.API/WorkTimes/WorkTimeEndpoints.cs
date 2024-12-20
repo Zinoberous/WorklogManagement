@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Context;
 
@@ -10,16 +9,15 @@ internal static class WorkTimeEndpoints
     {
         var group = app.MapGroup("/worktimes").WithTags("WorkTimes");
 
-        group.MapGet("", Get);
-        group.MapGet("/dates", GetDatesWithWorkTimes);
-        group.MapPost("", Save);
-        group.MapDelete("/{id}", Delete);
+        group.MapGet("", GetAsync);
+        group.MapGet("/dates", GetDatesWithWorkTimesAsync);
+        group.MapPost("", SaveAsync);
+        group.MapDelete("/{id}", DeleteAsync);
 
         return app;
     }
 
-    [HttpGet]
-    private static async Task<List<WorkTime>> Get(WorklogManagementContext context, DateOnly from, DateOnly to)
+    private static async Task<List<WorkTime>> GetAsync(WorklogManagementContext context, DateOnly from, DateOnly to)
     {
         return await context.WorkTimes
             .Where(x => x.Date >= from && x.Date <= to)
@@ -27,8 +25,7 @@ internal static class WorkTimeEndpoints
             .ToListAsync();
     }
 
-    [HttpGet("dates")]
-    private static async Task<List<DateOnly>> GetDatesWithWorkTimes(WorklogManagementContext context)
+    private static async Task<List<DateOnly>> GetDatesWithWorkTimesAsync(WorklogManagementContext context)
     {
         var dates = await context.WorkTimes
             .Select(x => x.Date)
@@ -38,16 +35,14 @@ internal static class WorkTimeEndpoints
         return dates;
     }
 
-    [HttpPost]
-    private static async Task<WorkTime> Save(WorklogManagementContext context, WorkTime workTime)
+    private static async Task<WorkTime> SaveAsync(WorklogManagementContext context, WorkTime workTime)
     {
         await workTime.SaveAsync(context);
 
         return workTime;
     }
 
-    [HttpDelete("{id}")]
-    private static async Task Delete(WorklogManagementContext context, int id)
+    private static async Task DeleteAsync(WorklogManagementContext context, int id)
     {
         await WorkTime.DeleteAsync(context, id);
     }

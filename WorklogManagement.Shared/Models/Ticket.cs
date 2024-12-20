@@ -2,7 +2,11 @@ namespace WorklogManagement.Shared.Models;
 
 public record Ticket : IDataModel
 {
+    // TODO: uri self
+
     public int? Id { get; init; }
+
+    // TODO: uri ref ticket
 
     public int? RefId { get; init; }
 
@@ -16,7 +20,11 @@ public record Ticket : IDataModel
 
     public DateTime? CreatedAt { get; init; }
 
-    public required TimeSpan TimeSpent { get; init; }
+    // TODO: uri ticket attachments
 
     public required int AttachmentsCount { get; init; }
+
+    // TODO: uri ticket worklogs
+
+    public required TimeSpan TimeSpent { get; init; }
 }

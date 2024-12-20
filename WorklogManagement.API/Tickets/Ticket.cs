@@ -14,6 +14,18 @@ public record Ticket : Shd.Ticket
     private DateTime? _createdAt;
     public new DateTime? CreatedAt { get => _createdAt; init => _createdAt = value; }
 
+    // Ticket > DB.Ticket
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "RefId", "RefId" },
+        { "Title", "Title" },
+        { "Description", "Description" },
+        { "Status", "TicketStatusId" },
+        { "StatusNote", "StatusNote" },
+        { "CreatedAt", "CreatedAt" },
+    };
+
     internal static Ticket Map(DB.Ticket ticket)
     {
         return new()
@@ -44,8 +56,7 @@ public record Ticket : Shd.Ticket
                 Title = Title,
                 Description = Description,
                 TicketStatusId = (int)Status,
-                TicketStatusLogs =
-                [
+                TicketStatusLogs = [
                     new()
                     {
                         TicketStatusId = (int)Status,

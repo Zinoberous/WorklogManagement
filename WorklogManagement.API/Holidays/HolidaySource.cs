@@ -1,6 +1,6 @@
 namespace WorklogManagement.API.Holidays;
 
-public record HolidayDto
+public record HolidaySource
 {
     public required DateOnly Date { get; init; }
 
