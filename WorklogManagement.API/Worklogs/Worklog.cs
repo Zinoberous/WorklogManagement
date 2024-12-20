@@ -10,6 +10,17 @@ public record Worklog : Shd.Worklog
     private int _id;
     public new int Id { get => _id; init => _id = value; }
 
+    // Shd > DB
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "Date", "Date" },
+        { "TicketId", "TicketId" },
+        { "TicketTitle", "TicketTitle" },
+        { "Description", "Description" },
+        { "TimeSpent", "TimeSpentSeconds" },
+    };
+
     internal static Worklog Map(DB.Worklog worklog)
     {
         return new()
@@ -19,7 +30,7 @@ public record Worklog : Shd.Worklog
             TicketId = worklog.TicketId,
             TicketTitle = worklog.Ticket.Title,
             Description = worklog.Description,
-            TimeSpent = worklog.TimeSpentSpan,
+            TimeSpent = worklog.TimeSpent,
             AttachmentsCount = worklog.WorklogAttachments.Count
         };
     }
@@ -35,7 +46,7 @@ public record Worklog : Shd.Worklog
                 Date = Date,
                 TicketId = TicketId,
                 Description = Description,
-                TimeSpentSpan = TimeSpent
+                TimeSpent = TimeSpent
             };
 
             await context.Worklogs.AddAsync(worklog);
@@ -49,7 +60,7 @@ public record Worklog : Shd.Worklog
             worklog.Date = Date;
             worklog.TicketId = TicketId;
             worklog.Description = Description;
-            worklog.TimeSpentSpan = TimeSpent;
+            worklog.TimeSpent = TimeSpent;
 
             await context.SaveChangesAsync();
         }

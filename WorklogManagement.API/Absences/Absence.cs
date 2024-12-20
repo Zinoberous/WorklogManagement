@@ -11,6 +11,17 @@ public record Absence : Shd.Absence
     private int _id;
     public new int Id { get => _id; init => _id = value; }
 
+    // Shd > DB
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "Type", "AbsenceTypeId" },
+        { "Title", "Title" },
+        { "Date", "Date" },
+        { "Duration", "DurationSeconds" },
+        { "Note", "Note" },
+    };
+
     internal static Absence Map(DB.Absence absence)
     {
         return new()
@@ -18,7 +29,7 @@ public record Absence : Shd.Absence
             Id = absence.Id,
             Type = (AbsenceType)absence.AbsenceTypeId,
             Date = absence.Date,
-            Duration = absence.DurationSpan,
+            Duration = absence.Duration,
             Note = absence.Note
         };
     }
@@ -33,7 +44,7 @@ public record Absence : Shd.Absence
             {
                 AbsenceTypeId = (int)Type,
                 Date = Date,
-                DurationSpan = Duration,
+                Duration = Duration,
                 Note = Note,
             };
 
@@ -47,7 +58,7 @@ public record Absence : Shd.Absence
         {
             absence.AbsenceTypeId = (int)Type;
             absence.Date = Date;
-            absence.DurationSpan = Duration;
+            absence.Duration = Duration;
             absence.Note = Note;
 
             await context.SaveChangesAsync();

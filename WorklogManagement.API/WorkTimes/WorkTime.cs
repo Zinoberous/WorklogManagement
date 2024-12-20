@@ -11,6 +11,17 @@ public record WorkTime : Shd.WorkTime
     private int _id;
     public new int Id { get => _id; init => _id = value; }
 
+    // Shd > DB
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "Type", "WorkTimeTypeId" },
+        { "Date", "Date" },
+        { "Expected", "ExpectedSeconds" },
+        { "Actual", "ActualSeconds" },
+        { "Note", "Note" },
+    };
+
     internal static WorkTime Map(DB.WorkTime workTime)
     {
         return new()
@@ -18,8 +29,8 @@ public record WorkTime : Shd.WorkTime
             Id = workTime.Id,
             Type = (WorkTimeType)workTime.WorkTimeTypeId,
             Date = workTime.Date,
-            Expected = workTime.ExpectedSpan,
-            Actual = workTime.ActualSpan,
+            Expected = workTime.Expected,
+            Actual = workTime.Actual,
             Note = workTime.Note,
         };
     }
@@ -34,8 +45,8 @@ public record WorkTime : Shd.WorkTime
             {
                 WorkTimeTypeId = (int)Type,
                 Date = Date,
-                ExpectedSpan = Expected,
-                ActualSpan = Actual,
+                Expected = Expected,
+                Actual = Actual,
                 Note = Note,
             };
 
@@ -49,8 +60,8 @@ public record WorkTime : Shd.WorkTime
         {
             workTime.WorkTimeTypeId = (int)Type;
             workTime.Date = Date;
-            workTime.ExpectedSpan = Expected;
-            workTime.ActualSpan = Actual;
+            workTime.Expected = Expected;
+            workTime.Actual = Actual;
             workTime.Note = Note;
 
             await context.SaveChangesAsync();

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WorklogManagement.API.Models;
 using WorklogManagement.Data.Context;
 
 namespace WorklogManagement.API.WorkTimes;
@@ -9,20 +10,40 @@ internal static class WorkTimeEndpoints
     {
         var group = app.MapGroup("/worktimes").WithTags("WorkTimes");
 
-        group.MapGet("", GetAsync);
+        group.MapGet("", GetWorkTimesAsync);
+        group.MapGet("/{id}", GetWorkTimeByIdAsync);
         group.MapGet("/dates", GetDatesWithWorkTimesAsync);
-        group.MapPost("", SaveAsync);
-        group.MapDelete("/{id}", DeleteAsync);
+        group.MapPost("", SaveWorkTimeAsync);
+        group.MapDelete("/{id}", DeleteWorkTimeAsync);
 
         return app;
     }
 
-    private static async Task<List<WorkTime>> GetAsync(WorklogManagementContext context, DateOnly from, DateOnly to)
+    private static async Task<Page<WorkTime>> GetWorkTimesAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
     {
-        return await context.WorkTimes
-            .Where(x => x.Date >= from && x.Date <= to)
-            .Select(x => WorkTime.Map(x))
-            .ToListAsync();
+        var items = context.WorkTimes;
+
+        var page = Page.GetQuery(items, out var totalItems, out var totalPages, ref pageIndex, pageSize, sortBy, filter, WorkTime.PropertyMappings);
+
+        return new()
+        {
+            SortBy = sortBy,
+            PageSize = pageSize,
+            PageIndex = pageIndex,
+            TotalPages = totalPages,
+            TotalItems = totalItems,
+            Items = await page
+                .Select(x => WorkTime.Map(x))
+                .ToListAsync(),
+        };
+    }
+
+    private static async Task<WorkTime> GetWorkTimeByIdAsync(WorklogManagementContext context, int id)
+    {
+        var item = await context.WorkTimes
+            .SingleAsync(x => x.Id == id);
+
+        return WorkTime.Map(item);
     }
 
     private static async Task<List<DateOnly>> GetDatesWithWorkTimesAsync(WorklogManagementContext context)
@@ -35,14 +56,14 @@ internal static class WorkTimeEndpoints
         return dates;
     }
 
-    private static async Task<WorkTime> SaveAsync(WorklogManagementContext context, WorkTime workTime)
+    private static async Task<WorkTime> SaveWorkTimeAsync(WorklogManagementContext context, WorkTime workTime)
     {
         await workTime.SaveAsync(context);
 
         return workTime;
     }
 
-    private static async Task DeleteAsync(WorklogManagementContext context, int id)
+    private static async Task DeleteWorkTimeAsync(WorklogManagementContext context, int id)
     {
         await WorkTime.DeleteAsync(context, id);
     }

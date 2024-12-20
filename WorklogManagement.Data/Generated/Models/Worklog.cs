@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorklogManagement.Data.Models;
@@ -14,8 +14,6 @@ public partial class Worklog
     public int TicketId { get; set; }
 
     public string? Description { get; set; }
-
-    public TimeOnly TimeSpent { get; set; }
 
     public int TimeSpentSeconds { get; set; }
 

@@ -75,7 +75,11 @@ public class DataService(IHttpClientFactory httpClientFactory, IGlobalDataStateS
 
     public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
     {
-        return await ExecuteWithDataStateAsync<List<WorkTime>>(async client => await client.GetAsync($"worktimes?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}"));
+        var filter = Uri.EscapeDataString($@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""");
+
+        var page = await ExecuteWithDataStateAsync<Page<WorkTime>>(async client => await client.GetAsync($"worktimes?pageSize=0&filter={filter}"));
+
+        return page.Items.ToList();
     }
 
     public async Task<List<DateOnly>> GetDatesWithWorkTimesAsync()
@@ -95,7 +99,11 @@ public class DataService(IHttpClientFactory httpClientFactory, IGlobalDataStateS
 
     public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
-        return await ExecuteWithDataStateAsync<List<Absence>>(async client => await client.GetAsync($"absences?from={from:yyyy-MM-dd} &to= {to:yyyy-MM-dd}"));
+        var filter = Uri.EscapeDataString($@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""");
+
+        var page = await ExecuteWithDataStateAsync<Page<Absence>>(async client => await client.GetAsync($"absences?pageSize=0&filter={filter}"));
+
+        return page.Items.ToList();
     }
 
     public async Task<List<DateOnly>> GetDatesWithAbsencesAsync()

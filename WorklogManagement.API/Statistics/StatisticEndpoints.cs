@@ -26,8 +26,8 @@ internal static class StatisticEndpoints
         var mobileOvertime = TimeSpan.Zero;
 
         var workTimes = await context.WorkTimes
-            .Where(x => x.ActualMinutes != x.ExpectedMinutes)
-            .Select(x => new { Expected = x.ExpectedSpan, Actual = x.ActualSpan, x.WorkTimeTypeId })
+            .Where(x => x.ActualSeconds != x.ExpectedSeconds)
+            .Select(x => new { x.Expected, x.Actual, x.WorkTimeTypeId })
             .ToListAsync();
 
         object lockObj = new();
@@ -78,14 +78,14 @@ internal static class StatisticEndpoints
                 Type = nameof(DB.WorkTime),
                 TypeId = x.WorkTimeTypeId,
                 x.Date,
-                DurationMinutes = x.ActualMinutes,
+                DurationSeconds = x.ActualSeconds,
             })
             .Union(context.Absences.Select(x => new
             {
                 Type = nameof(DB.Absence),
                 TypeId = x.AbsenceTypeId,
                 x.Date,
-                x.DurationMinutes,
+                x.DurationSeconds,
             }));
 
         var calendarEntries = rawEntries
@@ -95,7 +95,7 @@ internal static class StatisticEndpoints
                 Type = x.Type,
                 TypeId = x.TypeId,
                 Date = x.Date,
-                DurationMinutes = x.DurationMinutes,
+                DurationSeconds = x.DurationSeconds,
             });
 
         Dictionary<CalendarEntryType, IQueryable<CalendarEntry>> entries = new()
@@ -105,16 +105,16 @@ internal static class StatisticEndpoints
                 .Where(x =>
                     x.Type == nameof(DB.WorkTime)
                     && x.TypeId == (int)WorkTimeType.Office
-                    && x.DurationMinutes > 0),
+                    && x.DurationSeconds > 0),
             [CalendarEntryType.Mobile] = calendarEntries
                 .Where(x =>
                     x.Type == nameof(DB.WorkTime)
                     && x.TypeId == (int)WorkTimeType.Mobile
-                    && x.DurationMinutes > 0),
+                    && x.DurationSeconds > 0),
             [CalendarEntryType.TimeCompensation] = calendarEntries
                 .Where(x =>
                     x.Type == nameof(DB.WorkTime)
-                    && x.DurationMinutes == 0),
+                    && x.DurationSeconds == 0),
             [CalendarEntryType.Holiday] = calendarEntries
                 .Where(x =>
                     x.Type == nameof(DB.Absence)

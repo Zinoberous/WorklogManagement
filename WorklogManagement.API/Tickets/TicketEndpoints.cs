@@ -17,12 +17,23 @@ internal static class TicketEndpoints
         group.MapPost("", SaveTicketAsync);
         group.MapDelete("/{id}", DeleteTicketAsync);
 
-        var attachmentGroup = group.MapGroup("/{ticketId}/attachments");
+        var attachmentGroup = group.MapGroup("/ticketAttachments").WithTags("TicketAttachments");
 
-        var statusGroup = group.MapGroup("/{ticketId}/status");
+        attachmentGroup.MapGet("", GetAttachmentsAsync);
+        attachmentGroup.MapGet("/{id}", GetAttachmentByIdAsync);
+        attachmentGroup.MapPost("", SaveAttachmentAsync);
+        attachmentGroup.MapDelete("/{id}", DeleteAttachmentAsync);
+
+        var statusLogGroup = group.MapGroup("/ticketStatusLogs").WithTags("TicketStatusLogs");
+
+        statusLogGroup.MapGet("", GetStatusLogsAsync);
+        statusLogGroup.MapGet("/{id}", GetStatusLogByIdAsync);
+        statusLogGroup.MapPost("", SaveStatusLogAsync);
 
         return app;
     }
+
+    #region ticket
 
     private static IQueryable<DB.Ticket> GetTicketsQuery(WorklogManagementContext context)
     {
@@ -53,21 +64,110 @@ internal static class TicketEndpoints
 
     private static async Task<Ticket> GetTicketByIdAsync(WorklogManagementContext context, int id)
     {
-        var ticket = await GetTicketsQuery(context)
+        var item = await GetTicketsQuery(context)
             .SingleAsync(x => x.Id == id);
 
-        return Ticket.Map(ticket);
+        return Ticket.Map(item);
     }
 
-    private static async Task<Ticket> SaveTicketAsync(WorklogManagementContext context, Ticket ticket)
+    private static async Task<Ticket> SaveTicketAsync(WorklogManagementContext context, Ticket item)
     {
-        await ticket.SaveAsync(context);
+        await item.SaveAsync(context);
 
-        return ticket;
+        return item;
     }
 
     private static async Task DeleteTicketAsync(WorklogManagementContext context, int id)
     {
         await Ticket.DeleteAsync(context, id);
     }
+
+    #endregion
+
+    #region attachment
+
+    private static async Task<Page<TicketAttachment>> GetAttachmentsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    {
+        var items = context.TicketAttachments;
+
+        var page = Page.GetQuery(items, out var totalItems, out var totalPages, ref pageIndex, pageSize, sortBy, filter, TicketAttachment.PropertyMappings);
+
+        return new()
+        {
+            SortBy = sortBy,
+            PageSize = pageSize,
+            PageIndex = pageIndex,
+            TotalPages = totalPages,
+            TotalItems = totalItems,
+            Items = await page
+                .Select(x => TicketAttachment.Map(x))
+                .ToListAsync(),
+        };
+    }
+
+    private static async Task<TicketAttachment> GetAttachmentByIdAsync(WorklogManagementContext context, int id)
+    {
+        var item = await context.TicketAttachments
+            .SingleAsync(x => x.Id == id);
+
+        return TicketAttachment.Map(item);
+    }
+
+    private static async Task<TicketAttachment> SaveAttachmentAsync(WorklogManagementContext context, TicketAttachment item)
+    {
+        await item.SaveAsync(context);
+
+        return item;
+    }
+
+    private static async Task DeleteAttachmentAsync(WorklogManagementContext context, int id)
+    {
+        await TicketAttachment.DeleteAsync(context, id);
+    }
+
+    #endregion
+
+    #region statuslog
+
+    private static IQueryable<DB.TicketStatusLog> GetStatusLogsQuery(WorklogManagementContext context)
+    {
+        return context.TicketStatusLogs
+            .Include(x => x.Ticket);
+    }
+
+    private static async Task<Page<TicketStatusLog>> GetStatusLogsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    {
+        var items = GetStatusLogsQuery(context);
+
+        var page = Page.GetQuery(items, out var totalItems, out var totalPages, ref pageIndex, pageSize, sortBy, filter, TicketStatusLog.PropertyMappings);
+
+        return new()
+        {
+            SortBy = sortBy,
+            PageSize = pageSize,
+            PageIndex = pageIndex,
+            TotalPages = totalPages,
+            TotalItems = totalItems,
+            Items = await page
+                .Select(x => TicketStatusLog.Map(x))
+                .ToListAsync(),
+        };
+    }
+
+    private static async Task<TicketStatusLog> GetStatusLogByIdAsync(WorklogManagementContext context, int id)
+    {
+        var item = await context.TicketStatusLogs
+            .SingleAsync(x => x.Id == id);
+
+        return TicketStatusLog.Map(item);
+    }
+
+    private static async Task<TicketStatusLog> SaveStatusLogAsync(WorklogManagementContext context, TicketStatusLog item)
+    {
+        await item.SaveAsync(context);
+
+        return item;
+    }
+
+    #endregion
 }

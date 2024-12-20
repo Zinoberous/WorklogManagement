@@ -8,6 +8,17 @@ namespace WorklogManagement.API.Tickets;
 
 public record TicketStatusLog : Shd.TicketStatusLog
 {
+    // Shd > DB
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "TicketId", "TicketId" },
+        { "Title", "TicketTitle" },
+        { "Status", "TicketStatusId" },
+        { "StartedAt", "StartedAt" },
+        { "Note", "Note" },
+    };
+
     internal static TicketStatusLog Map(DB.TicketStatusLog log)
     {
         return new()

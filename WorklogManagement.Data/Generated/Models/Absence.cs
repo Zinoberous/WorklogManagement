@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorklogManagement.Data.Models;
@@ -13,7 +13,7 @@ public partial class Absence
 
     public DateOnly Date { get; set; }
 
-    public int DurationMinutes { get; set; }
+    public int DurationSeconds { get; set; }
 
     public string? Note { get; set; }
 

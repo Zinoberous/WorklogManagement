@@ -23,6 +23,15 @@ public record TicketAttachment : Shd.TicketAttachment
         );
     }
 
+    // Shd > DB
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "TicketId", "TicketId" },
+        { "Name", "Name" },
+        { "Comment", "Comment" },
+    };
+
     internal static TicketAttachment Map(DB.TicketAttachment attachment)
     {
         var ticketId = attachment.TicketId;

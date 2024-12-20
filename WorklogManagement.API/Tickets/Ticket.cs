@@ -14,7 +14,7 @@ public record Ticket : Shd.Ticket
     private DateTime? _createdAt;
     public new DateTime? CreatedAt { get => _createdAt; init => _createdAt = value; }
 
-    // Ticket > DB.Ticket
+    // Shd > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
         { "Id", "Id" },

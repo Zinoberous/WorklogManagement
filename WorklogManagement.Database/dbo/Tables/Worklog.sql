@@ -3,7 +3,6 @@ CREATE TABLE [dbo].[Worklog] (
     [Date]             DATE           NOT NULL,
     [TicketId]         INT            NOT NULL,
     [Description]      NVARCHAR (MAX) NULL,
-    [TimeSpent]        TIME (7)       NOT NULL,
     [TimeSpentSeconds] INT            NOT NULL,
     [RowVersion]       ROWVERSION     NOT NULL,
     CONSTRAINT [PK_Worklog_Id] PRIMARY KEY CLUSTERED ([Id] ASC),

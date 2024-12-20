@@ -23,6 +23,15 @@ public record WorklogAttachment : Shd.WorklogAttachment
         );
     }
 
+    // Shd > DB
+    internal static Dictionary<string, string> PropertyMappings { get; } = new()
+    {
+        { "Id", "Id" },
+        { "WorklogId", "WorklogId" },
+        { "Name", "Name" },
+        { "Comment", "Comment" },
+    };
+
     internal static WorklogAttachment Map(DB.WorklogAttachment attachment)
     {
         var worklogId = attachment.WorklogId;

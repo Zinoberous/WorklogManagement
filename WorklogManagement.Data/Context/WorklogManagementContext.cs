@@ -9,18 +9,18 @@ public partial class WorklogManagementContext
     {
         modelBuilder.Entity<Absence>(entity =>
         {
-            entity.Ignore(x => x.DurationSpan);
+            entity.Ignore(x => x.Duration);
         });
 
         modelBuilder.Entity<Worklog>(entity =>
         {
-            entity.Ignore(x => x.TimeSpentSpan);
+            entity.Ignore(x => x.TimeSpent);
         });
 
         modelBuilder.Entity<WorkTime>(entity =>
         {
-            entity.Ignore(x => x.ExpectedSpan);
-            entity.Ignore(x => x.ActualSpan);
+            entity.Ignore(x => x.Expected);
+            entity.Ignore(x => x.Actual);
         });
     }
 }
