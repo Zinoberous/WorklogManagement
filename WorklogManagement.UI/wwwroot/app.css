@@ -1,5 +1,6 @@
 :root {
     --header-height: 50px;
+    --sidebar-width: 55px;
 }
 
 .rz-notification {
@@ -15,7 +16,7 @@
 }
 
 .rz-sidebar {
-    width: max-content !important;
+    width: var(--sidebar-width) !important;
     border-inline-end: unset !important;
     opacity: 1 !important;
 }

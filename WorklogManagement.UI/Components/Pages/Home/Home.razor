@@ -72,33 +72,35 @@
                         </Row>
                         <Row>
                             <Column Fill>
-                                <AsyncContent IsLoading="@ViewModel.LoadCalendar" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-                                    <RadzenDataGrid Data="@CalendarData" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
-                                        <Columns>
-                                            <RadzenDataGridColumn Frozen Width="50px" CssClass="month">
-                                                <Template>
-                                                    <div>@MonthLabelShorts[context.Month - 1]</div>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-                                            @foreach (var day in Enumerable.Range(1, 31))
-                                            {
-                                                <RadzenDataGridColumn Title="@($"{day}".PadLeft(2, '0'))" Width="50px" CssClass="day">
+                                <div style="@CalendarStyle">
+                                    <AsyncContent IsLoading="@ViewModel.LoadCalendar" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+                                        <RadzenDataGrid Data="@CalendarData" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
+                                            <Columns>
+                                                <RadzenDataGridColumn Frozen Width="50px" CssClass="month">
                                                     <Template>
-                                                        @if (day <= DateTime.DaysInMonth(context.Year, context.Month))
-                                                        {
-                                                            <HomeCalendarDay
-                                                                Date="@(new DateOnly(context.Year, context.Month, day))"
-                                                                WorkTimes="@context.Days.ElementAt(day - 1).WorkTimes"
-                                                                Absences="@context.Days.ElementAt(day - 1).Absences"
-                                                                Holiday="@context.Days.ElementAt(day - 1).Holiday"
-                                                            />
-                                                        }
+                                                        <div>@MonthLabelShorts[context.Month - 1]</div>
                                                     </Template>
                                                 </RadzenDataGridColumn>
-                                            }
-                                        </Columns>
-                                    </RadzenDataGrid>
-                                </AsyncContent>
+                                                @foreach (var day in Enumerable.Range(1, 31))
+                                                {
+                                                    <RadzenDataGridColumn Title="@($"{day}".PadLeft(2, '0'))" Width="50px" CssClass="day">
+                                                        <Template>
+                                                            @if (day <= DateTime.DaysInMonth(context.Year, context.Month))
+                                                            {
+                                                                <HomeCalendarDay
+                                                                    Date="@(new DateOnly(context.Year, context.Month, day))"
+                                                                    WorkTimes="@context.Days.ElementAt(day - 1).WorkTimes"
+                                                                    Absences="@context.Days.ElementAt(day - 1).Absences"
+                                                                    Holiday="@context.Days.ElementAt(day - 1).Holiday"
+                                                                />
+                                                            }
+                                                        </Template>
+                                                    </RadzenDataGridColumn>
+                                                }
+                                            </Columns>
+                                        </RadzenDataGrid>
+                                    </AsyncContent>
+                                </div>
                             </Column>
                         </Row>
                     </Grid>

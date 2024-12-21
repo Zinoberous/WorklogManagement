@@ -1,17 +1,27 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+
 namespace WorklogManagement.UI.Components.Pages.Home;
 
-public partial class Home
+public partial class Home : IAsyncDisposable
 {
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    public required IJSRuntime JSRuntime { get; set; }
+
+    private DotNetObjectReference<Home>? _dotNetRef;
+
+    private string _calendarStyle = string.Empty;
+    private string CalendarStyle
     {
-        await Task.WhenAll([
-            ViewModel.LoadOvertimeAsync(),
-            ViewModel.LoadCalendarStatisticsAsync(),
-            ViewModel.LoadTicketStatisticsAsync(),
-            ViewModel.LoadWorkTimesAsync(),
-            ViewModel.LoadAbsencesAsync(),
-            ViewModel.LoadHolidaysAsync(),
-        ]);
+        get => _calendarStyle;
+        set
+        {
+            if (_calendarStyle != value)
+            {
+                _calendarStyle = value;
+                StateHasChanged();
+            }
+        }
     }
 
     private IEnumerable<HomeCalendarDataRow> CalendarData
@@ -52,4 +62,64 @@ public partial class Home
             return result;
         }
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll([
+            ViewModel.LoadOvertimeAsync(),
+            ViewModel.LoadCalendarStatisticsAsync(),
+            ViewModel.LoadTicketStatisticsAsync(),
+            ViewModel.LoadWorkTimesAsync(),
+            ViewModel.LoadAbsencesAsync(),
+            ViewModel.LoadHolidaysAsync(),
+        ]);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            UpdateScrollbarWidth(await GetScrollbarWidthAsync());
+
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("setResizeCallback", _dotNetRef);
+        }
+    }
+
+    [JSInvokable]
+    public void UpdateScrollbarWidth(int scrollbarWidth)
+    {
+        CalendarStyle = $"max-width: calc(100vw - var(--sidebar-width) - 2 * var(--rz-row-gap) - 2 * var(--rz-panel-padding) - {scrollbarWidth}px);";
+    }
+
+    private async Task<int> GetScrollbarWidthAsync()
+    {
+        return await JSRuntime.InvokeAsync<int>("getRzBodyScrollbarWidth");
+    }
+
+    #region dispose
+
+    private bool _disposed = false;
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsync(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual async ValueTask DisposeAsync(bool disposing)
+    {
+        if (!_disposed && disposing)
+        {
+            if (_dotNetRef != null)
+            {
+                await JSRuntime.InvokeVoidAsync("removeResizeCallback");
+                _dotNetRef.Dispose();
+            }
+
+            _disposed = true;
+        }
+    }
+
+    #endregion
 }
