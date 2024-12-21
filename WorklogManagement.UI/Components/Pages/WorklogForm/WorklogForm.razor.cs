@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 
-namespace WorklogManagement.UI.Components.Pages.Worklog;
+namespace WorklogManagement.UI.Components.Pages.WorklogForm;
 
-public partial class Worklog
+public partial class WorklogForm
 {
     [Parameter]
     public required int Id { get; set; }

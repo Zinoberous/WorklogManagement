@@ -13,4 +13,43 @@ public partial class Home
             ViewModel.LoadHolidaysAsync(),
         ]);
     }
+
+    private IEnumerable<HomeCalendarDataRow> CalendarData
+    {
+        get
+        {
+            List<HomeCalendarDataRow> result = [];
+
+            DateOnly firstMonth = new(ViewModel.LoadDataFrom.Year, ViewModel.LoadDataFrom.Month, 1);
+            DateOnly lastMonth = new(ViewModel.LoadDataTo.Year, ViewModel.LoadDataTo.Month, 1);
+
+            for (var currentMonth = firstMonth; currentMonth <= lastMonth; currentMonth = currentMonth.AddMonths(1))
+            {
+                List<HomeCalendarDataCell> days = [];
+
+                DateOnly firstDate = new(currentMonth.Year, currentMonth.Month, 1);
+                DateOnly lastDate = new(currentMonth.Year, currentMonth.Month, DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month));
+
+                for (var currentDate = firstDate; currentDate <= lastDate; currentDate = currentDate.AddDays(1))
+                {
+                    days.Add(new()
+                    {
+                        Date = currentDate,
+                        WorkTimes = ViewModel.WorkTimes.Where(x => x.Date == currentDate).ToArray(),
+                        Absences = ViewModel.Absences.Where(x => x.Date == currentDate).ToArray(),
+                        Holiday = ViewModel.Holidays.FirstOrDefault(x => x.Date == currentDate),
+                    });
+                }
+
+                result.Add(new()
+                {
+                    Year = currentMonth.Year,
+                    Month = currentMonth.Month,
+                    Days = days
+                });
+            }
+
+            return result;
+        }
+    }
 }

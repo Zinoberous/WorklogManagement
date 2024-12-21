@@ -19,6 +19,11 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         set => SetValue(ref _dialogIsOpen, value);
     }
 
+    public void OpenDialog()
+    {
+        IsDialogOpen = true;
+    }
+
     public IEnumerable<string> UsedTypes =>
         WorkTimes.Select(x => Constant.WorkTimeLabels[x.Type])
         .Concat(Absences.Select(x => Constant.AbsenceLabels[x.Type]))
@@ -28,11 +33,6 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         Constant.WorkTimeLabels.Values
         .Concat(Constant.AbsenceLabels.Values)
         .Count() == UsedTypes.Count();
-
-    public void OpenDialog()
-    {
-        IsDialogOpen = true;
-    }
 
     private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
     public DateOnly SelectedDate

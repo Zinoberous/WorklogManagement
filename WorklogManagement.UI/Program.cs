@@ -2,11 +2,11 @@ using Radzen;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
-using WorklogManagement.UI.Components.Pages.Ticket;
 using WorklogManagement.UI.Components.Pages.TicketBoard;
+using WorklogManagement.UI.Components.Pages.TicketForm;
 using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
-using WorklogManagement.UI.Components.Pages.Worklog;
+using WorklogManagement.UI.Components.Pages.WorklogForm;
 using WorklogManagement.UI.Services;
 
 #if DEBUG
@@ -39,11 +39,11 @@ services.AddHttpClient(nameof(WorklogManagement), client => client.BaseAddress =
 services
     .AddScoped<CheckInViewModel>()
     .AddScoped<HomeViewModel>()
-    .AddScoped<TicketViewModel>()
+    .AddScoped<TicketFormViewModel>()
     .AddScoped<TicketBoardViewModel>()
     .AddScoped<TicketListViewModel>()
     .AddScoped<TrackingViewModel>()
-    .AddScoped<WorklogViewModel>();
+    .AddScoped<WorklogFormViewModel>();
 
 services
     .AddTransient<IDataService, DataService>()

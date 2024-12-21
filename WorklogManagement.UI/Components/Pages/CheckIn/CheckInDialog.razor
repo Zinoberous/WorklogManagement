@@ -1,34 +1,36 @@
 <Dialog IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Title="Neuer Eintrag">
-    <Row>
-        <Column>
-            <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" ItemRender="@TypeRender" Style="@TypeStyle" />
-        </Column>
-        <Column>
-            <RadzenDatePicker
-                @bind-Value="Date"
-                DateFormat="dd.MM.yyyy"
-                ReadOnly
-            />
-        </Column>
-        @if (WorkTimeLabels.Values.Contains(SelectedType))
-        {
-            <CheckInDurationPicker @bind-Actual="Actual" @bind-Expected="Expected" />
-        }
-        else
-        {
-            <CheckInDurationPicker @bind-Actual="Actual" />
-        }
-    </Row>
-    <Row>
-        <Column Fill>
-            <RadzenTextBox @bind-Value="Note" Placeholder="Anmerkung:" />
-        </Column>
-    </Row>
-    <Row Style="justify-content: space-between;">
-        <Column><RadzenButton Click="@Close">Abbrechen</RadzenButton></Column>
-        <Column>
-            <RadzenButton Click="@Save" Disabled="@(TypeOptions.Count() == 1)">Speichern</RadzenButton>
-            <RadzenButton Click="@SaveAndClose">Speichern & schließen</RadzenButton>
-        </Column>
-    </Row>
+    <Grid>
+        <Row>
+            <Column>
+                <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" ItemRender="@TypeRender" Style="@TypeStyle" />
+            </Column>
+            <Column>
+                <RadzenDatePicker
+                    @bind-Value="Date"
+                    DateFormat="dd.MM.yyyy"
+                    ReadOnly
+                />
+            </Column>
+            @if (WorkTimeLabels.Values.Contains(SelectedType))
+            {
+                <CheckInDurationPicker @bind-Actual="Actual" @bind-Expected="Expected" />
+            }
+            else
+            {
+                <CheckInDurationPicker @bind-Actual="Actual" />
+            }
+        </Row>
+        <Row>
+            <Column Fill>
+                <RadzenTextBox @bind-Value="Note" Placeholder="Anmerkung:" />
+            </Column>
+        </Row>
+        <Row Style="justify-content: space-between;">
+            <Column><RadzenButton Click="@Close">Abbrechen</RadzenButton></Column>
+            <Column>
+                <RadzenButton Click="@Save" Disabled="@(TypeOptions.Count() == 1)">Speichern</RadzenButton>
+                <RadzenButton Click="@SaveAndClose">Speichern & schließen</RadzenButton>
+            </Column>
+        </Row>
+    </Grid>
 </Dialog>

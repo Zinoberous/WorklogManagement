@@ -43,10 +43,6 @@ main {
     padding: var(--rz-row-gap);
 }
 
-.rz-row {
-    margin-bottom: var(--rz-row-gap);
-}
-
 pre {
     margin: 5px 0;
     padding: 10px;

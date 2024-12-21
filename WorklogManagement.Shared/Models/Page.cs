@@ -24,4 +24,14 @@ public record Page<TData>
     public required uint TotalItems { get; init; }
 
     public required IEnumerable<TData> Items { get; init; }
+
+    public static Page<TData> Empty => new()
+    {
+        SortBy = string.Empty,
+        PageSize = 0,
+        PageIndex = 0,
+        TotalPages = 0,
+        TotalItems = 0,
+        Items = []
+    };
 }

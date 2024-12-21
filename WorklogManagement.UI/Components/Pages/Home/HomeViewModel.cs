@@ -76,8 +76,8 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         ]);
     }
 
-    private DateOnly LoadDataFrom => new(SelectedYear - 1, 12, 1);
-    private DateOnly LoadDataTo => new(SelectedYear + 1, 1, 31);
+    public DateOnly LoadDataFrom => new(SelectedYear - 1, 12, 1);
+    public DateOnly LoadDataTo => new(SelectedYear + 1, 1, 31);
 
     private string _selectedFederalState = "DE-HE";
     public string SelectedFederalState

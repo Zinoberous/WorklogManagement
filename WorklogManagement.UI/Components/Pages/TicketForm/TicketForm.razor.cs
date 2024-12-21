@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 
-namespace WorklogManagement.UI.Components.Pages.Ticket;
+namespace WorklogManagement.UI.Components.Pages.TicketForm;
 
-public partial class Ticket
+public partial class TicketForm
 {
     [Parameter]
     public required int Id { get; set; }

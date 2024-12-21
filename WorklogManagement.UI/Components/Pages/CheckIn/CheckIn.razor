@@ -21,37 +21,39 @@
         OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
     />
     <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
-        @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
-        {
-            <RadzenRow>
-                <RadzenColumn>
-                    Keine Einträge vorhanden.
-                </RadzenColumn>
-            </RadzenRow>
-        }
-        @foreach (var workTime in ViewModel.WorkTimes)
-        {
-            <CheckInEntry
-                Type="@WorkTimeLabels[workTime.Type]"
-                Actual="@workTime.Actual"
-                ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
-                Expected="@workTime.Expected"
-                ExpectedChanged="@(expected => ViewModel.SaveWorkTimeAsync(workTime with { Expected = expected }))"
-                Note="@workTime.Note"
-                NoteChanged="@(note => ViewModel.SaveWorkTimeAsync(workTime with { Note = note }))"
-                OnDelte="@(() => ViewModel.DeleteWorkTimeAsync(workTime))"
-            />
-        }
-        @foreach (var absence in ViewModel.Absences)
-        {
-            <CheckInEntry
-                Type="@AbsenceLabels[absence.Type]"
-                Actual="@absence.Duration"
-                ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
-                Note="@absence.Note"
-                NoteChanged="@(note => ViewModel.SaveAbsenceAsync(absence with { Note = note }))"
-                OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
-            />
-        }
+        <Grid>
+            @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
+            {
+                    <Row>
+                        <Column>
+                            Keine Einträge vorhanden.
+                        </Column>
+                    </Row>
+            }
+            @foreach (var workTime in ViewModel.WorkTimes)
+            {
+                <CheckInEntry
+                    Type="@WorkTimeLabels[workTime.Type]"
+                    Actual="@workTime.Actual"
+                    ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
+                    Expected="@workTime.Expected"
+                    ExpectedChanged="@(expected => ViewModel.SaveWorkTimeAsync(workTime with { Expected = expected }))"
+                    Note="@workTime.Note"
+                    NoteChanged="@(note => ViewModel.SaveWorkTimeAsync(workTime with { Note = note }))"
+                    OnDelte="@(() => ViewModel.DeleteWorkTimeAsync(workTime))"
+                />
+            }
+            @foreach (var absence in ViewModel.Absences)
+            {
+                <CheckInEntry
+                    Type="@AbsenceLabels[absence.Type]"
+                    Actual="@absence.Duration"
+                    ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
+                    Note="@absence.Note"
+                    NoteChanged="@(note => ViewModel.SaveAbsenceAsync(absence with { Note = note }))"
+                    OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
+                />
+            }
+        </Grid>
     </AsyncContent>
 </main>

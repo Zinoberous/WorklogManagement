@@ -1,17 +1,6 @@
-.flex-row {
-    margin: var(--rz-row-gap) 0px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--rz-row-gap);
-}
-
-::deep .flex-row > div {
-    flex-grow: 1;
-}
-
 ::deep .rz-text-body1 {
     text-decoration-line: underline;
+    margin-bottom: 10px;
 }
 
 .overtime div:nth-child(1),
@@ -34,4 +23,26 @@ ul {
 
 li {
     flex: 50%;
+}
+
+::deep td {
+    height: 50px;
+}
+
+::deep td > span {
+    height: 100%;
+}
+
+::deep td.month {
+    padding: 0 !important;
+    text-align: center;
+}
+
+::deep td.month div {
+    height: 100%;
+    align-content: center;
+}
+
+::deep td.day {
+    padding: 0 !important;
 }
