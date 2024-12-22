@@ -19,3 +19,11 @@
 ::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip:only-child > button {
     visibility: hidden;
 }
+
+::deep .row {
+    align-items: center;
+}
+
+::deep i {
+    cursor: pointer;
+}

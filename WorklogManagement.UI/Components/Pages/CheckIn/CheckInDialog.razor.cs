@@ -31,7 +31,7 @@ public partial class CheckInDialog
 
     private string @TypeStyle => $"color: black; background-color: {Constant.CalendarEntryColor[SelectedType ?? string.Empty]}";
 
-    private void TypeRender(DropDownItemRenderEventArgs<string?> args)
+    private void TypeRender(DropDownItemRenderEventArgs<string> args)
     {
         var type = args.Item.ToString();
 

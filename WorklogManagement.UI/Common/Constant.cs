@@ -26,6 +26,28 @@ internal static class Constant
         { AbsenceLabels[AbsenceType.Ill], "lightcoral" },
     };
 
+    internal static readonly Dictionary<TicketStatus, string> TicketStatusColor = new()
+    {
+        { TicketStatus.Todo, "black" },
+        { TicketStatus.Running, "black" },
+        { TicketStatus.Paused, "black" },
+        { TicketStatus.Blocked, "black" },
+        { TicketStatus.Done, "black" },
+        { TicketStatus.Canceled, "white" },
+        { TicketStatus.Continuous, "black" },
+    };
+
+    internal static readonly Dictionary<TicketStatus, string> TicketStatusBgColor = new()
+    {
+        { TicketStatus.Todo, "gray" },
+        { TicketStatus.Running, "yellow" },
+        { TicketStatus.Paused, "orange" },
+        { TicketStatus.Blocked, "lightcoral" },
+        { TicketStatus.Done, "lightgreen" },
+        { TicketStatus.Canceled, "darkred" },
+        { TicketStatus.Continuous, "lightblue" },
+    };
+
     internal static readonly Dictionary<string, string> FederalStates = new()
     {
         { "DE-BW", "Baden-Württemberg" },

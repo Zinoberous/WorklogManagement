@@ -122,9 +122,12 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
         await LoadPageAsync();
     }
 
-    public async Task LoadPageAsync()
+    public async Task LoadPageAsync(bool silent = false)
     {
-        LoadPage = true;
+        if (!silent)
+        {
+            LoadPage = true;
+        }
 
         try
         {
@@ -149,6 +152,8 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
 
     public async Task<bool> SaveTicketAsync(Ticket ticket)
     {
+        Page = Page with { Items = Page.Items.Select(x => x.Id == ticket.Id ? ticket : x).ToArray() };
+
         Ticket savedTicket;
 
         try
@@ -167,13 +172,15 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
             _popupService.Success($"Tichet {savedTicket.Id} wurde gespeichert");
         }
 
-        await LoadPageAsync();
+        await LoadPageAsync(true);
 
         return true;
     }
 
     public async Task<bool> DeleteTicketAsync(Ticket ticket)
     {
+        Page = Page with { Items = Page.Items.Where(x => x.Id != ticket.Id).ToArray() };
+
         if (!(await _popupService.Confim("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
         {
             return false;
@@ -189,7 +196,7 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
             return false;
         }
 
-        await LoadPageAsync();
+        await LoadPageAsync(true);
 
         _popupService.Info($"Ticket {ticket.Id} wurde gelöscht!");
 

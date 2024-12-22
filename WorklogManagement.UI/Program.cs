@@ -49,7 +49,8 @@ services
     .AddTransient<IDataService, DataService>()
     .AddScoped<IGlobalDataStateService, GlobaleDataStateService>()
     .AddTransient<INavigationService, NavigationService>()
-    .AddTransient<IPopupService, PopupService>();
+    .AddTransient<IPopupService, PopupService>()
+    .AddTransient<ITicketStatusService, TicketStatusService>();
 
 var app = builder.Build();
 

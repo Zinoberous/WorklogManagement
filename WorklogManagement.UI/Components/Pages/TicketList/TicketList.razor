@@ -5,7 +5,7 @@
 
 <div class="ticket-list">
     <MenuBar>
-        <div style="width: 100%; display: flex; gap: 5px; justify-content: space-between;">
+        <div style="width: 100%; display: flex; justify-content: space-between;">
             <span>
                 <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
                 <RadzenDropDown
@@ -21,13 +21,18 @@
             />
                 <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
             </span>
-            <span>Gesamt: @ViewModel.Page.TotalItems</span>
+            <span style="align-content: center;">Gesamt: @ViewModel.Page.TotalItems</span>
         </div>
     </MenuBar>
 
     <main>
         <AsyncContent IsLoading="@ViewModel.LoadPage">
-            TBD
+            <Grid>
+                @foreach (var ticket in ViewModel.Page.Items)
+                {
+                    <TicketListEntry Ticket="@ticket" OnEdit="@ViewModel.SaveTicketAsync" OnDelete="@(() => ViewModel.DeleteTicketAsync(ticket))" />
+                }
+            </Grid>
         </AsyncContent>
     </main>
 </div>

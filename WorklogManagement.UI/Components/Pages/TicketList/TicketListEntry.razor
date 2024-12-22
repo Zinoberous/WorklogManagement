@@ -1,0 +1,40 @@
+<Row>
+    <Column>
+       <div style="width: 50px; text-align: end;">#@Ticket.Id</div>
+    </Column>
+    <Column Fill>
+        <RadzenTextBox @bind-Value="Title" Placeholder="Titel:" />
+    </Column>
+    <Column>
+        @if (string.IsNullOrEmpty(Description))
+        {
+            <RadzenIcon Icon="chat_bubble" />
+        }
+        else
+        {
+            <RadzenIcon Icon="chat" />
+        }
+    </Column>
+    <Column>
+        <span>
+            <RadzenIcon Icon="attach_file" />
+            @Ticket.AttachmentsCount
+        </span>
+    </Column>
+    <Column>
+        <RadzenDropDown @bind-Value="SelectedStatus" Data="@TicketStatusChangeOptions" ValueProperty="Key" TextProperty="Value" ItemRender="@StatusRender" Style="@StatusStyle" />
+    </Column>
+    <Column>
+        @if (string.IsNullOrEmpty(StatusNote))
+        {
+            <RadzenIcon Icon="chat_bubble" />
+        }
+        else
+        {
+            <RadzenIcon Icon="chat" />
+        }
+    </Column>
+    <Column>
+        <RadzenIcon Icon="delete" @onclick="OnDelete" />
+    </Column>
+</Row>

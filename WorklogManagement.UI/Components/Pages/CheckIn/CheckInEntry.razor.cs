@@ -22,7 +22,7 @@ public partial class CheckInEntry
         set
         {
             Actual = value;
-            ActualChanged.InvokeAsync(Actual);
+            _ = ActualChanged.InvokeAsync(Actual);
         }
     }
 
@@ -38,7 +38,7 @@ public partial class CheckInEntry
         set
         {
             Expected = value;
-            ExpectedChanged.InvokeAsync(Expected.Value);
+            _ = ExpectedChanged.InvokeAsync(Expected.Value);
         }
     }
 
@@ -54,7 +54,7 @@ public partial class CheckInEntry
         set
         {
             Note = value;
-            NoteChanged.InvokeAsync(Note);
+            _ = NoteChanged.InvokeAsync(Note);
         }
     }
 
