@@ -4,7 +4,7 @@ public record Ticket : IDataModel
 {
     // TODO: uri self
 
-    public int? Id { get; init; }
+    public int Id { get; init; }
 
     // TODO: uri ref ticket
 

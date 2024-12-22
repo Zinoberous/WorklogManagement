@@ -3,8 +3,31 @@
 
 <PageTitle>Tickets</PageTitle>
 
-<main class="ticket-list">
-    <AsyncContent IsLoading="@ViewModel.LoadTickets">
-        TBD
-    </AsyncContent>
-</main>
+<div class="ticket-list">
+    <MenuBar>
+        <div style="width: 100%; display: flex; gap: 5px; justify-content: space-between;">
+            <span>
+                <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
+                <RadzenDropDown
+                    @bind-Value="ViewModel.StatusFilter"
+                    MaxSelectedLabels="7"
+                    Data="@ViewModel.StatusFilterOptions"
+                    ValueProperty="Key"
+                    TextProperty="Value"
+                    Placeholder="Status:"
+                    Chips
+                    Multiple
+                    AllowSelectAll="false"
+            />
+                <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
+            </span>
+            <span>Gesamt: @ViewModel.Page.TotalItems</span>
+        </div>
+    </MenuBar>
+
+    <main>
+        <AsyncContent IsLoading="@ViewModel.LoadPage">
+            TBD
+        </AsyncContent>
+    </main>
+</div>

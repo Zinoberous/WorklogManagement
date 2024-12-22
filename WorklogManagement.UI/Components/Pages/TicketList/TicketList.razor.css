@@ -1,2 +1,21 @@
 .ticket-list {
 }
+
+::deep .rz-header .rz-dropdown,
+::deep .rz-header .rz-textbox {
+    height: 2.25rem;
+    padding: 5px;
+}
+
+::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip,
+::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip > button {
+    height: 1.5rem;
+}
+
+::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip > button {
+    align-self: unset !important;
+}
+
+::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip:only-child > button {
+    visibility: hidden;
+}

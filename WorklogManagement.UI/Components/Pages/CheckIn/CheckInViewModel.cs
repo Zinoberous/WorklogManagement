@@ -194,7 +194,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             DatesWithWorkTimes = DatesWithWorkTimes.Where(x => x != SelectedDate).ToArray();
         }
 
-        _popupService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht");
+        _popupService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht!");
 
         return true;
     }
@@ -249,7 +249,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             DatesWithAbsences = DatesWithAbsences.Where(x => x != SelectedDate).ToArray();
         }
 
-        _popupService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht");
+        _popupService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht!");
 
         return true;
     }

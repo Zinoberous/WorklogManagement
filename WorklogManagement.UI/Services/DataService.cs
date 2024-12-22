@@ -31,19 +31,13 @@ public interface IDataService
 
     Task DeleteAbsenceAsync(int id);
 
-    // TODO: Tickets
+    Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(uint pageSize, uint pageIndex, IEnumerable<TicketStatus> statusFilter);
 
-    // TODO: TicketAttachments
+    Task<Page<Ticket>> GetTicketsPageBySearchAsync(uint pageSize, uint pageIndex, string search);
 
-    // TODO: TicketsStatusLogs
+    Task<Ticket> SaveTicketAsync(Ticket ticket);
 
-    // TODO: Worklogs
-
-    // TODO: WorklogAttachments
-
-    //Task<TDataModel> SaveAsync<TDataModel>(TDataModel item) where TDataModel : IDataModel;
-
-    //Task DeleteAsync<TDataModel>(int id) where TDataModel : IDataModel;
+    Task DeleteTicketAsync(int id);
 }
 
 public class DataService(IHttpClientFactory httpClientFactory, IGlobalDataStateService dataStateService) : IDataService
@@ -119,6 +113,30 @@ public class DataService(IHttpClientFactory httpClientFactory, IGlobalDataStateS
     public async Task DeleteAbsenceAsync(int id)
     {
         await ExecuteWithDataStateAsync(async client => await client.DeleteAsync($"absences/{id}"));
+    }
+
+    public async Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(uint pageSize, uint pageIndex, IEnumerable<TicketStatus> statusFilter)
+    {
+        var filter = Uri.EscapeDataString($"status in ({string.Join(',', statusFilter.Select(x => (int)x))})");
+
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(async client => await client.GetAsync($"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}"));
+    }
+
+    public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(uint pageSize, uint pageIndex, string search)
+    {
+        var filter = Uri.EscapeDataString($@"Title.Contains(""{search}"") || Description.Contains(""{search}"")");
+
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(async client => await client.GetAsync($"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}"));
+    }
+
+    public async Task<Ticket> SaveTicketAsync(Ticket ticket)
+    {
+        return await ExecuteWithDataStateAsync<Ticket>(async client => await client.PostAsJsonAsync("tickets", ticket));
+    }
+
+    public async Task DeleteTicketAsync(int id)
+    {
+        await ExecuteWithDataStateAsync(async client => await client.DeleteAsync($"tickets/{id}"));
     }
 
     private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(Func<HttpClient, Task<HttpResponseMessage>> action)
