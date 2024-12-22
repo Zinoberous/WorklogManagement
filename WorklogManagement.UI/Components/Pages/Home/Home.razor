@@ -78,7 +78,13 @@
                                             <Columns>
                                                 <RadzenDataGridColumn Frozen Width="50px" CssClass="month">
                                                     <Template>
-                                                        <div>@MonthLabelShorts[context.Month - 1]</div>
+                                                        <div>
+                                                            <div>@MonthLabelShorts[context.Month - 1]</div>
+                                                            @if (context.Year != ViewModel.SelectedYear)
+                                                            {
+                                                                <div>@context.Year</div>
+                                                            }
+                                                        </div>
                                                     </Template>
                                                 </RadzenDataGridColumn>
                                                 @foreach (var day in Enumerable.Range(1, 31))
