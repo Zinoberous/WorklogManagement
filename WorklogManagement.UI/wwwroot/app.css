@@ -21,12 +21,16 @@
     opacity: 1 !important;
 }
 
+.rz-body {
+    transform: none !important;
+}
+
 .body-block {
     position: fixed;
     z-index: 9999;
     top: 0;
     bottom: 0;
-    left: 0;
+    left: var(--sidebar-width);
     right: 0;
     background-color: rgba(0, 0, 0, 0.5);
 }

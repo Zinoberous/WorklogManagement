@@ -12,34 +12,10 @@
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
+    <Routes @rendermode="new InteractiveServerRenderMode(false)" />
     <script src="_framework/blazor.web.js"></script>
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
     <script>
-        function getRzBodyScrollbarWidth() {
-            const element = document.querySelector('.rz-body');
-            if (element) {
-                return element.offsetHeight < element.scrollHeight ? 16 : 0; // 16px für Scrollbar
-            }
-            return 0; // Keine Scrollbar
-        }
-
-        function setResizeCallback(dotNetRef) {
-            resizeCallback = () => {
-                const scrollbarWidth = getRzBodyScrollbarWidth();
-                dotNetRef.invokeMethodAsync('UpdateScrollbarWidth', scrollbarWidth);
-            };
-
-            window.addEventListener('resize', resizeCallback);
-        }
-
-        function removeResizeCallback() {
-            if (resizeCallback) {
-                window.removeEventListener('resize', resizeCallback);
-                resizeCallback = null;
-            }
-        }
-
         function initializeEditorTabKeyHandling(editorElement) {
             editorElement.addEventListener('keydown', function (e) {
                 if (e.key === 'Tab') {

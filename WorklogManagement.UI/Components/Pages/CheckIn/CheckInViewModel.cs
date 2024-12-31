@@ -127,16 +127,16 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
 
         try
         {
-            var workTimes = await _dataService.GetWorkTimesAsync(SelectedDate);
-            var absences = await _dataService.GetAbsencesAsync(SelectedDate);
+            var workTimes = await _dataService.GetWorkTimesAsync(SelectedDate, SelectedDate);
+            var absences = await _dataService.GetAbsencesAsync(SelectedDate, SelectedDate);
 
             // nachträgliche Zuweisung der Werte, so werden die Werte entweder ganz oder gar nicht angezeigt, wenn ein Fehler auftritt
             WorkTimes = workTimes;
             Absences = absences;
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Kalendareinträge!", ex);
+            _popupService.Error("Fehler beim Laden der Kalendareinträge!");
         }
         finally
         {
@@ -152,9 +152,9 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         {
             savedWorkTime = await _dataService.SaveWorkTimeAsync(workTime);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Speichern der Anwesenheit!", ex);
+            _popupService.Error("Fehler beim Speichern der Anwesenheit!");
             return false;
         }
 
@@ -181,9 +181,9 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         {
             await _dataService.DeleteWorkTimeAsync(workTime.Id);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Löschen der Anwesenheit!", ex);
+            _popupService.Error("Fehler beim Löschen der Anwesenheit!");
             return false;
         }
 
@@ -207,9 +207,9 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         {
             savedAbsence = await _dataService.SaveAbsenceAsync(absence);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Speichern der Abwesenheit!", ex);
+            _popupService.Error("Fehler beim Speichern der Abwesenheit!");
             return false;
         }
 
@@ -236,9 +236,9 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         {
             await _dataService.DeleteAbsenceAsync(absence.Id);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Löschen der Abwesenheit!", ex);
+            _popupService.Error("Fehler beim Löschen der Abwesenheit!");
             return false;
         }
 

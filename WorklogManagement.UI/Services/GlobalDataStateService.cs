@@ -18,7 +18,7 @@ public interface IGlobalDataStateService : INotifyPropertyChanged
     void ResetError();
 }
 
-public class GlobaleDataStateService : Observable, IGlobalDataStateService
+public class GlobalDataStateService : Observable, IGlobalDataStateService
 {
     private int _operationCounter = 0;
     private bool _hasError = false;

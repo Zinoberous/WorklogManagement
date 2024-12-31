@@ -11,6 +11,11 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
+        RegisterPropertyChanged();
+    }
+
+    private void RegisterPropertyChanged()
+    {
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 

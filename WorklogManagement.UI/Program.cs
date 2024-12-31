@@ -1,4 +1,5 @@
 using Radzen;
+using Serilog;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
@@ -23,6 +24,16 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 var services = builder.Services;
 
+services.AddLogging(loggingBuilder =>
+{
+    var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(config)
+        .CreateLogger();
+
+    loggingBuilder.ClearProviders();
+    loggingBuilder.AddSerilog(logger, dispose: true);
+});
+
 services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -46,8 +57,10 @@ services
     .AddScoped<WorklogFormViewModel>();
 
 services
+    .AddSingleton(TimeProvider.System)
+    .AddScoped(typeof(ILoggerService<>), typeof(LoggerService<>))
     .AddTransient<IDataService, DataService>()
-    .AddScoped<IGlobalDataStateService, GlobaleDataStateService>()
+    .AddScoped<IGlobalDataStateService, GlobalDataStateService>()
     .AddTransient<INavigationService, NavigationService>()
     .AddTransient<IPopupService, PopupService>()
     .AddTransient<ITicketStatusService, TicketStatusService>();

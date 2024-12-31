@@ -161,9 +161,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             Overtime = await _dataService.GetOvertimeAsync();
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Überstunden!", ex);
+            _popupService.Error("Fehler beim Laden der Überstunden!");
         }
         finally
         {
@@ -187,9 +187,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             CalendarStatisticsYear = await _dataService.GetCalendarStaticsAsync(SelectedYear);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!", ex);
+            _popupService.Error($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!");
 
             Dictionary<CalendarEntryType, int> calendarStatistics = [];
 
@@ -208,9 +208,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             CalendarStatisticsAll = await _dataService.GetCalendarStaticsAsync();
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Kalendarstatistiken!", ex);
+            _popupService.Error("Fehler beim Laden der Kalendarstatistiken!");
 
             Dictionary<CalendarEntryType, int> calendarStatistics = [];
 
@@ -231,9 +231,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             TicketStatistics = await _dataService.GetTicketStatisticsAsync();
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Ticketstatistiken!", ex);
+            _popupService.Error("Fehler beim Laden der Ticketstatistiken!");
 
             Dictionary<TicketStatus, int> ticketStatistics = [];
 
@@ -258,9 +258,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             WorkTimes = await _dataService.GetWorkTimesAsync(LoadDataFrom, LoadDataTo);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Arbeitszeiten!", ex);
+            _popupService.Error("Fehler beim Laden der Arbeitszeiten!");
         }
         finally
         {
@@ -276,9 +276,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             Absences = await _dataService.GetAbsencesAsync(LoadDataFrom, LoadDataTo);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Abwesenheiten!", ex);
+            _popupService.Error("Fehler beim Laden der Abwesenheiten!");
         }
         finally
         {
@@ -294,9 +294,9 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         {
             Holidays = await _dataService.GetHolidaysAsync(LoadDataFrom, LoadDataTo, SelectedFederalState);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Feiertage!", ex);
+            _popupService.Error("Fehler beim Laden der Feiertage!");
         }
         finally
         {

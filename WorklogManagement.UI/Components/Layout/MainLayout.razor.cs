@@ -8,10 +8,7 @@ namespace WorklogManagement.UI.Components.Layout;
 public partial class MainLayout : IDisposable
 {
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
-
-    [Inject]
-    public required IPopupService PopupService { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
     public required IGlobalDataStateService DataStateService { get; set; }
@@ -19,27 +16,17 @@ public partial class MainLayout : IDisposable
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
-
         DataStateService.PropertyChanged += OnPropertyChanged;
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         DataStateService.ResetError();
-        InvokeAsync(StateHasChanged);
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         InvokeAsync(StateHasChanged);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await PopupService.MarkRenderingCompleteAsync();
-        }
     }
 
     #region dispose
