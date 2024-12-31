@@ -26,6 +26,8 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         _logger.Log(logLevel, eventId, state, exception, formatter);
+
+        // Das entdprechende Paket für BrowserConsole funktioniert nur bei WASM und als Sink für Serilog hat es auch nicht funktioniert
         LogToBrowserConsole(logLevel, state, exception, formatter);
     }
 

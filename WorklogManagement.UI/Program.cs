@@ -24,7 +24,9 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 var services = builder.Services;
 
-services.AddLogging(loggingBuilder =>
+services
+    .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
+    .AddLogging(loggingBuilder =>
 {
     var logger = new LoggerConfiguration()
         .ReadFrom.Configuration(config)
@@ -58,7 +60,6 @@ services
 
 services
     .AddSingleton(TimeProvider.System)
-    .AddScoped(typeof(ILoggerService<>), typeof(LoggerService<>))
     .AddTransient<IDataService, DataService>()
     .AddScoped<IGlobalDataStateService, GlobalDataStateService>()
     .AddTransient<INavigationService, NavigationService>()

@@ -1,6 +1,7 @@
 :root {
     --header-height: 50px;
     --sidebar-width: 55px;
+    --scrollbar-width: 16px;
 }
 
 .rz-notification {

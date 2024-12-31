@@ -4,8 +4,7 @@ namespace WorklogManagement.UI.Components.Pages.Home;
 
 public partial class Home : BasePage<HomeViewModel>
 {
-    // 16px is the scrollbar width
-    private static string CalendarStyle => "max-width: calc(100vw - var(--sidebar-width) - 2 * var(--rz-row-gap) - 2 * var(--rz-panel-padding) - 16px);";
+    private static string CalendarStyle => "max-width: calc(100vw - var(--sidebar-width) - 2 * var(--rz-row-gap) - 2 * var(--rz-panel-padding) - var(--scrollbar-width));";
 
     private IEnumerable<HomeCalendarDataRow> CalendarData
     {
