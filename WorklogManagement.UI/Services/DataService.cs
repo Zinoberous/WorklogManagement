@@ -155,7 +155,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         }
         else
         {
-            _logger.LogInformation("{Method}: {API} | {@Content}", method, api, content);
+            _logger.LogInformation("{Method}: {API} {@Content}", method, api, content);
         }
 
         try

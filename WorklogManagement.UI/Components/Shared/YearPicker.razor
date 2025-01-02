@@ -1,4 +1,4 @@
-<div class="yearpicker" @onfocusout="TryClose">
+<div class="@CssClass" style="@Style" @onfocusout="TryClose">
     <RadzenTextBox @ref="_input" class="yearpicker-value" Value="@Value.ToString()" ReadOnly @onclick="Open" />
     <div class="yearpicker-menu" style="display: @(IsOpen ? "block" : "none")" @onmouseover="MouseIn" @onmouseout="MouseOut">
         <RadzenRow Gap="0" RowGap="0">

@@ -21,14 +21,12 @@
         OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
     />
     <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
-        <Grid>
+        <FlexCol>
             @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
             {
-                    <Row>
-                        <Column>
-                            Keine Einträge vorhanden.
-                        </Column>
-                    </Row>
+                <FlexFill>
+                    Keine Einträge vorhanden.
+                </FlexFill>
             }
             @foreach (var workTime in ViewModel.WorkTimes)
             {
@@ -54,6 +52,6 @@
                     OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
                 />
             }
-        </Grid>
+        </FlexCol>
     </AsyncContent>
 </main>

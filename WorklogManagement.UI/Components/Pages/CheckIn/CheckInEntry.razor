@@ -1,7 +1,5 @@
-<Row>
-    <Column>
-        <RadzenTextBox Value="@Type" ReadOnly Style="@TypeStyle" />
-    </Column>
+<FlexRow>
+    <RadzenTextBox Value="@Type" ReadOnly Style="@TypeStyle" />
     @if (Expected.HasValue)
     {
         <CheckInDurationPicker @bind-Actual="ActualValue" @bind-Expected="ExpectedValue" />
@@ -10,10 +8,8 @@
     {
         <CheckInDurationPicker @bind-Actual="ActualValue" />
     }
-    <Column Fill>
+    <FlexFill>
         <RadzenTextBox @bind-Value="NoteValue" Placeholder="Anmerkung:" />
-    </Column>
-    <Column>
-        <RadzenIcon Icon="delete" Style="cursor: pointer" @onclick="OnDelte" />
-    </Column>
-</Row>
+    </FlexFill>
+    <RadzenIcon Icon="delete" Style="cursor: pointer" @onclick="OnDelte" />
+</FlexRow>

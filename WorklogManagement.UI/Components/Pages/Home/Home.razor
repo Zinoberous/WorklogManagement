@@ -7,9 +7,9 @@
 <PageTitle>Startseite</PageTitle>
 
 <main class="home">
-    <Grid>
-        <Row>
-            <Column Fill>
+    <FlexCol>
+        <FlexRow Wrap>
+            <FlexFill>
                 <RadzenCard>
                     <RadzenText>Überstunden:</RadzenText>
                     <AsyncContent IsLoading="@ViewModel.LoadOvertime" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
@@ -22,8 +22,8 @@
                         </div>
                     </AsyncContent>
                 </RadzenCard>
-            </Column>
-            <Column Fill>
+            </FlexFill>
+            <FlexFill>
                 <RadzenCard>
                     <RadzenText>Tage:</RadzenText>
                     <AsyncContent IsLoading="@ViewModel.LoadCalendarStatistics" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
@@ -39,8 +39,8 @@
                         </ul>
                     </AsyncContent>
                 </RadzenCard>
-            </Column>
-            <Column Fill>
+            </FlexFill>
+            <FlexFill>
                 <RadzenCard>
                     <RadzenText>Tickets:</RadzenText>
                     <AsyncContent IsLoading="@ViewModel.LoadTicketStatistics" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
@@ -56,62 +56,54 @@
                         </ul>
                     </AsyncContent>
                 </RadzenCard>
-            </Column>
-        </Row>
-        <Row>
-            <Column Fill>
-                <RadzenPanel>
-                    <Grid>
-                        <Row>
-                            <Column Style="max-width: 70px;">
-                                <YearPicker @bind-Value="ViewModel.SelectedYear" OnChanged="@ViewModel.OnSelectedYearChanged" />
-                            </Column>
-                            <Column>
-                                <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" SelectedItemChanged="@ViewModel.OnSelectedFederalStateChanged" Data="@FederalStates" ValueProperty="Key" TextProperty="Value" />
-                            </Column>
-                        </Row>
-                        <Row>
-                            <Column Fill>
-                                <div style="@CalendarStyle">
-                                    <AsyncContent IsLoading="@ViewModel.LoadCalendar" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-                                        <RadzenDataGrid Data="@CalendarData" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
-                                            <Columns>
-                                                <RadzenDataGridColumn Frozen Width="50px" CssClass="month">
-                                                    <Template>
-                                                        <div>
-                                                            <div>@MonthLabelShorts[context.Month - 1]</div>
-                                                            @if (context.Year != ViewModel.SelectedYear)
-                                                            {
-                                                                <div>@context.Year</div>
-                                                            }
-                                                        </div>
-                                                    </Template>
-                                                </RadzenDataGridColumn>
-                                                @foreach (var day in Enumerable.Range(1, 31))
-                                                {
-                                                    <RadzenDataGridColumn Title="@($"{day}".PadLeft(2, '0'))" Width="50px" CssClass="day">
-                                                        <Template>
-                                                            @if (day <= DateTime.DaysInMonth(context.Year, context.Month))
-                                                            {
-                                                                <HomeCalendarDay
-                                                                    Date="@(new DateOnly(context.Year, context.Month, day))"
-                                                                    WorkTimes="@context.Days.ElementAt(day - 1).WorkTimes"
-                                                                    Absences="@context.Days.ElementAt(day - 1).Absences"
-                                                                    Holiday="@context.Days.ElementAt(day - 1).Holiday"
-                                                                />
-                                                            }
-                                                        </Template>
-                                                    </RadzenDataGridColumn>
-                                                }
-                                            </Columns>
-                                        </RadzenDataGrid>
-                                    </AsyncContent>
-                                </div>
-                            </Column>
-                        </Row>
-                    </Grid>
-                </RadzenPanel>
-            </Column>
-        </Row>
-    </Grid>
+            </FlexFill>
+        </FlexRow>
+        <FlexFill>
+            <RadzenPanel>
+                <FlexCol>
+                    <FlexRow>
+                        <YearPicker @bind-Value="ViewModel.SelectedYear" OnChanged="@ViewModel.OnSelectedYearChanged" />
+                        <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" SelectedItemChanged="@ViewModel.OnSelectedFederalStateChanged" Data="@FederalStates" ValueProperty="Key" TextProperty="Value" />
+                    </FlexRow>
+                    <FlexFill>
+                        <div style="@CalendarStyle">
+                            <AsyncContent IsLoading="@ViewModel.LoadCalendar" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+                                <RadzenDataGrid Data="@CalendarData" AllowAlternatingRows="false" GridLines="DataGridGridLines.Both">
+                                    <Columns>
+                                        <RadzenDataGridColumn Frozen Width="50px" CssClass="month">
+                                            <Template>
+                                                <div>
+                                                    <div>@MonthLabelShorts[context.Month - 1]</div>
+                                                    @if (context.Year != ViewModel.SelectedYear)
+                                                    {
+                                                        <div>@context.Year</div>
+                                                    }
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        @foreach (var day in Enumerable.Range(1, 31))
+                                        {
+                                            <RadzenDataGridColumn Title="@($"{day}".PadLeft(2, '0'))" Width="50px" CssClass="day">
+                                                <Template>
+                                                    @if (day <= DateTime.DaysInMonth(context.Year, context.Month))
+                                                    {
+                                                        <HomeCalendarDay
+                                                            Date="@(new DateOnly(context.Year, context.Month, day))"
+                                                            WorkTimes="@context.Days.ElementAt(day - 1).WorkTimes"
+                                                            Absences="@context.Days.ElementAt(day - 1).Absences"
+                                                            Holiday="@context.Days.ElementAt(day - 1).Holiday"
+                                                        />
+                                                    }
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                        }
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </AsyncContent>
+                        </div>
+                    </FlexFill>
+                </FlexCol>
+            </RadzenPanel>
+        </FlexFill>
+    </FlexCol>
 </main>

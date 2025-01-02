@@ -2,18 +2,17 @@ using Microsoft.AspNetCore.Components;
 
 namespace WorklogManagement.UI.Components.Shared;
 
-public partial class Column
+public partial class FlexFill
 {
     [Parameter]
     public string? ClassName { get; set; }
 
-    private string CssClass => $"{(Fill ? "col col-fill" : "col")} {ClassName}";
+    private string CssClass => $"flex-fill {ClassName}";
 
     [Parameter]
     public string? Style { get; set; }
 
-    [Parameter]
-    public bool Fill { get; set; }
+    private string CssStyle => $"{Style}";
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

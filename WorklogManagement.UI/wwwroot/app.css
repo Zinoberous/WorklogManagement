@@ -16,7 +16,8 @@
     border-block-end: var(--rz-panel-menu-item-border);
 }
 
-.rz-sidebar {
+/* soll nicht collapsed werden */
+.rz-sidebar, .rz-sidebar-collapsed {
     width: var(--sidebar-width) !important;
     border-inline-end: unset !important;
     opacity: 1 !important;

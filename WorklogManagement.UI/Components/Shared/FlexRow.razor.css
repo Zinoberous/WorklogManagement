@@ -1,0 +1,16 @@
+.flex {
+    display: flex;
+    gap: var(--rz-row-gap);
+}
+
+.flex-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* column */
+.flex-row ::deep > * {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: fit-content;
+}

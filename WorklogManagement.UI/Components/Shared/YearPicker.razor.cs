@@ -6,6 +6,14 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class YearPicker
 {
     [Parameter]
+    public string? ClassName { get; set; }
+
+    private string CssClass => $"yearpicker {ClassName}";
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter]
     public int Value { get; set; }
 
     [Parameter]
