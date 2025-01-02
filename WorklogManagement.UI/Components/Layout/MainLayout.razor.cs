@@ -8,10 +8,10 @@ namespace WorklogManagement.UI.Components.Layout;
 public partial class MainLayout : IDisposable
 {
     [Inject]
-    public required NavigationManager NavigationManager { get; set; }
+    private NavigationManager NavigationManager { get; set; } = null!;
 
     [Inject]
-    public required IGlobalDataStateService DataStateService { get; set; }
+    private IGlobalDataStateService DataStateService { get; set; } = null!;
 
     protected override void OnInitialized()
     {

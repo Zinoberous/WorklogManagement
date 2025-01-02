@@ -7,14 +7,20 @@ namespace WorklogManagement.UI.Components.Shared;
 
 public partial class Editor
 {
-    [Inject]
-    public required IJSRuntime JSRuntime { get; set; }
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
 
     [Parameter]
     public string Value { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }
+
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = null!;
 
     private RadzenHtmlEditor _editor = null!;
 

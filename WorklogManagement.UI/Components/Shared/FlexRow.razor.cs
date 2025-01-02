@@ -5,14 +5,14 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class FlexRow
 {
     [Parameter]
-    public string? ClassName { get; set; }
+    public string? Class { get; set; }
 
-    private string CssClass => $"flex flex-row {ClassName}";
+    private string ClassValue => $"flex flex-row {Class}".Trim();
 
     [Parameter]
     public string? Style { get; set; }
 
-    private string CssStyle => $"flex-wrap: {(Wrap ? "wrap" : "nowrap")}; {Style}";
+    private string StyleValue => $"flex-wrap: {(Wrap ? "wrap" : "nowrap")}; {Style}";
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
