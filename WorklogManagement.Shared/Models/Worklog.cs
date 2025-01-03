@@ -22,5 +22,5 @@ public record Worklog : IDataModel
 
     // TODO: uri worklog attachments
 
-    public int AttachmentsCount { get; init; }
+    public IEnumerable<WorklogAttachment> Attachments { get; init; } = [];
 }

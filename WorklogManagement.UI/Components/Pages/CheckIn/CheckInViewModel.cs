@@ -12,17 +12,14 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
     private readonly INavigationService _navigationService = navigationService;
     private readonly IPopupService _popupService = popupService;
 
-    private bool _dialogIsOpen = false;
-    public bool IsDialogOpen
+    private bool _isOpenNewDialog = false;
+    public bool IsOpenNewDialog
     {
-        get => _dialogIsOpen;
-        set => SetValue(ref _dialogIsOpen, value);
+        get => _isOpenNewDialog;
+        set => SetValue(ref _isOpenNewDialog, value);
     }
 
-    public void OpenDialog()
-    {
-        IsDialogOpen = true;
-    }
+    public void OpenNewDialog() => IsOpenNewDialog = true;
 
     public IEnumerable<string> UsedTypes =>
         WorkTimes.Select(x => Constant.WorkTimeLabels[x.Type])

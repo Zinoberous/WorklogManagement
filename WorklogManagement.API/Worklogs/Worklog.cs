@@ -10,6 +10,8 @@ public record Worklog : Shd.Worklog
     private int _id;
     public new int Id { get => _id; init => _id = value; }
 
+    public new IEnumerable<WorklogAttachment> Attachments { get; init; } = [];
+
     // Shd > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
@@ -31,7 +33,9 @@ public record Worklog : Shd.Worklog
             TicketTitle = worklog.Ticket.Title,
             Description = worklog.Description,
             TimeSpent = worklog.TimeSpent,
-            AttachmentsCount = worklog.WorklogAttachments.Count
+            Attachments = worklog.WorklogAttachments
+                .Select(WorklogAttachment.Map)
+                .ToArray()
         };
     }
 
@@ -64,6 +68,21 @@ public record Worklog : Shd.Worklog
 
             await context.SaveChangesAsync();
         }
+
+        foreach (var attachment in Attachments)
+        {
+            attachment.WorklogId = _id;
+            await attachment.SaveAsync(context);
+        }
+
+        var deletedAttachments = await context.WorklogAttachments
+            .Where(x => x.WorklogId == _id && !Attachments.Select(x => x.Id).Contains(x.Id))
+            .ToListAsync();
+
+        foreach (var attachment in deletedAttachments)
+        {
+            await WorklogAttachment.DeleteAsync(context, attachment.Id);
+        }
     }
 
     internal static async Task DeleteAsync(WorklogManagementContext context, int id)
@@ -72,10 +91,10 @@ public record Worklog : Shd.Worklog
             .Include(x => x.WorklogAttachments)
             .SingleAsync(x => x.Id == id);
 
-        await Parallel.ForEachAsync(worklog.WorklogAttachments, async (attachment, _) =>
+        foreach (var attachment in worklog.WorklogAttachments)
         {
             await WorklogAttachment.DeleteAsync(context, attachment.Id);
-        });
+        }
 
         context.Worklogs.Remove(worklog);
 

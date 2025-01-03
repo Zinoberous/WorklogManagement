@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using Radzen;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Common;
 using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.TicketList;
@@ -16,9 +14,6 @@ public partial class TicketListEntry
 
     [Parameter]
     public EventCallback OnDelete { get; set; }
-
-    [Inject]
-    private ITicketStatusService TicketStatusService { get; set; } = null!;
 
     [Inject]
     private INavigationService NavigationService { get; set; } = null!;
@@ -45,28 +40,6 @@ public partial class TicketListEntry
         set
         {
             _ = UpdateTicketAsync(Ticket with { Status = value });
-        }
-    }
-
-    private IReadOnlyDictionary<TicketStatus, string> TicketStatusChangeOptions
-        => TicketStatusService.GetNextStatusOptions(Ticket.Status).ToDictionary(x => x, x => x.ToString());
-
-    private string StatusStyle => $"color: {Constant.TicketStatusColor[SelectedStatus]}; background-color: {Constant.TicketStatusBgColor[SelectedStatus]}";
-
-    private void StatusRender(DropDownItemRenderEventArgs<TicketStatus> args)
-    {
-        if (args.Item is KeyValuePair<TicketStatus, string> item)
-        {
-            var status = item.Key;
-
-            if (status == SelectedStatus)
-            {
-                args.Attributes.Add("style", "display: none;");
-            }
-            else
-            {
-                args.Attributes.Add("style", $"color: {Constant.TicketStatusColor[status]}; background-color: {Constant.TicketStatusBgColor[status]};");
-            }
         }
     }
 

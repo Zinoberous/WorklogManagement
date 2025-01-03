@@ -5,7 +5,7 @@
 
 <div class="checkin">
     <Header>
-        <RadzenButton Click="@ViewModel.OpenDialog" Disabled="@ViewModel.CreateNewDisabled">Erstellen</RadzenButton>
+        <RadzenButton Click="@ViewModel.OpenNewDialog" Disabled="@ViewModel.CreateNewDisabled">Erstellen</RadzenButton>
         <DatePicker
             @bind-Value="ViewModel.SelectedDate"
             OnChanged="@ViewModel.OnSelectedDateChanged"
@@ -14,13 +14,6 @@
     </Header>
 
     <Body>
-        <CheckInDialog
-            @bind-IsOpen="ViewModel.IsDialogOpen"
-            Date="@ViewModel.SelectedDate"
-            UsedTypeOptions="@ViewModel.UsedTypes"
-            OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
-            OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
-        />
         <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
             <FlexCol>
                 @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
@@ -55,5 +48,12 @@
                 }
             </FlexCol>
         </AsyncContent>
+        <CheckInNewDialog
+            @bind-IsOpen="ViewModel.IsOpenNewDialog"
+            Date="@ViewModel.SelectedDate"
+            UsedTypeOptions="@ViewModel.UsedTypes"
+            OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
+            OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
+        />
     </Body>
 </div>

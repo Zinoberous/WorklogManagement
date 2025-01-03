@@ -5,7 +5,7 @@
 
 <div class="ticket-list">
     <Header>
-        <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
+        <RadzenButton Click="@ViewModel.OpenNewDialog">Erstellen</RadzenButton>
         <RadzenDropDown
             @bind-Value="ViewModel.StatusFilter"
             MaxSelectedLabels="8"
@@ -32,6 +32,10 @@
                 }
             </FlexCol>
         </AsyncContent>
+        <TicketNewDialog
+            @bind-IsOpen="ViewModel.IsOpenNewDialog"
+            OnSave="@ViewModel.SaveTicketAsync"
+        />
     </Body>
 
     @if (ViewModel.Page.TotalPages > 1)

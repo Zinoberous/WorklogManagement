@@ -14,6 +14,8 @@ public record Ticket : Shd.Ticket
     private DateTime? _createdAt;
     public new DateTime? CreatedAt { get => _createdAt; init => _createdAt = value; }
 
+    public new IEnumerable<TicketAttachment> Attachments { get; init; } = [];
+
     // Shd > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
@@ -38,7 +40,9 @@ public record Ticket : Shd.Ticket
             StatusNote = ticket.TicketStatusLogs.Last().Note,
             CreatedAt = ticket.CreatedAt,
             TimeSpent = TimeSpan.FromTicks(ticket.Worklogs.Sum(x => x.TimeSpent.Ticks)),
-            AttachmentsCount = ticket.TicketAttachments.Count,
+            Attachments = ticket.TicketAttachments
+                .Select(TicketAttachment.Map)
+                .ToArray(),
         };
     }
 
@@ -100,6 +104,21 @@ public record Ticket : Shd.Ticket
 
             await context.SaveChangesAsync();
         }
+
+        foreach (var attachment in Attachments)
+        {
+            attachment.TicketId = _id;
+            await attachment.SaveAsync(context);
+        }
+
+        var deletedAttachments = await context.TicketAttachments
+            .Where(x => x.TicketId == _id && !Attachments.Select(x => x.Id).Contains(x.Id))
+            .ToListAsync();
+
+        foreach (var attachment in deletedAttachments)
+        {
+            await TicketAttachment.DeleteAsync(context, attachment.Id);
+        }
     }
 
     internal static async Task DeleteAsync(WorklogManagementContext context, int id)
@@ -108,10 +127,10 @@ public record Ticket : Shd.Ticket
             .Include(x => x.TicketAttachments)
             .SingleAsync(x => x.Id == id);
 
-        await Parallel.ForEachAsync(ticket.TicketAttachments, async (attachment, _) =>
+        foreach (var attachment in ticket.TicketAttachments)
         {
             await TicketAttachment.DeleteAsync(context, attachment.Id);
-        });
+        }
 
         context.Tickets.Remove(ticket);
 

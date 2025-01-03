@@ -22,4 +22,10 @@
     <ProjectReference Include="..\WorklogManagement.Shared\WorklogManagement.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Components/Shared/Accordion.razor.js" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="true"></Content>
+    <Content Include="Components/Shared/AttachmentPanel.razor.js" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="true" />
+    <Content Include="Components/Shared/Editor.razor.js" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="true" />
+  </ItemGroup>
+
 </Project>

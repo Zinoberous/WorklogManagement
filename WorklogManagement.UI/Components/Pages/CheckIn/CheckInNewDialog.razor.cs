@@ -5,7 +5,7 @@ using WorklogManagement.UI.Common;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
 
-public partial class CheckInDialog
+public partial class CheckInNewDialog
 {
     [Parameter]
     public bool IsOpen { get; set; }

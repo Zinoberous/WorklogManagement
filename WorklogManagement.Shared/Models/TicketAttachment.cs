@@ -4,5 +4,5 @@ public record TicketAttachment : Attachment
 {
     // TODO: uri ticket
 
-    public int TicketId { get; init; }
+    public int TicketId { get; set; }
 }

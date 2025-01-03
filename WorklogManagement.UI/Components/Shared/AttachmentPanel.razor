@@ -1,0 +1,31 @@
+<div class="attachment-panel">
+    <RadzenCard Variant="Variant.Outlined">
+        <FlexCol Style="@(Value.Any() ? null : "gap: 0;")">
+            <RadzenUpload
+                id="ddUpload"
+                Icon="download_2"
+                ChooseText="Anhänge hochladen"
+                Auto="false"
+                Multiple="true"
+                Accept="*"
+                Change="@Add"
+                Style="width: 100%;"
+            />
+            <FlexCol>
+                @foreach (var attachment in Value)
+                {
+                    <FlexRow>
+                        <RadzenText>@attachment.Name</RadzenText>
+                        <FlexFill>
+                            <RadzenTextBox Placeholder="Kommentar:" Value="@attachment.Comment" ValueChanged="@((value) => Edit(attachment with { Comment = value }))" />
+                        </FlexFill>
+                        <RadzenIcon Icon="download_2" @onclick="(() => Download(attachment))" />
+                        <RadzenIcon Icon="delete" @onclick="(() => Remove(attachment))" />
+                    </FlexRow>
+                }
+            </FlexCol>
+        </FlexCol>
+    </RadzenCard>
+</div>
+
+<script src="Components/Shared/AttachmentPanel.razor.js"></script>

@@ -1,0 +1,23 @@
+.attachment-panel ::deep #ddUpload {
+    left: 0;
+    --rz-upload-button-bar-background-color: transparent;
+    --rz-upload-button-bar-padding: 0;
+}
+
+.attachment-panel ::deep #ddUpload .rz-fileupload-buttonbar .rz-fileupload-choose {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    padding: 50px 0;
+}
+
+.attachment-panel ::deep #ddUpload i {
+    rotate: 180deg;
+    width: 100%;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.attachment-panel ::deep .rz-fileupload-content {
+    display: none;
+}

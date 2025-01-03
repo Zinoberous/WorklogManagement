@@ -31,6 +31,7 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
         LogToBrowserConsole(logLevel, state, exception, formatter);
     }
 
+    // TODO: verschachtelte Elemente (z.B.: Ticket { TicketAttachments: [] }) werden nicht korrekt aufgelöst
     private void LogToBrowserConsole<TState>(LogLevel logLevel, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         StringWriter writer = new();
@@ -41,7 +42,9 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
 
         new MessageTemplateTextFormatter("[{Level:u3}] {Message:lj}{NewLine}{Exception}").Format(logEvent, writer);
 
-        _ = Task.Run(async () => await _jsRuntime.InvokeAsync<string>(consoleMethod, writer.ToString().Trim()));
+        var message = writer.ToString().Trim();
+
+        _ = Task.Run(async () => await _jsRuntime.InvokeAsync<string>(consoleMethod, message));
     }
 
     private LogEvent CreateLogEvent<TState>(
@@ -51,11 +54,11 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
         Func<TState, Exception?, string> formatter)
     {
         var message = formatter(state, exception);
-        var serilogLevel = MapLogLevel(logLevel);
+        var level = MapLogLevel(logLevel);
 
         return new(
             timestamp: _timeProvider.GetLocalNow(),
-            level: serilogLevel,
+            level: level,
             exception: exception,
             messageTemplate: new MessageTemplateParser().Parse(message),
             properties: []);

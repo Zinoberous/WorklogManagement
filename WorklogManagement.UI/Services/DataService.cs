@@ -163,7 +163,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             var jsonContent = JsonContent.Create(content);
 
             var res = await client.SendAsync(new(method, requestUri) { Content = jsonContent });
-            
+
             res.EnsureSuccessStatusCode();
 
             if (typeof(T) == typeof(HttpResponseMessage))

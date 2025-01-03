@@ -47,6 +47,7 @@ services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+    options.CustomSchemaIds(type => type.FullName);
 });
 
 //services.Configure<SwaggerGenOptions>(options =>

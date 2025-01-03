@@ -13,14 +13,14 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
     private readonly ILocalStorageService _localStorageService = localStorageService;
     private readonly INavigationService _navigationService = navigationService;
 
-    private bool _dialogIsOpen = false;
-    public bool IsDialogOpen
+    private bool _isOpenNewDialog = false;
+    public bool IsOpenNewDialog
     {
-        get => _dialogIsOpen;
-        set => SetValue(ref _dialogIsOpen, value);
+        get => _isOpenNewDialog;
+        set => SetValue(ref _isOpenNewDialog, value);
     }
 
-    public void OpenDialog() => IsDialogOpen = true;
+    public void OpenNewDialog() => IsOpenNewDialog = true;
 
     public IReadOnlyDictionary<TicketStatus, string> StatusFilterOptions => Enum.GetValues<TicketStatus>().ToDictionary(x => x, x => x.ToString());
 

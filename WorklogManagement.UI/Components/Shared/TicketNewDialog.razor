@@ -1,0 +1,13 @@
+<Dialog IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Title="Neues Ticket">
+    <FlexCol>
+        <RadzenTextBox Placeholder="Titel:" @bind-Value="Title" />
+        @* TODO: <RadzenAutoComplete Placeholder="Referenz:" /> *@
+        <Editor Placeholder="Beschreibung:" @bind-Value="Description" />
+        <AttachmentPanel Value="Attachments" ValueChanged="AttachmentsChanged" />
+        <FlexRow>
+            <FlexFill />
+            <RadzenButton Click="@Close">Abbrechen</RadzenButton>
+            <RadzenButton Click="@Save" Disabled="@string.IsNullOrWhiteSpace(Title)">Speichern</RadzenButton>
+        </FlexRow>
+    </FlexCol>
+</Dialog>

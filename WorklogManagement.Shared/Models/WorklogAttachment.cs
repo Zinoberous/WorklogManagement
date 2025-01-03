@@ -4,5 +4,5 @@ public record WorklogAttachment : Attachment
 {
     // TODO: uri worklog
 
-    public required int WorklogId { get; init; }
+    public required int WorklogId { get; set; }
 }

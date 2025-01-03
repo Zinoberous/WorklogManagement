@@ -14,6 +14,9 @@ public partial class Editor
     public string? Style { get; set; }
 
     [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
     public string Value { get; set; } = string.Empty;
 
     [Parameter]

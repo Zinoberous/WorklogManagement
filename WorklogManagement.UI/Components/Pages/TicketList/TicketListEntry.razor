@@ -15,16 +15,9 @@
         <span style="display: flex;">
             @* TODO: Attachments *@
             <RadzenIcon Icon="attach_file" />
-            @Ticket.AttachmentsCount
+            @Ticket.Attachments.Count()
         </span>
-        <RadzenDropDown
-            @bind-Value="SelectedStatus"
-            Data="@TicketStatusChangeOptions"
-            ValueProperty="Key"
-            TextProperty="Value"
-            ItemRender="@StatusRender"
-            Style="@StatusStyle"
-        />
+        <TicketStatusDropDown @bind-Value="SelectedStatus" />
         @if (string.IsNullOrEmpty(StatusNote))
         {
             <RadzenIcon Icon="square" Style="cursor: default;" />
@@ -37,9 +30,9 @@
         <RadzenIcon Icon="delete" @onclick="OnDelete" />
     </FlexRow>
     <Accordion IsOpen="@ShowDescription">
-        <Editor @bind-Value="Description" Style="margin-top: var(--rz-row-gap);" />
+        <Editor @bind-Value="Description" Style="margin-top: var(--rz-row-gap);" Placeholder="Beschreibung:" />
     </Accordion>
     <Accordion IsOpen="@ShowStatusNote">
-        <Editor @bind-Value="StatusNote" Style="margin-top: var(--rz-row-gap);" />
+        <Editor @bind-Value="StatusNote" Style="margin-top: var(--rz-row-gap);" Placeholder="Anmerkung:" />
     </Accordion>
 </FlexCol>

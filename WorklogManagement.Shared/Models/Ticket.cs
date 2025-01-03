@@ -22,9 +22,9 @@ public record Ticket : IDataModel
 
     // TODO: uri ticket attachments
 
-    public required int AttachmentsCount { get; init; }
+    public IEnumerable<TicketAttachment> Attachments { get; init; } = [];
 
     // TODO: uri ticket worklogs
 
-    public required TimeSpan TimeSpent { get; init; }
+    public TimeSpan TimeSpent { get; init; } = TimeSpan.Zero;
 }
