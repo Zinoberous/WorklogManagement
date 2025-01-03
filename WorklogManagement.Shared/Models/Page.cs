@@ -13,15 +13,15 @@ public record Page<TData>
 
     public required string SortBy { get; init; }
 
-    public required uint PageSize { get; init; }
+    public required int PageSize { get; init; }
 
-    public required uint PageIndex { get; init; }
+    public required int PageIndex { get; init; }
 
     // TODO: filter
 
-    public required uint TotalPages { get; init; }
+    public required int TotalPages { get; init; }
 
-    public required uint TotalItems { get; init; }
+    public required int TotalItems { get; init; }
 
     public required IEnumerable<TData> Items { get; init; }
 

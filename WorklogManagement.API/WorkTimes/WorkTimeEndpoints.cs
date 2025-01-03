@@ -19,7 +19,7 @@ internal static class WorkTimeEndpoints
         return app;
     }
 
-    private static async Task<Page<WorkTime>> GetWorkTimesAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    private static async Task<Page<WorkTime>> GetWorkTimesAsync(WorklogManagementContext context, string sortBy = "Id", int pageSize = 0, int pageIndex = 0, string? filter = null)
     {
         var items = context.WorkTimes;
 

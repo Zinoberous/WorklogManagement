@@ -21,7 +21,7 @@ public partial class MainLayout : IDisposable
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        DataStateService.ResetError();
+        DataStateService.ResetErrors();
     }
 
     private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

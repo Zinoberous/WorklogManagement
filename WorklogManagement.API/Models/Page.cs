@@ -14,10 +14,10 @@ public record Page
 {
     internal static IQueryable<T> GetQuery<T>(
         IQueryable<T> items,
-        out uint totalItems,
-        out uint totalPages,
-        ref uint pageIndex,
-        uint pageSize,
+        out int totalItems,
+        out int totalPages,
+        ref int pageIndex,
+        int pageSize,
         string? sortBy,
         string? filter,
         IReadOnlyDictionary<string, string> propertyNameMappings)
@@ -29,7 +29,7 @@ public record Page
             items = items.Where(filter);
         }
 
-        totalItems = (uint)items.Count();
+        totalItems = items.Count();
 
         if (totalItems == 0)
         {
@@ -39,7 +39,7 @@ public record Page
             return items;
         }
 
-        totalPages = (uint)(pageSize == 0 ? 1 : Math.Ceiling((double)totalItems / pageSize));
+        totalPages = (pageSize <= 0 ? 1 : (int)Math.Ceiling((double)totalItems / pageSize));
 
         pageIndex = pageIndex >= totalPages
                 ? totalPages - 1
@@ -52,11 +52,11 @@ public record Page
             items = items.OrderBy(sortBy);
         }
 
-        var page = pageSize == 0
+        var page = pageSize <= 0
             ? items
             : items
-                .Skip((int)(pageIndex * pageSize))
-                .Take((int)pageSize);
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize);
 
         return page;
     }

@@ -1,7 +1,59 @@
 :root {
-    --header-height: 50px;
+    --header-height: 55px;
     --sidebar-width: 55px;
     --scrollbar-width: 16px;
+    --footer-height: 55px;
+}
+
+/* soll nicht collapsed werden */
+.rz-sidebar, .rz-sidebar-collapsed {
+    width: var(--sidebar-width) !important;
+    height: 100vh;
+    opacity: 1 !important;
+    border-inline-end: unset !important;
+    grid-area: unset !important;
+}
+
+.sidebar-top {
+    height: var(--header-height);
+    border-block-end: var(--rz-panel-menu-item-border);
+}
+
+.header {
+    height: var(--header-height);
+    top: 0;
+}
+
+.footer {
+    height: var(--footer-height);
+    bottom: 0;
+}
+
+.header, .footer {
+    position: sticky;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-bottom: unset !important;
+}
+
+.body {
+    padding: var(--rz-row-gap);
+    overflow: auto;
+    height: 100vh;
+}
+
+body:has(.header) .body {
+    height: calc(100vh - var(--header-height));
+}
+
+body:has(.footer) .body {
+    height: calc(100vh - var(--footer-height));
+}
+
+body:has(.footer):has(.header) .body {
+    height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
 .rz-notification {
@@ -11,52 +63,13 @@
     bottom: 0;
 }
 
-.sidebar-top {
-    height: var(--header-height);
-    border-block-end: var(--rz-panel-menu-item-border);
-}
-
-/* soll nicht collapsed werden */
-.rz-sidebar, .rz-sidebar-collapsed {
-    width: var(--sidebar-width) !important;
-    border-inline-end: unset !important;
-    opacity: 1 !important;
-}
-
-.rz-body {
-    transform: none !important;
-}
-
-.body-block {
-    position: fixed;
-    z-index: 9999;
-    top: 0;
-    bottom: 0;
-    left: var(--sidebar-width);
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.menubar {
-    height: var(--header-height);
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    border-bottom: unset !important;
-}
-
-main {
-    padding: var(--rz-row-gap);
-}
-
+/* Editor */
 pre {
     margin: 5px 0;
     padding: 10px;
     background-color: #1E1E1E;
     border-radius: 5px;
 }
-
 code {
     width: 100%;
     display: block;

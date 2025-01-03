@@ -29,9 +29,9 @@ public interface IDataService
 
     Task DeleteAbsenceAsync(int id);
 
-    Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(uint pageSize, uint pageIndex, IEnumerable<TicketStatus> statusFilter);
+    Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter);
 
-    Task<Page<Ticket>> GetTicketsPageBySearchAsync(uint pageSize, uint pageIndex, string search);
+    Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search);
 
     Task<Ticket> SaveTicketAsync(Ticket ticket);
 
@@ -114,14 +114,14 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         await ExecuteWithDataStateAsync(HttpMethod.Delete, $"absences/{id}");
     }
 
-    public async Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(uint pageSize, uint pageIndex, IEnumerable<TicketStatus> statusFilter)
+    public async Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter)
     {
         var filter = Uri.EscapeDataString($"status in ({string.Join(',', statusFilter.Select(x => (int)x))})");
 
         return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}");
     }
 
-    public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(uint pageSize, uint pageIndex, string search)
+    public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search)
     {
         var filter = Uri.EscapeDataString($@"Title.Contains(""{search}"") || Description.Contains(""{search}"")");
 
@@ -175,7 +175,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         }
         catch (Exception ex)
         {
-            _dataStateService.SetError();
+            _dataStateService.SetError(ex);
             _logger.LogError(ex, "Fehler beim {Method}-Aufruf von {API}", method, api);
             throw;
         }

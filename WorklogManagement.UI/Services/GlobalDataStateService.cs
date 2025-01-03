@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using WorklogManagement.UI.Common;
 
@@ -7,43 +8,24 @@ public interface IGlobalDataStateService : INotifyPropertyChanged
 {
     bool IsLoading { get; }
 
-    bool HasError { get; }
+    IEnumerable<Exception> Errors { get; }
 
     void StartOperation();
 
     void EndOperation();
 
-    void SetError();
+    void SetError(Exception ex);
 
-    void ResetError();
+    void ResetErrors();
 }
 
 public class GlobalDataStateService : Observable, IGlobalDataStateService
 {
     private int _operationCounter = 0;
-    private bool _hasError = false;
-
-    private readonly object _lock = new();
-
     public bool IsLoading => _operationCounter > 0;
 
-    public bool HasError
-    {
-        get
-        {
-            lock (_lock)
-            {
-                return _hasError;
-            }
-        }
-        private set
-        {
-            lock (_lock)
-            {
-                SetValue(ref _hasError, value);
-            }
-        }
-    }
+    private ConcurrentBag<Exception> _errors = [];
+    public IEnumerable<Exception> Errors => _errors;
 
     public void StartOperation()
     {
@@ -61,7 +43,7 @@ public class GlobalDataStateService : Observable, IGlobalDataStateService
         OnPropertyChanged(nameof(IsLoading));
     }
 
-    public void SetError() => HasError = true;
+    public void SetError(Exception ex) => _errors.Add(ex);
 
-    public void ResetError() => HasError = false;
+    public void ResetErrors() => _errors.Clear();
 }

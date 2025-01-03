@@ -9,7 +9,7 @@
             {
                 <Loader />
             }
-            else if (DataStateService.HasError)
+            else if (DataStateService.Errors.Any())
             {
                 <RadzenIcon Icon="error" Style="color: red; height: 100%; width: 100%; font-size: xxx-large;" />
             }
@@ -20,11 +20,19 @@
         </div>
         <NavMenu />
     </RadzenSidebar>
-    <RadzenBody Style="padding: 0">
-        @if (DataStateService.HasError)
-        {
-            <div class="body-block" />
-        }
+    @if (DataStateService.Errors.Any())
+    {
+        <Body>
+            <FlexCol>
+                @foreach (var error in DataStateService.Errors)
+                {
+                    <pre>@error.ToString()</pre>
+                }
+            </FlexCol>
+        </Body>
+    }
+    else
+    {
         @Body
-    </RadzenBody>
+    }
 </RadzenLayout>

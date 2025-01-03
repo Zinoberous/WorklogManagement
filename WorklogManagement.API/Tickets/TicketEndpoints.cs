@@ -43,7 +43,7 @@ internal static class TicketEndpoints
             .Include(x => x.Worklogs);
     }
 
-    private static async Task<Page<Ticket>> GetTicketsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    private static async Task<Page<Ticket>> GetTicketsAsync(WorklogManagementContext context, string sortBy = "Id", int pageSize = 0, int pageIndex = 0, string? filter = null)
     {
         var items = GetTicketsQuery(context);
 
@@ -86,7 +86,7 @@ internal static class TicketEndpoints
 
     #region attachment
 
-    private static async Task<Page<TicketAttachment>> GetAttachmentsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    private static async Task<Page<TicketAttachment>> GetAttachmentsAsync(WorklogManagementContext context, string sortBy = "Id", int pageSize = 0, int pageIndex = 0, string? filter = null)
     {
         var items = context.TicketAttachments;
 
@@ -135,7 +135,7 @@ internal static class TicketEndpoints
             .Include(x => x.Ticket);
     }
 
-    private static async Task<Page<TicketStatusLog>> GetStatusLogsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    private static async Task<Page<TicketStatusLog>> GetStatusLogsAsync(WorklogManagementContext context, string sortBy = "Id", int pageSize = 0, int pageIndex = 0, string? filter = null)
     {
         var items = GetStatusLogsQuery(context);
 

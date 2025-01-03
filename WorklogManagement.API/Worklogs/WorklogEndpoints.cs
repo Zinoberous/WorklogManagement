@@ -35,7 +35,7 @@ internal static class WorklogEndpoints
             .Include(x => x.WorklogAttachments);
     }
 
-    private static async Task<Page<Worklog>> GetWorklogsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    private static async Task<Page<Worklog>> GetWorklogsAsync(WorklogManagementContext context, string sortBy = "Id", int pageSize = 0, int pageIndex = 0, string? filter = null)
     {
         var items = GetWorklogsQuery(context);
 
@@ -78,7 +78,7 @@ internal static class WorklogEndpoints
 
     #region attachment
 
-    private static async Task<Page<WorklogAttachment>> GetAttachmentsAsync(WorklogManagementContext context, string sortBy = "Id", uint pageSize = 0, uint pageIndex = 0, string? filter = null)
+    private static async Task<Page<WorklogAttachment>> GetAttachmentsAsync(WorklogManagementContext context, string sortBy = "Id", int pageSize = 0, int pageIndex = 0, string? filter = null)
     {
         var items = context.WorklogAttachments;
 

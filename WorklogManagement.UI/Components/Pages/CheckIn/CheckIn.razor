@@ -3,55 +3,57 @@
 
 <PageTitle>Stechuhr</PageTitle>
 
-<MenuBar>
-    <RadzenButton Click="@ViewModel.OpenDialog" Disabled="@ViewModel.CreateNewDisabled">Erstellen</RadzenButton>
-    <DatePicker
-        @bind-Value="ViewModel.SelectedDate"
-        OnChanged="@ViewModel.OnSelectedDateChanged"
-        DateRender="@DateRender"
-    />
-</MenuBar>
+<div class="checkin">
+    <Header>
+        <RadzenButton Click="@ViewModel.OpenDialog" Disabled="@ViewModel.CreateNewDisabled">Erstellen</RadzenButton>
+        <DatePicker
+            @bind-Value="ViewModel.SelectedDate"
+            OnChanged="@ViewModel.OnSelectedDateChanged"
+            DateRender="@DateRender"
+        />
+    </Header>
 
-<main class="checkin">
-    <CheckInDialog
-        @bind-IsOpen="ViewModel.IsDialogOpen"
-        Date="@ViewModel.SelectedDate"
-        UsedTypeOptions="@ViewModel.UsedTypes"
-        OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
-        OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
-    />
-    <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
-        <FlexCol>
-            @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
-            {
-                <FlexFill>
-                    Keine Einträge vorhanden.
-                </FlexFill>
-            }
-            @foreach (var workTime in ViewModel.WorkTimes)
-            {
-                <CheckInEntry
-                    Type="@WorkTimeLabels[workTime.Type]"
-                    Actual="@workTime.Actual"
-                    ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
-                    Expected="@workTime.Expected"
-                    ExpectedChanged="@(expected => ViewModel.SaveWorkTimeAsync(workTime with { Expected = expected }))"
-                    Note="@workTime.Note"
-                    NoteChanged="@(note => ViewModel.SaveWorkTimeAsync(workTime with { Note = note }))"
-                    OnDelte="@(() => ViewModel.DeleteWorkTimeAsync(workTime))"
-                />
-            }
-            @foreach (var absence in ViewModel.Absences)
-            {
-                <CheckInEntry
-                    Type="@AbsenceLabels[absence.Type]"
-                    Actual="@absence.Duration"
-                    ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
-                    Note="@absence.Note"
-                    NoteChanged="@(note => ViewModel.SaveAbsenceAsync(absence with { Note = note }))"
-                    OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
-                />
-            }
-        </FlexCol>
-    </AsyncContent>
-</main>
+    <Body>
+        <CheckInDialog
+            @bind-IsOpen="ViewModel.IsDialogOpen"
+            Date="@ViewModel.SelectedDate"
+            UsedTypeOptions="@ViewModel.UsedTypes"
+            OnSaveWorkTime="@ViewModel.SaveWorkTimeAsync"
+            OnSaveAbsence="@ViewModel.SaveAbsenceAsync"
+        />
+        <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
+            <FlexCol>
+                @if (!ViewModel.WorkTimes.Any() && !ViewModel.Absences.Any())
+                {
+                    <FlexFill>
+                        Keine Einträge vorhanden.
+                    </FlexFill>
+                }
+                @foreach (var workTime in ViewModel.WorkTimes)
+                {
+                    <CheckInEntry
+                        Type="@WorkTimeLabels[workTime.Type]"
+                        Actual="@workTime.Actual"
+                        ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
+                        Expected="@workTime.Expected"
+                        ExpectedChanged="@(expected => ViewModel.SaveWorkTimeAsync(workTime with { Expected = expected }))"
+                        Note="@workTime.Note"
+                        NoteChanged="@(note => ViewModel.SaveWorkTimeAsync(workTime with { Note = note }))"
+                        OnDelte="@(() => ViewModel.DeleteWorkTimeAsync(workTime))"
+                    />
+                }
+                @foreach (var absence in ViewModel.Absences)
+                {
+                    <CheckInEntry
+                        Type="@AbsenceLabels[absence.Type]"
+                        Actual="@absence.Duration"
+                        ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
+                        Note="@absence.Note"
+                        NoteChanged="@(note => ViewModel.SaveAbsenceAsync(absence with { Note = note }))"
+                        OnDelte="@(() => ViewModel.DeleteAbsenceAsync(absence))"
+                    />
+                }
+            </FlexCol>
+        </AsyncContent>
+    </Body>
+</div>
