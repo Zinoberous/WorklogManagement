@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Radzen;
 using Serilog;
 using WorklogManagement.UI.Components;
@@ -27,19 +28,21 @@ var services = builder.Services;
 services
     .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
     .AddLogging(loggingBuilder =>
-{
-    var logger = new LoggerConfiguration()
-        .ReadFrom.Configuration(config)
-        .CreateLogger();
+    {
+        var logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(config)
+            .CreateLogger();
 
-    loggingBuilder.ClearProviders();
-    loggingBuilder.AddSerilog(logger, dispose: true);
-});
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(logger, dispose: true);
+    });
 
 services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+services.AddBlazoredLocalStorage();
 
 services
     .AddRadzenComponents()

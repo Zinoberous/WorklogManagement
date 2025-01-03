@@ -3,13 +3,13 @@
 
 ::deep .rz-header .rz-dropdown,
 ::deep .rz-header .rz-textbox {
-    height: 2.25rem;
+    height: 2.5rem;
     padding: 5px;
 }
 
 ::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip,
 ::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip > button {
-    height: 1.5rem;
+    height: 1.75rem;
 }
 
 ::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip > button {
@@ -18,10 +18,6 @@
 
 ::deep .rz-header .rz-dropdown-chips-wrapper .rz-chip:only-child > button {
     visibility: hidden;
-}
-
-::deep .row {
-    align-items: center;
 }
 
 ::deep i {

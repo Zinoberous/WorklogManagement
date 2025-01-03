@@ -1,40 +1,45 @@
-<Row>
-    <Column>
-       <div style="width: 50px; text-align: end;">#@Ticket.Id</div>
-    </Column>
-    <Column Fill>
-        <RadzenTextBox @bind-Value="Title" Placeholder="Titel:" />
-    </Column>
-    <Column>
+<FlexCol Style="gap:0;">
+    <FlexRow>
+        <div style="width: 50px; text-align: end; line-height: initial;">#@Ticket.Id</div>
+        <FlexFill>
+            <RadzenTextBox @bind-Value="Title" Placeholder="Titel:" />
+        </FlexFill>
         @if (string.IsNullOrEmpty(Description))
         {
-            <RadzenIcon Icon="chat_bubble" />
+            <RadzenIcon Icon="square" Style="cursor: default;" />
         }
         else
         {
-            <RadzenIcon Icon="chat" />
+            <RadzenIcon Icon="article" @onclick="ToggleDescription" />
         }
-    </Column>
-    <Column>
-        <span>
+        <span style="display: flex;">
+            @* TODO: Attachments *@
             <RadzenIcon Icon="attach_file" />
             @Ticket.AttachmentsCount
         </span>
-    </Column>
-    <Column>
-        <RadzenDropDown @bind-Value="SelectedStatus" Data="@TicketStatusChangeOptions" ValueProperty="Key" TextProperty="Value" ItemRender="@StatusRender" Style="@StatusStyle" />
-    </Column>
-    <Column>
+        <RadzenDropDown
+            @bind-Value="SelectedStatus"
+            Data="@TicketStatusChangeOptions"
+            ValueProperty="Key"
+            TextProperty="Value"
+            ItemRender="@StatusRender"
+            Style="@StatusStyle"
+        />
         @if (string.IsNullOrEmpty(StatusNote))
         {
-            <RadzenIcon Icon="chat_bubble" />
+            <RadzenIcon Icon="square" Style="cursor: default;" />
         }
         else
         {
-            <RadzenIcon Icon="chat" />
+            <RadzenIcon Icon="article" @onclick="ToggleStatusNote" />
         }
-    </Column>
-    <Column>
+        <RadzenIcon Icon="edit_square" @onclick="NavigateToTicket" Style="rotate: 180deg;" />
         <RadzenIcon Icon="delete" @onclick="OnDelete" />
-    </Column>
-</Row>
+    </FlexRow>
+    <Accordion IsOpen="@ShowDescription">
+        <Editor @bind-Value="Description" Style="margin-top: var(--rz-row-gap);" />
+    </Accordion>
+    <Accordion IsOpen="@ShowStatusNote">
+        <Editor @bind-Value="StatusNote" Style="margin-top: var(--rz-row-gap);" />
+    </Accordion>
+</FlexCol>

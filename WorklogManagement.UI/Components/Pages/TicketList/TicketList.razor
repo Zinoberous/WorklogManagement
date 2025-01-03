@@ -4,35 +4,47 @@
 <PageTitle>Tickets</PageTitle>
 
 <div class="ticket-list">
-    <MenuBar>
-        <div style="width: 100%; display: flex; justify-content: space-between;">
-            <span>
-                <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
-                <RadzenDropDown
-                    @bind-Value="ViewModel.StatusFilter"
-                    MaxSelectedLabels="7"
-                    Data="@ViewModel.StatusFilterOptions"
-                    ValueProperty="Key"
-                    TextProperty="Value"
-                    Placeholder="Status:"
-                    Chips
-                    Multiple
-                    AllowSelectAll="false"
-            />
-                <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
-            </span>
-            <span style="align-content: center;">Gesamt: @ViewModel.Page.TotalItems</span>
-        </div>
-    </MenuBar>
+    <Header>
+        <RadzenButton Click="@ViewModel.OpenDialog">Erstellen</RadzenButton>
+        <RadzenDropDown
+            @bind-Value="ViewModel.StatusFilter"
+            MaxSelectedLabels="8"
+            Data="@ViewModel.StatusFilterOptions"
+            ValueProperty="Key"
+            TextProperty="Value"
+            Placeholder="Status:"
+            Chips
+            Multiple
+            AllowSelectAll="false"
+        />
+        <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
+        <FlexFill />
+        Gesamt: @ViewModel.Page.TotalItems
+    </Header>
 
-    <main>
+    <Body>
+        @* TODO: Dialog *@
         <AsyncContent IsLoading="@ViewModel.LoadPage">
-            <Grid>
+            <FlexCol>
                 @foreach (var ticket in ViewModel.Page.Items)
                 {
                     <TicketListEntry Ticket="@ticket" OnEdit="@ViewModel.SaveTicketAsync" OnDelete="@(() => ViewModel.DeleteTicketAsync(ticket))" />
                 }
-            </Grid>
+            </FlexCol>
         </AsyncContent>
-    </main>
+    </Body>
+
+    @if (ViewModel.Page.TotalPages > 1)
+    {
+        <Footer Style="justify-content: center;">
+            <RadzenPager
+                HorizontalAlign="HorizontalAlign.Center"
+                Count="@ViewModel.Page.TotalItems"
+                PageSize="@ViewModel.Page.PageSize"
+                PageNumbersCount="@ViewModel.Page.TotalPages"
+                PageChanged="@(args => ViewModel.PageIndex = args.PageIndex)"
+                PageSizeChanged="@(size => ViewModel.PageSize = size)"
+            />
+        </Footer>
+    }
 </div>

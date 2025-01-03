@@ -8,9 +8,6 @@ using WorklogManagement.UI.Services;
 namespace WorklogManagement.UI.Components.Pages.TicketList;
 public partial class TicketListEntry
 {
-    [Inject]
-    public required ITicketStatusService TicketStatusService { get; set; }
-
     [Parameter]
     public required Ticket Ticket { get; set; }
 
@@ -19,6 +16,12 @@ public partial class TicketListEntry
 
     [Parameter]
     public EventCallback OnDelete { get; set; }
+
+    [Inject]
+    private ITicketStatusService TicketStatusService { get; set; } = null!;
+
+    [Inject]
+    private INavigationService NavigationService { get; set; } = null!;
 
     private string Title
     {
@@ -33,6 +36,8 @@ public partial class TicketListEntry
     }
 
     private bool ShowDescription { get; set; }
+
+    private void ToggleDescription() => ShowDescription = !ShowDescription;
 
     private TicketStatus SelectedStatus
     {
@@ -73,9 +78,17 @@ public partial class TicketListEntry
 
     private bool ShowStatusNote { get; set; }
 
+    private void ToggleStatusNote() => ShowStatusNote = !ShowStatusNote;
+
     private async Task UpdateTicketAsync(Ticket ticket)
     {
         Ticket = ticket;
         await OnEdit.InvokeAsync(ticket);
+    }
+
+    private void NavigateToTicket()
+    {
+        // TODO: NavigationService.NavigateToPage($"/tickets/{Ticket.Id}");
+        NavigationService.NavigateToPage("/");
     }
 }

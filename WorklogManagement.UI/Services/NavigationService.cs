@@ -5,12 +5,19 @@ namespace WorklogManagement.UI.Services;
 
 public interface INavigationService
 {
+    void NavigateToPage(string uri);
+
     void UpdateQuery(string key, string? value);
 }
 
 public class NavigationService(NavigationManager navigationManager) : INavigationService
 {
     private readonly NavigationManager _navigationManager = navigationManager;
+
+    public void NavigateToPage(string uri)
+    {
+        _navigationManager.NavigateTo(uri);
+    }
 
     public void UpdateQuery(string key, string? value)
     {

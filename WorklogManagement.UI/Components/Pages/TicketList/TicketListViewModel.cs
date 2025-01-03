@@ -1,4 +1,4 @@
-using Microsoft.JSInterop;
+using Blazored.LocalStorage;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
@@ -6,12 +6,12 @@ using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.TicketList;
 
-public class TicketListViewModel(IDataService dataService, INavigationService navigationService, IJSRuntime JSRuntime, IPopupService popupService) : BaseViewModel
+public class TicketListViewModel(IDataService dataService, IPopupService popupService, ILocalStorageService localStorageService, INavigationService navigationService) : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
-    private readonly INavigationService _navigationService = navigationService;
-    private readonly IJSRuntime _jSRuntime = JSRuntime;
     private readonly IPopupService _popupService = popupService;
+    private readonly ILocalStorageService _localStorageService = localStorageService;
+    private readonly INavigationService _navigationService = navigationService;
 
     private bool _dialogIsOpen = false;
     public bool IsDialogOpen
@@ -20,10 +20,7 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
         set => SetValue(ref _dialogIsOpen, value);
     }
 
-    public void OpenDialog()
-    {
-        IsDialogOpen = true;
-    }
+    public void OpenDialog() => IsDialogOpen = true;
 
     public IReadOnlyDictionary<TicketStatus, string> StatusFilterOptions => Enum.GetValues<TicketStatus>().ToDictionary(x => x, x => x.ToString());
 
@@ -52,7 +49,7 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
     public async Task OnSelectedStatusFilterChanged()
     {
         _navigationService.UpdateQuery("status", string.Join(",", StatusFilter));
-        await _jSRuntime.InvokeVoidAsync("localStorage.setItem", "ticket-list.status", string.Join(",", StatusFilter));
+        await _localStorageService.SetItemAsync("ticket-list.status", string.Join(",", StatusFilter));
         await LoadPageAsync();
     }
 
@@ -69,29 +66,37 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
         }
     }
 
-    public async Task OnSearchChanged()
+    private async Task OnSearchChanged()
     {
         _navigationService.UpdateQuery("search", Search);
         await LoadPageAsync();
     }
 
-    private uint _pageSize = 50;
-    public uint PageSize
+    private int _pageSize = 50;
+    public int PageSize
     {
         get => _pageSize;
-        set => SetValue(ref _pageSize, value);
+        set
+        {
+            if (SetValue(ref _pageSize, value))
+            {
+                _ = LoadPageAsync();
+            }
+        }
     }
 
-    public async Task OnPageSizeChanged() => await LoadPageAsync();
-
-    private uint _pageIndex = 0;
-    public uint PageIndex
+    private int _pageIndex = 0;
+    public int PageIndex
     {
         get => _pageIndex;
-        set => SetValue(ref _pageIndex, value);
+        set
+        {
+            if (SetValue(ref _pageIndex, value))
+            {
+                _ = LoadPageAsync();
+            }
+        }
     }
-
-    public async Task OnPageIndexChange() => await LoadPageAsync();
 
     private bool _loadPage = true;
     public bool LoadPage
@@ -107,11 +112,13 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
         set => SetValue(ref _page, value);
     }
 
-    public async Task InitAsync(IEnumerable<TicketStatus>? statusFilter = null, string? search = null)
+    public async Task InitAsync(string? statusFilter, string? search)
     {
+        statusFilter ??= await _localStorageService.GetItemAsync<string>("ticket-list.status");
+
         if (statusFilter is not null)
         {
-            StatusFilter = statusFilter.ToList();
+            StatusFilter = statusFilter.Split(',').Select(Enum.Parse<TicketStatus>).ToList();
         }
 
         if (search is not null)
@@ -140,9 +147,9 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
                 Page = await _dataService.GetTicketsPageByStatusFilterAsync(PageSize, PageIndex, StatusFilter.Select(x => (TicketStatus)x));
             }
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Laden der Tickets!", ex);
+            _popupService.Error("Fehler beim Laden der Tickets!");
         }
         finally
         {
@@ -160,9 +167,9 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
         {
             savedTicket = await _dataService.SaveTicketAsync(ticket);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Speichern vom Ticket!", ex);
+            _popupService.Error("Fehler beim Speichern vom Ticket!");
             return false;
         }
 
@@ -190,9 +197,9 @@ public class TicketListViewModel(IDataService dataService, INavigationService na
         {
             await _dataService.DeleteTicketAsync(ticket.Id);
         }
-        catch (Exception ex)
+        catch
         {
-            await _popupService.Error("Fehler beim Löschen vom Ticket!", ex);
+            _popupService.Error("Fehler beim Löschen vom Ticket!");
             return false;
         }
 
