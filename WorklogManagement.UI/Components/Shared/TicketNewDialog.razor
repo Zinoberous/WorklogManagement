@@ -1,6 +1,6 @@
 <Dialog IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Title="Neues Ticket">
     <FlexCol>
-        <RadzenTextBox Placeholder="Titel:" @bind-Value="Title" />
+        <RadzenTextBox Placeholder="Titel:" @oninput="@(args => Title = args.Value?.ToString() ?? string.Empty)" />
         <TicketSearch Placeholder="Referenz:" @bind-Value="Ref" />
         <Editor Placeholder="Beschreibung:" @bind-Value="Description" />
         <AttachmentPanel Value="Attachments" ValueChanged="AttachmentsChanged" />
