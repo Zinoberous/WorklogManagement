@@ -8,7 +8,7 @@ public record Ticket : IDataModel
 
     // TODO: uri ref ticket
 
-    public int? RefId { get; init; }
+    public RefTicket? Ref { get; init; }
 
     public required string Title { get; init; }
 

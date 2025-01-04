@@ -1,0 +1,12 @@
+@using WorklogManagement.Shared.Models
+
+<RadzenDropDown
+    Placeholder="@Placeholder"
+    Value="@Value"
+    ValueChanged="@ValueChanged"
+    Data="@Tickets"
+    TextProperty="@nameof(RefTicket.Title)"
+    AllowFiltering
+    LoadData="Search"
+    AllowClear
+/>

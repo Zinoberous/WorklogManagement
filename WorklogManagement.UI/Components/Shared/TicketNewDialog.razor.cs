@@ -17,9 +17,7 @@ public partial class TicketNewDialog
 
     private string Title { get; set; } = string.Empty;
 
-    private int? RefId { get; set; }
-
-    private string? RefTitle { get; set; }
+    private RefTicket? Ref { get; set; }
 
     private string? Description { get; set; }
 
@@ -42,13 +40,18 @@ public partial class TicketNewDialog
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(IsOpen);
+
+        Title = string.Empty;
+        Ref = null;
+        Description = null;
+        Attachments = [];
     }
 
     private async Task Save()
     {
         Ticket ticket = new()
         {
-            RefId = RefId,
+            Ref = Ref,
             Title = Title,
             Description = string.IsNullOrWhiteSpace(Description) ? null : Description,
             Status = TicketStatus.Todo,

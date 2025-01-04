@@ -1,5 +1,6 @@
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
+using WorklogManagement.UI.Enums;
 
 namespace WorklogManagement.UI.Services;
 
@@ -31,7 +32,7 @@ public interface IDataService
 
     Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter);
 
-    Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search);
+    Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search, TicketSearchType searchType = TicketSearchType.TitleAndDescription);
 
     Task<Ticket> SaveTicketAsync(Ticket ticket);
 
@@ -121,9 +122,14 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}");
     }
 
-    public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search)
+    public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search, TicketSearchType searchType = TicketSearchType.TitleAndDescription)
     {
-        var filter = Uri.EscapeDataString($@"Title.Contains(""{search}"") || Description.Contains(""{search}"")");
+        var filter = searchType switch
+        {
+            TicketSearchType.Title => Uri.EscapeDataString($@"Title.Contains(""{search}"")"),
+            TicketSearchType.Description => Uri.EscapeDataString($@"Description.Contains(""{search}"")"),
+            _ => Uri.EscapeDataString($@"Title.Contains(""{search}"") || Description.Contains(""{search}"")")
+        };
 
         return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}");
     }

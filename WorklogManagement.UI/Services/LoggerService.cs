@@ -1,7 +1,9 @@
 using Microsoft.JSInterop;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Display;
 using Serilog.Parsing;
+using System.Text.Json;
 
 namespace WorklogManagement.UI.Services;
 
@@ -27,16 +29,15 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
     {
         _logger.Log(logLevel, eventId, state, exception, formatter);
 
-        // Das entdprechende Paket für BrowserConsole funktioniert nur bei WASM und als Sink für Serilog hat es auch nicht funktioniert
-        LogToBrowserConsole(logLevel, state, exception, formatter);
+        // Das entdprechende Paket für BrowserConsole funktioniert nur bei WASM und Sinks für Serilog unterstützen kein Dependency Injection für IJSRuntime
+        LogToBrowserConsole(logLevel, state, exception);
     }
 
-    // TODO: verschachtelte Elemente (z.B.: Ticket { TicketAttachments: [] }) werden nicht korrekt aufgelöst
-    private void LogToBrowserConsole<TState>(LogLevel logLevel, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    private void LogToBrowserConsole<TState>(LogLevel logLevel, TState state, Exception? exception)
     {
         StringWriter writer = new();
 
-        var logEvent = CreateLogEvent(logLevel, state, exception, formatter);
+        var logEvent = CreateLogEvent(logLevel, state, exception);
 
         var consoleMethod = SelectConsoleMethod(logEvent.Level);
 
@@ -47,21 +48,29 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
         _ = Task.Run(async () => await _jsRuntime.InvokeAsync<string>(consoleMethod, message));
     }
 
-    private LogEvent CreateLogEvent<TState>(
-        LogLevel logLevel,
-        TState state,
-        Exception? exception,
-        Func<TState, Exception?, string> formatter)
+    private LogEvent CreateLogEvent<TState>(LogLevel logLevel, TState state, Exception? exception)
     {
-        var message = formatter(state, exception);
         var level = MapLogLevel(logLevel);
+
+        var stateDict = (state as IEnumerable<KeyValuePair<string, object?>>)!
+            .ToDictionary(
+                x => x.Key.TrimStart('@', '$'),
+                x => JsonSerializer.Serialize(x.Value).Trim('"'));
+
+        var messageTemplate = new MessageTemplateParser().Parse(stateDict["{OriginalFormat}"]);
+
+        stateDict.Remove("{OriginalFormat}");
+
+        var properties = stateDict
+            .Select(x => new LogEventProperty(x.Key, new ScalarValue(x.Value)))
+            .ToArray();
 
         return new(
             timestamp: _timeProvider.GetLocalNow(),
             level: level,
             exception: exception,
-            messageTemplate: new MessageTemplateParser().Parse(message),
-            properties: []);
+            messageTemplate: messageTemplate,
+            properties: properties);
     }
 
     private static LogEventLevel MapLogLevel(LogLevel logLevel) =>
@@ -85,4 +94,32 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
            LogEventLevel.Debug => "console.debug",
            _ => "console.log"
        };
+}
+
+public class BrowserConsoleSink(IJSRuntime jsRuntime) : ILogEventSink
+{
+    private readonly IJSRuntime _jsRuntime = jsRuntime;
+
+    public void Emit(LogEvent logEvent)
+    {
+        StringWriter writer = new();
+
+        var consoleMethod = SelectConsoleMethod(logEvent.Level);
+
+        new MessageTemplateTextFormatter("[{Level:u3}] {Message:lj}{NewLine}{Exception}").Format(logEvent, writer);
+
+        var message = writer.ToString().Trim();
+
+        _ = Task.Run(async () => await _jsRuntime.InvokeAsync<string>(consoleMethod, message));
+    }
+
+    static string SelectConsoleMethod(LogEventLevel logLevel) =>
+        logLevel switch
+        {
+            >= LogEventLevel.Error => "console.error",
+            LogEventLevel.Warning => "console.warn",
+            LogEventLevel.Information => "console.info",
+            LogEventLevel.Debug => "console.debug",
+            _ => "console.log"
+        };
 }

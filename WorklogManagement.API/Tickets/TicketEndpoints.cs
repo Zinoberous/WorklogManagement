@@ -38,6 +38,7 @@ internal static class TicketEndpoints
     private static IQueryable<DB.Ticket> GetTicketsQuery(WorklogManagementContext context)
     {
         return context.Tickets
+            .Include(x => x.Ref)
             .Include(x => x.TicketStatusLogs)
             .Include(x => x.TicketAttachments)
             .Include(x => x.Worklogs);

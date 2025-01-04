@@ -33,7 +33,7 @@ public record Ticket : Shd.Ticket
         return new()
         {
             Id = ticket.Id,
-            RefId = ticket.RefId,
+            Ref = ticket.Ref is null ? null : new() { Id = ticket.Ref.Id, Title = ticket.Ref.Title },
             Title = ticket.Title,
             Description = ticket.Description,
             Status = (TicketStatus)ticket.TicketStatusId,
@@ -56,7 +56,7 @@ public record Ticket : Shd.Ticket
         {
             ticket = new()
             {
-                RefId = RefId,
+                RefId = Ref?.Id,
                 Title = Title,
                 Description = Description,
                 TicketStatusId = (int)Status,
@@ -79,7 +79,7 @@ public record Ticket : Shd.Ticket
         }
         else
         {
-            ticket.RefId = RefId;
+            ticket.RefId = Ref?.Id;
             ticket.Title = Title;
             ticket.Description = Description;
 
