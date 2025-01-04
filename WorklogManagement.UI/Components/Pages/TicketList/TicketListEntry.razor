@@ -13,7 +13,7 @@
             <RadzenIcon Icon="article" @onclick="ToggleDescription" />
         }
         <span style="display: flex;">
-            @* TODO: Attachments *@
+            @* TODO: AttachmentsDialog *@
             <RadzenIcon Icon="attach_file" />
             @Ticket.Attachments.Count()
         </span>
@@ -36,3 +36,4 @@
         <Editor @bind-Value="StatusNote" Style="margin-top: var(--rz-row-gap);" Placeholder="Anmerkung:" />
     </Accordion>
 </FlexCol>
+@* <TicketAttachmentsDialog /> *@

@@ -14,7 +14,7 @@ public record Ticket : IDataModel
 
     public string? Description { get; init; }
 
-    public required Enums.TicketStatus Status { get; init; }
+    public Enums.TicketStatus Status { get; init; } = Enums.TicketStatus.Todo;
 
     public string? StatusNote { get; init; }
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Radzen;
+using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Enums;
 using WorklogManagement.UI.Services;
@@ -9,10 +10,10 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class TicketSearch
 {
     [Parameter]
-    public RefTicket? Value { get; set; }
+    public Ticket? Value { get; set; }
 
     [Parameter]
-    public EventCallback<RefTicket?> ValueChanged { get; set; }
+    public EventCallback<Ticket?> ValueChanged { get; set; }
 
     [Parameter]
     public string Placeholder { get; set; } = string.Empty;
@@ -20,21 +21,27 @@ public partial class TicketSearch
     [Inject]
     private IDataService DataService { get; set; } = null!;
 
-    private IEnumerable<RefTicket> Tickets { get; set; } = [];
+    private IEnumerable<Ticket> Tickets { get; set; } = [];
 
-    private async Task Search(LoadDataArgs args)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var searchText = args.Filter;
+        await base.OnAfterRenderAsync(firstRender);
 
-        if (string.IsNullOrWhiteSpace(searchText))
+        if (firstRender)
         {
-            return;
+            await Search(null);
         }
+    }
 
-        Tickets = (await DataService.GetTicketsPageBySearchAsync(0, 0, searchText, TicketSearchType.Title))
-            .Items.Select(x => new RefTicket { Id = x.Id, Title = x.Title })
-            .ToArray();
+    private async Task LoadData(LoadDataArgs args) => await Search(args.Filter);
+    private async Task Search(string? searchText)
+    {
+        Tickets = string.IsNullOrWhiteSpace(searchText)
+            ? (await DataService.GetTicketsPageByStatusFilterAsync(0, 0, [TicketStatus.Running, TicketStatus.Continuous])).Items
+            : (await DataService.GetTicketsPageBySearchAsync(0, 0, searchText, TicketSearchType.Title)).Items;
 
         await InvokeAsync(StateHasChanged);
     }
+
+
 }

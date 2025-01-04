@@ -6,7 +6,12 @@
     ValueChanged="@ValueChanged"
     Data="@Tickets"
     TextProperty="@nameof(RefTicket.Title)"
+    Template="@Template"
     AllowFiltering
-    LoadData="Search"
+    LoadData="LoadData"
     AllowClear
 />
+
+@code {
+    private RenderFragment<dynamic> Template = (dynamic data) => @<div>#@data.Id - @data.Title</div>;
+}
