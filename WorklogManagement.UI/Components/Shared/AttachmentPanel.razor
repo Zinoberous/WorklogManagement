@@ -1,6 +1,6 @@
 <div class="attachment-panel">
     <RadzenCard Variant="Variant.Outlined">
-        <FlexCol Style="@(Value.Any() ? null : "gap: 0;")">
+        <FlexCol Style="@(Attachments.Any() ? null : "gap: 0;")">
             <RadzenUpload
                 id="ddUpload"
                 Icon="download_2"
@@ -12,7 +12,7 @@
                 Style="width: 100%;"
             />
             <FlexCol>
-                @foreach (var attachment in Value)
+                @foreach (var attachment in Attachments)
                 {
                     <FlexRow>
                         <RadzenText>@attachment.Name</RadzenText>

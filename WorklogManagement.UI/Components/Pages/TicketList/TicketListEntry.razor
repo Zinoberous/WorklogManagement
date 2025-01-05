@@ -6,21 +6,20 @@
         </FlexFill>
         @if (string.IsNullOrEmpty(Description))
         {
-            <RadzenIcon Icon="square" Style="cursor: default;" />
+            <RadzenIcon Icon="square" @onclick="ToggleDescription" />
         }
         else
         {
             <RadzenIcon Icon="article" @onclick="ToggleDescription" />
         }
-        <span style="display: flex;">
-            @* TODO: AttachmentsDialog *@
+        <span style="display: flex; cursor: pointer;" @onclick="OpenAttachmentsDialog">
             <RadzenIcon Icon="attach_file" />
             @Ticket.Attachments.Count()
         </span>
         <TicketStatusDropDown @bind-Value="SelectedStatus" />
         @if (string.IsNullOrEmpty(StatusNote))
         {
-            <RadzenIcon Icon="square" Style="cursor: default;" />
+            <RadzenIcon Icon="square" @onclick="ToggleStatusNote" />
         }
         else
         {
@@ -36,4 +35,9 @@
         <Editor @bind-Value="StatusNote" Style="margin-top: var(--rz-row-gap);" Placeholder="Anmerkung:" />
     </Accordion>
 </FlexCol>
-@* <TicketAttachmentsDialog /> *@
+<AttachmentsDialog
+    @bind-IsOpen="IsOpenAttachmentsDialog"
+    Title="@Title"
+    Attachments="@Attachments"
+    AttachmentsChanged="@AttachmentsChanged"
+/> 

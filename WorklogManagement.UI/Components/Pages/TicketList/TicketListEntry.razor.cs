@@ -34,6 +34,28 @@ public partial class TicketListEntry
 
     private void ToggleDescription() => ShowDescription = !ShowDescription;
 
+    private IEnumerable<TicketAttachment> Attachments => Ticket.Attachments;
+
+    private async Task AttachmentsChanged(IEnumerable<Attachment> attachments)
+    {
+        var value = attachments
+            .Select(x => new TicketAttachment
+            {
+                Id = x.Id,
+                TicketId = Ticket.Id,
+                Name = x.Name,
+                Comment = x.Comment,
+                Data = x.Data,
+            })
+            .ToArray();
+
+        await UpdateTicketAsync(Ticket with { Attachments = value });
+    }
+
+    private bool IsOpenAttachmentsDialog { get; set; }
+
+    private void OpenAttachmentsDialog() => IsOpenAttachmentsDialog = true;
+
     private TicketStatus SelectedStatus
     {
         get => Ticket.Status;
@@ -61,7 +83,6 @@ public partial class TicketListEntry
 
     private void NavigateToTicket()
     {
-        // TODO: NavigationService.NavigateToPage($"/tickets/{Ticket.Id}");
-        NavigationService.NavigateToPage("/");
+        NavigationService.NavigateToPage($"/tickets/{Ticket.Id}");
     }
 }

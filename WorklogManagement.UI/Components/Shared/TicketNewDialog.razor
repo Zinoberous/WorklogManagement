@@ -3,7 +3,7 @@
         <RadzenTextBox Placeholder="Titel:" @oninput="@(args => Title = args.Value?.ToString() ?? string.Empty)" />
         <TicketSearch Placeholder="Referenz:" @bind-Value="RefTicketSearch" />
         <Editor Placeholder="Beschreibung:" @bind-Value="Description" />
-        <AttachmentPanel Value="Attachments" ValueChanged="AttachmentsChanged" />
+        <AttachmentPanel Attachments="@Attachments" AttachmentsChanged="@AttachmentsChanged" />
         <FlexRow>
             <FlexFill />
             <RadzenButton Click="@Close">Abbrechen</RadzenButton>

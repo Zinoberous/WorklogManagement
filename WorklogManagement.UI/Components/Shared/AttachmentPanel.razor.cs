@@ -9,10 +9,10 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class AttachmentPanel
 {
     [Parameter]
-    public IEnumerable<Attachment> Value { get; set; } = [];
+    public IEnumerable<Attachment> Attachments { get; set; } = [];
 
     [Parameter]
-    public EventCallback<IEnumerable<Attachment>> ValueChanged { get; set; }
+    public EventCallback<IEnumerable<Attachment>> AttachmentsChanged { get; set; }
 
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = null!;
@@ -35,20 +35,20 @@ public partial class AttachmentPanel
             });
         }
 
-        Value = attachments;
-        await ValueChanged.InvokeAsync(Value);
+        Attachments = attachments;
+        await AttachmentsChanged.InvokeAsync(Attachments);
     }
 
     private async Task Edit(Attachment attachment)
     {
-        Value = Value.Select(old => old.Name == attachment.Name ? attachment : old).ToArray();
-        await ValueChanged.InvokeAsync(Value);
+        Attachments = Attachments.Select(old => old.Name == attachment.Name ? attachment : old).ToArray();
+        await AttachmentsChanged.InvokeAsync(Attachments);
     }
 
     private async Task Remove(Attachment attachment)
     {
-        Value = Value.Where(a => a.Name != attachment.Name).ToArray();
-        await ValueChanged.InvokeAsync(Value);
+        Attachments = Attachments.Where(a => a.Name != attachment.Name).ToArray();
+        await AttachmentsChanged.InvokeAsync(Attachments);
     }
 
     private async Task Download(Attachment attachment)
