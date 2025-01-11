@@ -23,12 +23,12 @@
     @if (DataStateService.Errors.Any())
     {
         <Body>
-            <FlexCol>
-                @foreach (var error in DataStateService.Errors)
-                {
-                    <pre>@error</pre>
-                }
-            </FlexCol>
+            @foreach (var error in DataStateService.Errors)
+            {
+                <RadzenAlert AlertStyle="AlertStyle.Danger" Shade="Shade.Darker" Size="AlertSize.Small" AllowClose="false">
+                    @error
+                </RadzenAlert>
+            }
         </Body>
     }
     else

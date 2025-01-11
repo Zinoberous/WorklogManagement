@@ -1,6 +1,5 @@
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Enums;
 
 namespace WorklogManagement.UI.Services;
@@ -222,16 +221,18 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
             if (content is null)
             {
-                _logger.LogInformation("{Method} {API}", method.Method, api);
+                _logger.LogInformation("Anfrage {Method} {API}", method.Method, api);
             }
             else
             {
-                _logger.LogInformation("{Method} {API} {@Content}", method.Method, api, content);
+                _logger.LogInformation("Anfrage {Method} {API} {@Content}", method.Method, api, content);
             }
 
             var jsonContent = JsonContent.Create(content);
 
             var res = await client.SendAsync(new(method, $"{endpoint}{GetQueryString(queryParams, true)}") { Content = jsonContent });
+
+            var statusCode = (int)res.StatusCode;
 
             try
             {
@@ -239,9 +240,9 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             }
             catch
             {
-                var resContentString = await res.Content.ReadAsStringAsync(); // exception
+                var resContentString = (await res.Content.ReadAsStringAsync()).Trim('"'); // exception
 
-                _logger.LogInformation("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, res.StatusCode, resContentString);
+                _logger.LogError("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, statusCode, resContentString);
                 _dataStateService.SetError(resContentString);
 
                 throw;
@@ -249,35 +250,19 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
             if (typeof(T) == typeof(HttpResponseMessage))
             {
-                _logger.LogInformation("Antwort {Methode} {API} {StatusCode}", method.Method, api, res.StatusCode);
+                _logger.LogInformation("Antwort {Methode} {API} {StatusCode}", method.Method, api, statusCode);
                 return (T)(object)res;
             }
 
             var resContent = (await res.Content.ReadFromJsonAsync<T>())!;
 
-            _logger.LogInformation("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, res.StatusCode, resContent);
+            _logger.LogInformation("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, statusCode, resContent);
 
             return resContent;
         }
         finally
         {
             _dataStateService.EndOperation();
-        }
-    }
-
-    private async Task LogResponse<T>(HttpMethod method, string api, HttpResponseMessage res)
-    {
-        object? resContent = typeof(T) == typeof(HttpResponseMessage)
-                ? await res.Content.ReadAsStringAsync()
-                : await res.Content.ReadFromJsonAsync<T>();
-
-        if (string.IsNullOrWhiteSpace(resContent?.ToString()))
-        {
-            _logger.LogInformation("Antwort {Methode} {API} {StatusCode}", method.Method, api, res.StatusCode);
-        }
-        else
-        {
-            _logger.LogInformation("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, res.StatusCode, resContent);
         }
     }
 
