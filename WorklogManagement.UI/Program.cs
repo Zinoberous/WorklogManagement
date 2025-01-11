@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using Radzen;
 using Serilog;
+using System.Reflection;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
@@ -24,6 +25,12 @@ config.AddJsonFile("local.settings.json", true);
 var isDevelopment = builder.Environment.IsDevelopment();
 
 var services = builder.Services;
+
+// https://github.com/serilog/serilog-sinks-file/issues/56 => RollingInterval.Day mit utc statt local time
+var fileSinkTypes = typeof(Serilog.Sinks.File.FileSink).Assembly.GetTypes();
+var clockType = fileSinkTypes.FirstOrDefault(x => string.Equals(x.FullName, "Serilog.Sinks.File.Clock", StringComparison.Ordinal));
+var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
+timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
 services
     .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
