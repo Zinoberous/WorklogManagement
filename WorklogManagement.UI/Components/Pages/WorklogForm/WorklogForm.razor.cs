@@ -6,4 +6,11 @@ public partial class WorklogForm
 {
     [Parameter]
     public required int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await ViewModel.LoadWorklogAsync(Id);
+    }
 }

@@ -186,12 +186,12 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
 
     public async Task<bool> DeleteTicketAsync(Ticket ticket)
     {
-        Page = Page with { Items = Page.Items.Where(x => x.Id != ticket.Id).ToArray() };
-
         if (!(await _popupService.Confim("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
         {
             return false;
         }
+
+        Page = Page with { Items = Page.Items.Where(x => x.Id != ticket.Id).ToArray() };
 
         try
         {
@@ -203,9 +203,9 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
             return false;
         }
 
-        await LoadPageAsync(true);
-
         _popupService.Info($"Ticket {ticket.Id} wurde gelöscht!");
+
+        await LoadPageAsync(true);
 
         return true;
     }

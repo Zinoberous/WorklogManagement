@@ -17,6 +17,8 @@ public partial class TicketNewDialog
 
     private string Title { get; set; } = string.Empty;
 
+    private TicketStatus Status { get; set; } = TicketStatus.Todo;
+
     private RefTicket? Ref { get; set; }
 
     private Ticket? RefTicketSearch
@@ -60,7 +62,7 @@ public partial class TicketNewDialog
             Ref = Ref,
             Title = Title,
             Description = string.IsNullOrWhiteSpace(Description) ? null : Description,
-            Status = TicketStatus.Todo,
+            Status = Status,
             Attachments = Attachments
         };
         await OnSave.Invoke(ticket);

@@ -1,8 +1,27 @@
-@page "/worklogs/{id:int}"
+@page "/tracking/{id:int}"
 @inherits BasePage<WorklogFormViewModel>
 
 <PageTitle>Eintrag #@Id</PageTitle>
 
-<main class="worklogForm">
-    TBD
-</main>
+<div class="worklog">
+    <Body>
+        <AsyncContent IsLoading="@ViewModel.IsLoading">
+            <FlexCol>
+                <FlexRow>
+                    <RadzenDatePicker TValue="@DateOnly" />
+                    <DurationPicker />
+                    <FlexFill />
+                    <RadzenIcon Icon="delete" />
+                </FlexRow>
+                <FlexRow>
+                    <FlexFill>
+                        <TicketSearch Placeholder="Ticket:" />
+                    </FlexFill>
+                    <RadzenIcon Icon="open_in_new" />
+                </FlexRow>
+                <Editor Placeholder="Beschreibung:" />
+                <AttachmentPanel />
+            </FlexCol>
+        </AsyncContent>
+    </Body>
+</div>

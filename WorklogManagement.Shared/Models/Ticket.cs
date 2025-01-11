@@ -16,6 +16,8 @@ public record Ticket : IDataModel
 
     public Enums.TicketStatus Status { get; init; } = Enums.TicketStatus.Todo;
 
+    public DateTime StatusStartedAt { get; init; } = DateTime.UtcNow;
+
     public string? StatusNote { get; init; }
 
     public DateTime? CreatedAt { get; init; }

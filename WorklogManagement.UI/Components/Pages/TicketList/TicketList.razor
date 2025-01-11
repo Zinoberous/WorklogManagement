@@ -16,6 +16,7 @@
             Chips
             Multiple
             AllowSelectAll="false"
+            Disabled="@(!string.IsNullOrEmpty(ViewModel.Search))"
         />
         <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
         <FlexFill />

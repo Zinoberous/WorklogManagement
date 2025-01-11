@@ -9,7 +9,7 @@ namespace WorklogManagement.UI.Components.Shared;
 public partial class TicketStatusDropDown
 {
     [Parameter]
-    public TicketStatus Value { get; set; }
+    public TicketStatus Value { get; set; } = TicketStatus.Todo;
 
     [Parameter]
     public EventCallback<TicketStatus> ValueChanged { get; set; }

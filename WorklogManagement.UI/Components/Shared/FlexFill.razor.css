@@ -3,7 +3,7 @@
     flex-shrink: 1 !important;
 }
 
-.flex-fill > ::deep * {
+.flex-fill ::deep > * {
     width: 100%;
     height: 100%;
 }

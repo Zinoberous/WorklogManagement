@@ -30,6 +30,12 @@ public interface IDataService
 
     Task DeleteAbsenceAsync(int id);
 
+    Task<Ticket> GetTicketAsync(int id);
+
+    Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex);
+
+    Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex, string filter);
+
     Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter);
 
     Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search, TicketSearchType searchType = TicketSearchType.TitleAndDescription);
@@ -115,6 +121,21 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         await ExecuteWithDataStateAsync(HttpMethod.Delete, $"absences/{id}");
     }
 
+    public async Task<Ticket> GetTicketAsync(int id)
+    {
+        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Get, $"tickets/{id}");
+    }
+
+    public async Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex)
+    {
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}");
+    }
+
+    public async Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex, string filter)
+    {
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={Uri.EscapeDataString(filter)}");
+    }
+
     public async Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter)
     {
         var filter = Uri.EscapeDataString($"status in ({string.Join(',', statusFilter.Select(x => (int)x))})");
@@ -126,12 +147,12 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
     {
         var filter = searchType switch
         {
-            TicketSearchType.Title => Uri.EscapeDataString($@"Title.Contains(""{search}"")"),
-            TicketSearchType.Description => Uri.EscapeDataString($@"Description.Contains(""{search}"")"),
-            _ => Uri.EscapeDataString($@"Title.Contains(""{search}"") || Description.Contains(""{search}"")")
+            TicketSearchType.Title => $@"Title.Contains(""{search}"")",
+            TicketSearchType.Description => $@"Description.Contains(""{search}"")",
+            _ => $@"Title.Contains(""{search}"") || Description.Contains(""{search}"")"
         };
 
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}");
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={Uri.EscapeDataString(filter)}");
     }
 
     public async Task<Ticket> SaveTicketAsync(Ticket ticket)

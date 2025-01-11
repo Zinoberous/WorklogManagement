@@ -24,7 +24,6 @@ public record Ticket : Shd.Ticket
         { "Title", "Title" },
         { "Description", "Description" },
         { "Status", "TicketStatusId" },
-        { "StatusNote", "StatusNote" },
         { "CreatedAt", "CreatedAt" },
     };
 
@@ -37,6 +36,7 @@ public record Ticket : Shd.Ticket
             Title = ticket.Title,
             Description = ticket.Description,
             Status = (TicketStatus)ticket.TicketStatusId,
+            StatusStartedAt = ticket.TicketStatusLogs.Last().StartedAt,
             StatusNote = ticket.TicketStatusLogs.Last().Note,
             CreatedAt = ticket.CreatedAt,
             TimeSpent = TimeSpan.FromTicks(ticket.Worklogs.Sum(x => x.TimeSpent.Ticks)),
@@ -65,6 +65,7 @@ public record Ticket : Shd.Ticket
                     {
                         TicketStatusId = (int)Status,
                         StartedAt = DateTime.UtcNow,
+                        Note = StatusNote,
                     }
                 ],
                 CreatedAt = DateTime.UtcNow,
@@ -91,7 +92,8 @@ public record Ticket : Shd.Ticket
                 {
                     TicketId = ticket.Id,
                     TicketStatusId = (int)Status,
-                    StartedAt = DateTime.UtcNow
+                    StartedAt = StatusStartedAt,
+                    Note = StatusNote,
                 };
 
                 await context.TicketStatusLogs.AddAsync(statusLog);

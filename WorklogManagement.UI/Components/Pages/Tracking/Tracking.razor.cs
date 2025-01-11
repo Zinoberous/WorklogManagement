@@ -12,8 +12,10 @@ public partial class Tracking
     [SupplyParameterFromQuery(Name = "search")]
     public string? InitialSearch { get; set; }
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    await ViewModel.InitAsync(InitialDate, InitialSearch);
-    //}
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //await ViewModel.InitAsync(InitialDate, InitialSearch);
+    }
 }

@@ -3,6 +3,38 @@
 
 <PageTitle>Ticket #@Id</PageTitle>
 
-<main class="ticket">
-    TBD
-</main>
+<div class="ticket">
+    <Body>
+        <AsyncContent IsLoading="@ViewModel.IsLoading">
+            <FlexCol>
+                <FlexRow>
+                    <FlexFill>
+                        <RadzenTextBox Placeholder="Titel:" />
+                    </FlexFill>
+                    <TicketStatusDropDown />
+                    <RadzenIcon Icon="delete" />
+                </FlexRow>
+                <FlexRow>
+                    <FlexFill>
+                        <TicketSearch Placeholder="Referenz:" />
+                    </FlexFill>
+                    <RadzenIcon Icon="open_in_new" />
+                </FlexRow>
+                <Editor Placeholder="Beschreibung:" />
+                <AttachmentPanel />
+                <RadzenButton>SubTicket hinzufügen</RadzenButton>
+                @* TODO: SubTickets *@
+                <RadzenTabs>
+                    <Tabs>
+                        <RadzenTabsItem Text="Statusverlauf">
+                            @* TODO: Statusverlauf *@
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="@($"Arbeitsprotokoll ({(int)ViewModel.TimeSpent.TotalHours}:{ViewModel.TimeSpent.Minutes})")">
+                            @* TODO: Arbeitsprotokoll *@
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </FlexCol>
+        </AsyncContent>
+    </Body>
+</div>

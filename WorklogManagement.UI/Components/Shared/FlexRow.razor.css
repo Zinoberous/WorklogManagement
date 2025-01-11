@@ -14,3 +14,8 @@
     flex-shrink: 0;
     width: fit-content;
 }
+.flex-row-fill ::deep > * {
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    width: 100%;
+}

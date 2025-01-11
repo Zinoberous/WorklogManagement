@@ -65,7 +65,13 @@ public record Page
     {
         foreach (var map in propertyNameMapping)
         {
-            s = s.Replace(map.Key, map.Value, StringComparison.OrdinalIgnoreCase);
+            var patterns = new[] { $" {map.Key} ", $" {map.Key}." };
+            var replacements = new[] { $" {map.Value} ", $" {map.Value}." };
+
+            for (int i = 0; i < patterns.Length; i++)
+            {
+                s = $" {s}".Replace(patterns[i], replacements[i], StringComparison.OrdinalIgnoreCase)[1..];
+            }
         }
 
         return s;

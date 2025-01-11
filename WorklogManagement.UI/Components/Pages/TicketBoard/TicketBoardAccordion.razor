@@ -1,0 +1,13 @@
+<FlexCol>
+    <FlexFill>
+        <RadzenCard @onclick="Toggle">
+            <FlexRow>
+                <FlexFill><RadzenText Text="@Title" /></FlexFill>
+                <RadzenIcon Icon="@(IsOpen ? "expand_content" : "collapse_content")" />
+            </FlexRow>
+        </RadzenCard>
+    </FlexFill>
+    <Accordion IsOpen="IsOpen" Style="padding: 0 var(--rz-row-gap);">
+        <TicketBoardLayer TicketGroups="@TicketGroups" />
+    </Accordion>
+</FlexCol>

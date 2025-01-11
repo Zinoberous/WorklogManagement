@@ -3,6 +3,21 @@
 
 <PageTitle>Tickets</PageTitle>
 
-<main class="ticket-board">
-    TBD
-</main>
+<div class="ticket-board">
+    <Header>
+        <RadzenButton Click="@ViewModel.OpenNewDialog">Erstellen</RadzenButton>
+        <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
+        <FlexFill />
+        Gesamt: @ViewModel.Tickets.Count()
+    </Header>
+
+    <Body>
+        <AsyncContent IsLoading="@ViewModel.IsLoading">
+            <TicketBoardLayer TicketGroups="@TicketGroups" />
+        </AsyncContent>
+        <TicketNewDialog
+            @bind-IsOpen="ViewModel.IsOpenNewDialog"
+            OnSave="@ViewModel.SaveTicketAsync"
+        />
+    </Body>
+</div>

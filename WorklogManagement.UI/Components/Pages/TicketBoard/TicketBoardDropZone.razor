@@ -1,0 +1,34 @@
+@using WorklogManagement.Shared.Enums
+
+<div>
+    <RadzenDropZoneContainer Data="@Tickets" ItemSelector="@ItemSelector" ItemRender="@OnItemRender">
+        <ChildContent>
+            <FlexRow Fill Style="align-items: unset;">
+                <RadzenDropZone Value="@TicketStatus.Canceled" class="@($"status-{TicketStatus.Canceled.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Abgebrochen</RadzenText>
+                </RadzenDropZone>
+                <RadzenDropZone Value="@TicketStatus.Blocked" class="@($"status-{TicketStatus.Blocked.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Blockiert</RadzenText>
+                </RadzenDropZone>
+                <RadzenDropZone Value="@TicketStatus.Paused" class="@($"status-{TicketStatus.Paused.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Pausiert</RadzenText>
+                </RadzenDropZone>
+                <RadzenDropZone Value="@TicketStatus.Todo" class="@($"status-{TicketStatus.Todo.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Zu Erledigen</RadzenText>
+                </RadzenDropZone>
+                <RadzenDropZone Value="@TicketStatus.Running" class="@($"status-{TicketStatus.Running.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">In Bearbeitung</RadzenText>
+                </RadzenDropZone>
+                <RadzenDropZone Value="@TicketStatus.Continuous" class="@($"status-{TicketStatus.Continuous.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Dauerauftrag</RadzenText>
+                </RadzenDropZone>
+                <RadzenDropZone Value="@TicketStatus.Done" class="@($"status-{TicketStatus.Done.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
+                    <RadzenText TextStyle="TextStyle.Subtitle2">Erledigt</RadzenText>
+                </RadzenDropZone>
+            </FlexRow>
+        </ChildContent>
+        <Template>
+            <strong>@context.Title</strong>
+        </Template>
+    </RadzenDropZoneContainer>
+</div>
