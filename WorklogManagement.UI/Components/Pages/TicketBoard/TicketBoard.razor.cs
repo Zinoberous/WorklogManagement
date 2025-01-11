@@ -29,13 +29,13 @@ public partial class TicketBoard
                     .ToArray(),
                 .. ViewModel.Tickets
                     .Where(x => x.Ref is not null && !TicketDict.ContainsKey(x.Ref.Id))
-                    .Select(x => new TicketGroup { Parent = x, Childs = GetTicketGroups(x.Ref!.Id) })
+                    .Select(x => new TicketGroup { Parent = x.Ref!, Childs = GetTicketGroups(x.Ref!.Id) })
                     .ToArray()
             ];
         }
 
         return ViewModel.Tickets
-            .Where(x => x.Ref?.Id == ticketId)
+            .Where(x => x.Ref is not null && x.Ref.Id == ticketId)
             .Select(x => new TicketGroup { Parent = x, Childs = GetTicketGroups(x.Id) })
             .ToArray();
     }

@@ -4,6 +4,7 @@ using Serilog.Events;
 using Serilog.Formatting.Display;
 using Serilog.Parsing;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace WorklogManagement.UI.Services;
 
@@ -30,10 +31,10 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
         _logger.Log(logLevel, eventId, state, exception, formatter);
 
         // Das entdprechende Paket für BrowserConsole funktioniert nur bei WASM und Sinks für Serilog unterstützen kein Dependency Injection für IJSRuntime
-        LogToBrowserConsole(logLevel, state, exception);
+        _ = LogToBrowserConsole(logLevel, state, exception);
     }
 
-    private void LogToBrowserConsole<TState>(LogLevel logLevel, TState state, Exception? exception)
+    private async Task LogToBrowserConsole<TState>(LogLevel logLevel, TState state, Exception? exception)
     {
         StringWriter writer = new();
 
@@ -45,7 +46,7 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
 
         var message = writer.ToString().Trim();
 
-        _ = Task.Run(async () => await _jsRuntime.InvokeAsync<string>(consoleMethod, message));
+        await _jsRuntime.InvokeAsync<string>(consoleMethod, message);
     }
 
     private LogEvent CreateLogEvent<TState>(LogLevel logLevel, TState state, Exception? exception)
@@ -55,7 +56,7 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
         var stateDict = (state as IEnumerable<KeyValuePair<string, object?>>)!
             .ToDictionary(
                 x => x.Key.TrimStart('@', '$'),
-                x => JsonSerializer.Serialize(x.Value).Trim('"'));
+                x => Regex.Unescape(JsonSerializer.Serialize(x.Value).Trim('"')));
 
         var messageTemplate = new MessageTemplateParser().Parse(stateDict["{OriginalFormat}"]);
 

@@ -46,14 +46,14 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
         set => SetValue(ref _isLoading, value);
     }
 
-    private IEnumerable<Ticket> _tickets = [];
-    public IEnumerable<Ticket> Tickets
+    private IEnumerable<Ticket> _allTickets = [];
+    private IEnumerable<Ticket> AllTickets
     {
-        get => _tickets;
-        set => SetValue(ref _tickets, value);
+        get => _allTickets;
+        set => SetValue(ref _allTickets, value);
     }
 
-    public IEnumerable<Ticket> FilteredTickets => Tickets.Where(x => string.IsNullOrWhiteSpace(Search) || x.Title.Contains(Search, StringComparison.OrdinalIgnoreCase));
+    public IEnumerable<Ticket> Tickets => AllTickets.Where(x => string.IsNullOrWhiteSpace(Search) || x.Title.Contains(Search, StringComparison.OrdinalIgnoreCase));
 
     public async Task InitAsync(string? search)
     {
@@ -82,7 +82,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
                 TicketStatus.Continuous
             ];
 
-            Tickets = (await _dataService.GetTicketsPageAsync(0, 0, $"""status in ({string.Join(',', statusFilter.Select(x => (int)x))}) OR TicketStatusLogs.Any(StartedAt >= "{_timeProvider.GetLocalNow():yyyy-MM-dd}")""")).Items;
+            AllTickets = (await _dataService.GetTicketsPageAsync(0, 0, $"""status in ({string.Join(',', statusFilter.Select(x => (int)x))}) OR TicketStatusLogs.Any(StartedAt >= "{_timeProvider.GetUtcNow().AddDays(-5):yyyy-MM-dd}")""")).Items;
         }
         catch
         {
@@ -96,9 +96,9 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
 
     public async Task<bool> SaveTicketAsync(Ticket ticket)
     {
-        Tickets = Tickets.Any(x => x.Id == ticket.Id)
-            ? Tickets.Select(x => x.Id == ticket.Id ? ticket : x).ToArray()
-            : Tickets.Append(ticket).ToArray();
+        AllTickets = AllTickets.Any(x => x.Id == ticket.Id)
+            ? AllTickets.Select(x => x.Id == ticket.Id ? ticket : x).ToArray()
+            : AllTickets.Append(ticket).ToArray();
 
         Ticket savedTicket;
 
@@ -130,7 +130,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
             return false;
         }
 
-        Tickets = Tickets.Where(x => x.Id != ticket.Id).ToArray();
+        AllTickets = AllTickets.Where(x => x.Id != ticket.Id).ToArray();
 
         try
         {

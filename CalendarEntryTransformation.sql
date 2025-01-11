@@ -36,12 +36,10 @@ INNER JOIN	CalendarEntryType
 ORDER BY	Date
 			, CalendarEntryType.Id
 
---INSERT [WorkTime] ([WorkTimeTypeId], [Date], [Expected], [ExpectedSecond], [Actual], [ActualSeconds], [Note])
+--INSERT [WorkTime] ([WorkTimeTypeId], [Date], [ExpectedSeconds], [ActualSeconds], [Note])
 SELECT		CASE #WorkEntry.Name WHEN 'Office' THEN 1 WHEN 'Mobile' THEN 2 WHEN 'TimeCompensation' THEN (CASE LEFT(#ReqEntry.Note, CHARINDEX(':', #ReqEntry.Note) - 1) WHEN 'Büro' THEN 1 WHEN 'Mobil' THEN 2 END) END
 			, #WorkEntry.Date
-			-- TODO: Expected TIME
 			, ISNULL(#ReqEntry.DurationSeconds, 0)
-			-- TODO: Actual TIME
 			, CASE #WorkEntry.Name WHEN 'TimeCompensation' THEN 0 ELSE #WorkEntry.DurationSeconds END
 			, CASE #WorkEntry.Name WHEN 'TimeCompensation' THEN 'Zeitausgleich' ELSE #WorkEntry.Note END
 FROM		#WorkEntry
@@ -49,10 +47,9 @@ LEFT JOIN	#ReqEntry
 	ON		#ReqEntry.Date = #WorkEntry.Date
 ORDER BY	#WorkEntry.Date
 
---INSERT [Absence] ([AbsenceTypeId], [Date], [Duration], [DurationSeconds], [Note])
+--INSERT [Absence] ([AbsenceTypeId], [Date], [DurationSeconds], [Note])
 SELECT		CASE Name WHEN 'Holiday' THEN 1 WHEN 'Vacation' THEN 2 WHEN 'Ill' THEN 3 END
 			, Date
-			-- TODO: Duration TIME
 			, DurationSeconds
 			, Note
 FROM		#LeavEntry

@@ -92,7 +92,7 @@ public record Ticket : Shd.Ticket
                 {
                     TicketId = ticket.Id,
                     TicketStatusId = (int)Status,
-                    StartedAt = StatusStartedAt,
+                    StartedAt = DateTime.UtcNow,
                     Note = StatusNote,
                 };
 

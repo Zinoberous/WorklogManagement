@@ -60,7 +60,9 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
     {
-        return await ExecuteWithDataStateAsync<Dictionary<CalendarEntryType, int>>(HttpMethod.Get, $"statistics/calendar{(year.HasValue ? $"?year={year.Value}" : string.Empty)}");
+        var queryParams = year.HasValue ? new Dictionary<string, string> { ["year"] = year.Value.ToString() } : null;
+
+        return await ExecuteWithDataStateAsync<Dictionary<CalendarEntryType, int>>(HttpMethod.Get, "statistics/calendar", queryParams);
     }
 
     public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
@@ -70,14 +72,24 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
     {
-        return await ExecuteWithDataStateAsync<List<Holiday>>(HttpMethod.Get, $"holidays/{federalState}?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "from", from.ToString("yyyy-MM-dd") },
+            { "to", to.ToString("yyyy-MM-dd") }
+        };
+
+        return await ExecuteWithDataStateAsync<List<Holiday>>(HttpMethod.Get, $"holidays/{federalState}", queryParams);
     }
 
     public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
     {
-        var filter = Uri.EscapeDataString($@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", "0" },
+            { "filter", $@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""" }
+        };
 
-        var page = await ExecuteWithDataStateAsync<Page<WorkTime>>(HttpMethod.Get, $"worktimes?pageSize=0&filter={filter}");
+        var page = await ExecuteWithDataStateAsync<Page<WorkTime>>(HttpMethod.Get, "worktimes", queryParams);
 
         return page.Items.ToList();
     }
@@ -89,7 +101,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     public async Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime)
     {
-        return await ExecuteWithDataStateAsync<WorkTime>(HttpMethod.Post, "worktimes", workTime);
+        return await ExecuteWithDataStateAsync<WorkTime>(HttpMethod.Post, "worktimes", content: workTime);
     }
 
     public async Task DeleteWorkTimeAsync(int id)
@@ -99,9 +111,13 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
     {
-        var filter = Uri.EscapeDataString($@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", "0" },
+            { "filter", $@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""" }
+        };
 
-        var page = await ExecuteWithDataStateAsync<Page<Absence>>(HttpMethod.Get, $"absences?pageSize=0&filter={filter}");
+        var page = await ExecuteWithDataStateAsync<Page<Absence>>(HttpMethod.Get, "absences", queryParams);
 
         return page.Items.ToList();
     }
@@ -113,7 +129,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     public async Task<Absence> SaveAbsenceAsync(Absence absence)
     {
-        return await ExecuteWithDataStateAsync<Absence>(HttpMethod.Post, "absences", absence);
+        return await ExecuteWithDataStateAsync<Absence>(HttpMethod.Post, "absences", content: absence);
     }
 
     public async Task DeleteAbsenceAsync(int id)
@@ -128,19 +144,37 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     public async Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex)
     {
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", pageSize.ToString() },
+            { "pageIndex", pageIndex.ToString() }
+        };
+
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
     }
 
     public async Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex, string filter)
     {
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={Uri.EscapeDataString(filter)}");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", pageSize.ToString() },
+            { "pageIndex", pageIndex.ToString() },
+            { "filter", filter }
+        };
+
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
     }
 
     public async Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter)
     {
-        var filter = Uri.EscapeDataString($"status in ({string.Join(',', statusFilter.Select(x => (int)x))})");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", pageSize.ToString() },
+            { "pageIndex", pageIndex.ToString() },
+            { "filter", $"status in ({string.Join(',', statusFilter.Select(x => (int)x))})" }
+        };
 
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={filter}");
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
     }
 
     public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search, TicketSearchType searchType = TicketSearchType.TitleAndDescription)
@@ -152,12 +186,19 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             _ => $@"Title.Contains(""{search}"") || Description.Contains(""{search}"")"
         };
 
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, $"tickets?pageSize={pageSize}&pageIndex={pageIndex}&filter={Uri.EscapeDataString(filter)}");
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", pageSize.ToString() },
+            { "pageIndex", pageIndex.ToString() },
+            { "filter", filter }
+        };
+
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
     }
 
     public async Task<Ticket> SaveTicketAsync(Ticket ticket)
     {
-        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Post, "tickets", ticket);
+        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Post, "tickets", content: ticket);
     }
 
     public async Task DeleteTicketAsync(int id)
@@ -165,31 +206,33 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         await ExecuteWithDataStateAsync(HttpMethod.Delete, $"tickets/{id}");
     }
 
-    private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(HttpMethod method, string requestUri, object? content = null)
-        => await ExecuteWithDataStateAsync<HttpResponseMessage>(method, requestUri, content);
+    private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null)
+        => await ExecuteWithDataStateAsync<HttpResponseMessage>(method, endpoint, queryParams, content);
 
-    private async Task<T> ExecuteWithDataStateAsync<T>(HttpMethod method, string requestUri, object? content = null)
+    private async Task<T> ExecuteWithDataStateAsync<T>(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null)
     {
         _dataStateService.StartOperation();
 
         using var client = CreateClient();
 
-        var api = $"{client.BaseAddress}{requestUri}";
+        var api = $"{client.BaseAddress}{endpoint}{GetQueryString(queryParams)}";
 
         if (content is null)
         {
-            _logger.LogInformation("{Method}: {API}", method, api);
+            _logger.LogInformation("{Method} {API}", method.Method, api);
         }
         else
         {
-            _logger.LogInformation("{Method}: {API} {@Content}", method, api, content);
+            _logger.LogInformation("{Method} {API} {@Content}", method.Method, api, content);
         }
 
         try
         {
             var jsonContent = JsonContent.Create(content);
 
-            var res = await client.SendAsync(new(method, requestUri) { Content = jsonContent });
+            var res = await client.SendAsync(new(method, $"{endpoint}{GetQueryString(queryParams, true)}") { Content = jsonContent });
+
+            _logger.LogInformation("Antwort von {Methode} {API} {StatusCode}", method.Method, api, res.StatusCode);
 
             res.EnsureSuccessStatusCode();
 
@@ -198,17 +241,31 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
                 return (T)(object)res;
             }
 
-            return (await res.Content.ReadFromJsonAsync<T>())!;
+            var output = (await res.Content.ReadFromJsonAsync<T>())!;
+
+            _logger.LogInformation("Ergebnis von {Methode} {API} {@Content}", method.Method, api, output);
+
+            return output;
         }
         catch (Exception ex)
         {
             _dataStateService.SetError(ex);
-            _logger.LogError(ex, "Fehler beim {Method}-Aufruf von {API}", method, api);
+            _logger.LogError(ex, "Fehler bei {Method} {API}", method.Method, api);
             throw;
         }
         finally
         {
             _dataStateService.EndOperation();
         }
+    }
+
+    private static string GetQueryString(Dictionary<string, string>? parameters, bool escape = false)
+    {
+        if (parameters is null || parameters.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        return "?" + string.Join('&', parameters.Select(x => $"{x.Key}={(escape ? Uri.EscapeDataString(x.Value) : x.Value)}"));
     }
 }
