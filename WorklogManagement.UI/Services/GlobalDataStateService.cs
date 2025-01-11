@@ -8,13 +8,13 @@ public interface IGlobalDataStateService : INotifyPropertyChanged
 {
     bool IsLoading { get; }
 
-    IEnumerable<Exception> Errors { get; }
+    IEnumerable<string> Errors { get; }
 
     void StartOperation();
 
     void EndOperation();
 
-    void SetError(Exception ex);
+    void SetError(string message);
 
     void ResetErrors();
 }
@@ -24,8 +24,8 @@ public class GlobalDataStateService : Observable, IGlobalDataStateService
     private int _operationCounter = 0;
     public bool IsLoading => _operationCounter > 0;
 
-    private ConcurrentBag<Exception> _errors = [];
-    public IEnumerable<Exception> Errors => _errors;
+    private readonly ConcurrentBag<string> _errors = [];
+    public IEnumerable<string> Errors => _errors;
 
     public void StartOperation()
     {
@@ -43,7 +43,7 @@ public class GlobalDataStateService : Observable, IGlobalDataStateService
         OnPropertyChanged(nameof(IsLoading));
     }
 
-    public void SetError(Exception ex) => _errors.Add(ex);
+    public void SetError(string message) => _errors.Add(message);
 
     public void ResetErrors() => _errors.Clear();
 }

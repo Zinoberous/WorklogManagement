@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Absences;
 using WorklogManagement.API.Common;
 using WorklogManagement.API.Holidays;
+using WorklogManagement.API.Middlewares;
 using WorklogManagement.API.Statistics;
 using WorklogManagement.API.Tickets;
 using WorklogManagement.API.Worklogs;
@@ -78,6 +79,8 @@ app.UseCors();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapGroup("/health").WithTags("Health").MapGet("", () => Results.Ok());
 
