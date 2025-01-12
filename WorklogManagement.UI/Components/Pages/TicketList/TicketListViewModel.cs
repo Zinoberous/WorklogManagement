@@ -140,11 +140,11 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
         {
             if (!string.IsNullOrWhiteSpace(Search))
             {
-                Page = await _dataService.GetTicketsPageBySearchAsync(PageSize, PageIndex, Search);
+                Page = await _dataService.GetTicketsAsync(PageSize, PageIndex, $@"Title.Contains(""{Search}"") || Description.Contains(""{Search}"")");
             }
             else
             {
-                Page = await _dataService.GetTicketsPageByStatusFilterAsync(PageSize, PageIndex, StatusFilter.Select(x => (TicketStatus)x));
+                Page = await _dataService.GetTicketsAsync(PageSize, PageIndex, $"status in ({string.Join(',', StatusFilter.Select(x => (int)x))})");
             }
         }
         catch

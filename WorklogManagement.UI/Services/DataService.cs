@@ -1,16 +1,21 @@
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Enums;
 
 namespace WorklogManagement.UI.Services;
 
 public interface IDataService
 {
+    #region statistics
+
     Task<OvertimeInfo> GetOvertimeAsync();
 
     Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null);
 
     Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
+
+    #endregion
+
+    #region calendar
 
     Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState);
 
@@ -30,19 +35,35 @@ public interface IDataService
 
     Task DeleteAbsenceAsync(int id);
 
+    #endregion
+
+    #region ticket
+
     Task<Ticket> GetTicketAsync(int id);
 
-    Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex);
-
-    Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex, string filter);
-
-    Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter);
-
-    Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search, TicketSearchType searchType = TicketSearchType.TitleAndDescription);
+    Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null);
 
     Task<Ticket> SaveTicketAsync(Ticket ticket);
 
     Task DeleteTicketAsync(int id);
+
+    Task<List<TicketStatusLog>> GetTicketStatusLogsAsync(int ticketId);
+
+    Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog);
+
+    #endregion
+
+    #region worklog
+
+    Task<Worklog> GetWorklogAsync(int id);
+
+    Task<Page<Worklog>> GetWorklogsAsync(int pageSize, int pageIndex, string? filter = null);
+
+    Task<Worklog> SaveWorklogAsync(Worklog worklog);
+
+    Task DeleteWorklogAsync(int id);
+
+    #endregion
 }
 
 public class DataService(ILoggerService<DataService> logger, IHttpClientFactory httpClientFactory, IGlobalDataStateService dataStateService) : IDataService
@@ -52,6 +73,8 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
     private readonly IGlobalDataStateService _dataStateService = dataStateService;
 
     private HttpClient CreateClient() => _httpClientFactory.CreateClient(nameof(WorklogManagement));
+
+    #region statistics
 
     public async Task<OvertimeInfo> GetOvertimeAsync()
     {
@@ -69,6 +92,10 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
     {
         return await ExecuteWithDataStateAsync<Dictionary<TicketStatus, int>>(HttpMethod.Get, "statistics/tickets");
     }
+
+    #endregion
+
+    #region calendar
 
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
     {
@@ -137,12 +164,16 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         await ExecuteWithDataStateAsync(HttpMethod.Delete, $"absences/{id}");
     }
 
+    #endregion
+
+    #region ticket
+
     public async Task<Ticket> GetTicketAsync(int id)
     {
         return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Get, $"tickets/{id}");
     }
 
-    public async Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex)
+    public async Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -150,48 +181,10 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             { "pageIndex", pageIndex.ToString() }
         };
 
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
-    }
-
-    public async Task<Page<Ticket>> GetTicketsPageAsync(int pageSize, int pageIndex, string filter)
-    {
-        Dictionary<string, string> queryParams = new()
+        if (!string.IsNullOrWhiteSpace(filter))
         {
-            { "pageSize", pageSize.ToString() },
-            { "pageIndex", pageIndex.ToString() },
-            { "filter", filter }
-        };
-
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
-    }
-
-    public async Task<Page<Ticket>> GetTicketsPageByStatusFilterAsync(int pageSize, int pageIndex, IEnumerable<TicketStatus> statusFilter)
-    {
-        Dictionary<string, string> queryParams = new()
-        {
-            { "pageSize", pageSize.ToString() },
-            { "pageIndex", pageIndex.ToString() },
-            { "filter", $"status in ({string.Join(',', statusFilter.Select(x => (int)x))})" }
-        };
-
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
-    }
-
-    public async Task<Page<Ticket>> GetTicketsPageBySearchAsync(int pageSize, int pageIndex, string search, TicketSearchType searchType = TicketSearchType.TitleAndDescription)
-    {
-        var filter = searchType switch
-        {
-            TicketSearchType.Title => $@"Title.Contains(""{search}"")",
-            TicketSearchType.Description => $@"Description.Contains(""{search}"")",
-            _ => $@"Title.Contains(""{search}"") || Description.Contains(""{search}"")"
-        };
-
-        Dictionary<string, string> queryParams = new()
-        {
-            { "pageSize", pageSize.ToString() },
-            { "pageIndex", pageIndex.ToString() },
-            { "filter", filter }
-        };
+            queryParams.Add("filter", filter);
+        }
 
         return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
     }
@@ -205,6 +198,60 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
     {
         await ExecuteWithDataStateAsync(HttpMethod.Delete, $"tickets/{id}");
     }
+
+    public async Task<List<TicketStatusLog>> GetTicketStatusLogsAsync(int ticketId)
+    {
+        Dictionary<string, string> queryParams = new()
+        {
+            { "ticketId", ticketId.ToString() }
+        };
+
+        var page = await ExecuteWithDataStateAsync<Page<TicketStatusLog>>(HttpMethod.Get, "ticketStatusLogs", queryParams);
+
+        return page.Items.ToList();
+    }
+
+    public async Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog)
+    {
+        return await ExecuteWithDataStateAsync<TicketStatusLog>(HttpMethod.Post, "ticketStatusLogs", content: ticketStatusLog);
+    }
+
+    #endregion
+
+    #region worklog
+
+    public async Task<Worklog> GetWorklogAsync(int id)
+    {
+        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Get, $"worklogs/{id}");
+    }
+
+    public async Task<Page<Worklog>> GetWorklogsAsync(int pageSize, int pageIndex, string? filter = null)
+    {
+        Dictionary<string, string> queryParams = new()
+        {
+            { "pageSize", pageSize.ToString() },
+            { "pageIndex", pageIndex.ToString() }
+        };
+
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            queryParams.Add("filter", filter);
+        }
+
+        return await ExecuteWithDataStateAsync<Page<Worklog>>(HttpMethod.Get, "worklogs", queryParams);
+    }
+
+    public async Task<Worklog> SaveWorklogAsync(Worklog ticket)
+    {
+        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Post, "worklogs", content: ticket);
+    }
+
+    public async Task DeleteWorklogAsync(int id)
+    {
+        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"worklogs/{id}");
+    }
+
+    #endregion
 
     private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null)
         => await ExecuteWithDataStateAsync<HttpResponseMessage>(method, endpoint, queryParams, content);
@@ -240,10 +287,10 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             }
             catch
             {
-                var resContentString = (await res.Content.ReadAsStringAsync()).Trim('"'); // exception
+                var error = (await res.Content.ReadAsStringAsync()).Trim('"');
 
-                _logger.LogError("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, statusCode, resContentString);
-                _dataStateService.SetError(resContentString);
+                _logger.LogError("Antwort {Methode} {API} {StatusCode} {Error}", method.Method, api, statusCode, error);
+                _dataStateService.SetError(error);
 
                 throw;
             }

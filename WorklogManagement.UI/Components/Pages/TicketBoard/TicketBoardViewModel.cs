@@ -82,7 +82,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
                 TicketStatus.Continuous
             ];
 
-            AllTickets = (await _dataService.GetTicketsPageAsync(0, 0, $"""status in ({string.Join(',', statusFilter.Select(x => (int)x))}) OR TicketStatusLogs.Any(StartedAt >= "{_timeProvider.GetUtcNow().AddDays(-5):yyyy-MM-dd}")""")).Items;
+            AllTickets = (await _dataService.GetTicketsAsync(0, 0, $"""status in ({string.Join(',', statusFilter.Select(x => (int)x))}) OR TicketStatusLogs.Any(StartedAt >= "{_timeProvider.GetUtcNow().AddDays(-5):yyyy-MM-dd}")""")).Items;
         }
         catch
         {
