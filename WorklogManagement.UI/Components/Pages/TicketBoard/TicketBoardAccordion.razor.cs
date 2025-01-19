@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.UI.Components.Pages.TicketBoard;
 
@@ -9,6 +10,12 @@ public partial class TicketBoardAccordion
 
     [Parameter]
     public IEnumerable<TicketGroup> TicketGroups { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<Ticket> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<Ticket> OnDelete { get; set; }
 
     private bool IsOpen { get; set; }
 

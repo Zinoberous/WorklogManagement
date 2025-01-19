@@ -8,17 +8,17 @@ public record Ticket : IDataModel
 
     // TODO: uri ref ticket
 
-    public RefTicket? Ref { get; init; }
+    public RefTicket? Ref { get; set; }
 
-    public required string Title { get; init; }
+    public required string Title { get; set; }
 
-    public string? Description { get; init; }
+    public string? Description { get; set; }
 
-    public Enums.TicketStatus Status { get; init; } = Enums.TicketStatus.Todo;
+    public Enums.TicketStatus Status { get; set; } = Enums.TicketStatus.Todo;
 
     public DateTime StatusStartedAt { get; init; } = DateTime.UtcNow;
 
-    public string? StatusNote { get; init; }
+    public string? StatusNote { get; set; }
 
     public DateTime? CreatedAt { get; init; }
 

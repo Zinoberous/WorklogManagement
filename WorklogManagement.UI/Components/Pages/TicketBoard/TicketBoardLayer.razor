@@ -1,10 +1,10 @@
 <FlexCol>
     @foreach (var sub in SubLayer)
     {
-        <TicketBoardAccordion Title="@sub.Key" TicketGroups="@sub.Value" />
+        <TicketBoardAccordion Title="@sub.Key" TicketGroups="@sub.Value" OnEdit="@OnEdit" OnDelete="@OnDelete" />
     }
     @if (LayerTickets.Any())
     {
-        <TicketBoardDropZone Tickets="@LayerTickets" />
+        <TicketBoardDropZone Tickets="@LayerTickets" OnEdit="@OnEdit" OnDelete="@OnDelete" />
     }
 </FlexCol>

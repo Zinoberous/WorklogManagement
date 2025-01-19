@@ -1,0 +1,24 @@
+<div>
+    <FlexRow Style="align-items:start;">
+        <FlexFill>
+            <FlexCol>
+                <span>@Ticket.Title</span>
+                <a @onclick="NavigateToTicket">#@Ticket.Id</a>
+            </FlexCol>
+        </FlexFill>
+        <FlexCol Style="gap:0;">
+            @if (string.IsNullOrEmpty(@Ticket.StatusNote))
+            {
+                <RadzenIcon Icon="chat_bubble" @onclick="OpenStatusNoteDialog" />
+            }
+            else
+            {
+                <RadzenIcon Icon="chat" @onclick="OpenStatusNoteDialog" />
+            }
+            <RadzenIcon Icon="delete" @onclick="@(() => OnDelete.InvokeAsync(Ticket))" />
+        </FlexCol>
+    </FlexRow>
+</div>
+<Dialog @bind-IsOpen="IsOpenStatusNoteDialog" Title="Anmerkung zum Status:">
+    <Editor Placeholder="Anmerkung:" Value="@Ticket.StatusNote" ValueChanged="SaveStatusNote" />
+</Dialog>

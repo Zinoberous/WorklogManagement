@@ -13,7 +13,11 @@
 
     <Body>
         <AsyncContent IsLoading="@ViewModel.IsLoading">
-            <TicketBoardLayer TicketGroups="@TicketGroups" />
+            <TicketBoardLayer
+                TicketGroups="@TicketGroups"
+                OnEdit="@ViewModel.SaveTicketAsync"
+                OnDelete="@ViewModel.DeleteTicketAsync"
+            />
         </AsyncContent>
         <TicketNewDialog
             @bind-IsOpen="ViewModel.IsOpenNewDialog"

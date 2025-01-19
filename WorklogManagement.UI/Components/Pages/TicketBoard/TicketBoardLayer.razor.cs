@@ -8,6 +8,12 @@ public partial class TicketBoardLayer
     [Parameter]
     public IEnumerable<TicketGroup> TicketGroups { get; set; } = [];
 
+    [Parameter]
+    public EventCallback<Ticket> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<Ticket> OnDelete { get; set; }
+
     // Parent kann nur RefTicket sein, wenn es durch ein Ticket (Child) angegeben wurde und das zugehörige Ticket nicht in der Liste der Tickets enthalten ist
     private IEnumerable<Ticket> LayerTickets => TicketGroups
         .Where(x => !x.Childs.Any())

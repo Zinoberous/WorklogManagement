@@ -1,7 +1,14 @@
 @using WorklogManagement.Shared.Enums
+@using WorklogManagement.Shared.Models
 
 <div>
-    <RadzenDropZoneContainer Data="@Tickets" ItemSelector="@ItemSelector" ItemRender="@OnItemRender">
+    <RadzenDropZoneContainer
+        Data="@Tickets"
+        ItemSelector="@ItemSelector"
+        ItemRender="@OnItemRender"
+        CanDrop="@CanDrop"
+        Drop="@((RadzenDropZoneItemEventArgs<Ticket> args) => OnDrop(args))"
+    >
         <ChildContent>
             <FlexRow Fill Style="align-items: unset;">
                 <RadzenDropZone Value="@TicketStatus.Canceled" class="@($"status-{TicketStatus.Canceled.ToString().ToLowerInvariant()} rz-display-flex rz-flex-column rz-p-4")">
@@ -28,7 +35,11 @@
             </FlexRow>
         </ChildContent>
         <Template>
-            <strong>#@context.Id - @context.Title</strong>
+            <TicketBoardCard
+                Ticket="@context"
+                OnEdit="@OnEdit"
+                OnDelete="@OnDelete"
+            />
         </Template>
     </RadzenDropZoneContainer>
 </div>
