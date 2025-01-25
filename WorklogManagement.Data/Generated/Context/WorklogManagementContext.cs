@@ -49,6 +49,7 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_AbsenceType_Id");
 
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
@@ -85,6 +86,7 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_TicketStatus_Id");
 
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
@@ -123,6 +125,7 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_WorkTimeType_Id");
 
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();

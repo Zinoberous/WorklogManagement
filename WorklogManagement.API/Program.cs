@@ -9,7 +9,7 @@ using WorklogManagement.API.Statistics;
 using WorklogManagement.API.Tickets;
 using WorklogManagement.API.Worklogs;
 using WorklogManagement.API.WorkTimes;
-using WorklogManagement.Data.Context; 
+using WorklogManagement.Data.Context;
 
 #if DEBUG
 Console.Title = "WorklogManagement.API";

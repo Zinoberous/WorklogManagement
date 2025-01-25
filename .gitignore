@@ -350,4 +350,5 @@ MigrationBackup/
 .ionide/
 
 local.*
+/Docker/.env
 /WorklogManagement.API/Attachments/

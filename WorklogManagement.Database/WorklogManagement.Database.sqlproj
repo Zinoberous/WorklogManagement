@@ -58,17 +58,21 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Tables\Lookups" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\WorkTimeType.sql" />
     <Build Include="dbo\Tables\WorkTime.sql" />
     <Build Include="dbo\Tables\WorklogAttachment.sql" />
     <Build Include="dbo\Tables\Worklog.sql" />
     <Build Include="dbo\Tables\TicketStatusLog.sql" />
-    <Build Include="dbo\Tables\TicketStatus.sql" />
     <Build Include="dbo\Tables\TicketAttachment.sql" />
     <Build Include="dbo\Tables\Ticket.sql" />
-    <Build Include="dbo\Tables\AbsenceType.sql" />
     <Build Include="dbo\Tables\Absence.sql" />
+    <Build Include="dbo\Tables\Lookups\AbsenceType.sql" />
+    <Build Include="dbo\Tables\Lookups\TicketStatus.sql" />
+    <Build Include="dbo\Tables\Lookups\WorkTimeType.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="EnsureLookupData.PostDeployment.sql" />
   </ItemGroup>
 </Project>
