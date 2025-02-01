@@ -2,16 +2,16 @@ using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Shared.Enums;
 using DB = WorklogManagement.Data.Models;
-using Shd = WorklogManagement.Shared.Models;
+using DTO = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.WorkTimes;
 
-public record WorkTime : Shd.WorkTime
+public record WorkTime : DTO.WorkTime
 {
     private int _id;
     public new int Id { get => _id; init => _id = value; }
 
-    // Shd > DB
+    // DTO > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
         { "Id", "Id" },

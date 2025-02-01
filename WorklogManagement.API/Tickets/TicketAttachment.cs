@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Common;
 using WorklogManagement.Data.Context;
 using DB = WorklogManagement.Data.Models;
-using Shd = WorklogManagement.Shared.Models;
+using DTO = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Tickets;
 
-public record TicketAttachment : Shd.TicketAttachment
+public record TicketAttachment : DTO.TicketAttachment
 {
     private int _id;
     public new int Id { get => _id; init => _id = value; }
@@ -23,7 +23,7 @@ public record TicketAttachment : Shd.TicketAttachment
         );
     }
 
-    // Shd > DB
+    // DTO > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
         { "Id", "Id" },

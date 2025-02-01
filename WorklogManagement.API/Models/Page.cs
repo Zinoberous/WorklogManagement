@@ -1,11 +1,11 @@
 using System.Linq.Dynamic.Core;
 using System.Text;
-using Shd = WorklogManagement.Shared.Models;
+using DTO = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Models;
 
-public record Page<TData> : Shd.Page<TData>
-    where TData : Shd.IDataModel
+public record Page<TData> : DTO.Page<TData>
+    where TData : DTO.IDataModel
 {
 
 }

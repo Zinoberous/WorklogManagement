@@ -1,8 +1,8 @@
-using Shd = WorklogManagement.Shared.Models;
+using DTO = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Holidays;
 
-public record Holiday : Shd.Holiday
+public record Holiday : DTO.Holiday
 {
 
 }

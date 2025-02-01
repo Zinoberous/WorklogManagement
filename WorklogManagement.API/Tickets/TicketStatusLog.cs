@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Shared.Enums;
 using DB = WorklogManagement.Data.Models;
-using Shd = WorklogManagement.Shared.Models;
+using DTO = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Tickets;
 
-public record TicketStatusLog : Shd.TicketStatusLog
+public record TicketStatusLog : DTO.TicketStatusLog
 {
-    // Shd > DB
+    // DTO > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
         { "Id", "Id" },

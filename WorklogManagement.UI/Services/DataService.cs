@@ -7,61 +7,61 @@ public interface IDataService
 {
     #region statistics
 
-    Task<OvertimeInfo> GetOvertimeAsync();
+    Task<OvertimeInfo> GetOvertimeAsync(CancellationToken cancellationToken = default);
 
-    Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null);
+    Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null, CancellationToken cancellationToken = default);
 
-    Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync();
+    Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync(CancellationToken cancellationToken = default);
 
     #endregion
 
     #region calendar
 
-    Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState);
+    Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState, CancellationToken cancellationToken = default);
 
-    Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to);
+    Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to, CancellationToken cancellationToken = default);
 
-    Task<List<DateOnly>> GetDatesWithWorkTimesAsync();
+    Task<List<DateOnly>> GetDatesWithWorkTimesAsync(CancellationToken cancellationToken = default);
 
-    Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime);
+    Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime, CancellationToken cancellationToken = default);
 
-    Task DeleteWorkTimeAsync(int id);
+    Task DeleteWorkTimeAsync(int id, CancellationToken cancellationToken = default);
 
-    Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to);
+    Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to, CancellationToken cancellationToken = default);
 
-    Task<List<DateOnly>> GetDatesWithAbsencesAsync();
+    Task<List<DateOnly>> GetDatesWithAbsencesAsync(CancellationToken cancellationToken = default);
 
-    Task<Absence> SaveAbsenceAsync(Absence absence);
+    Task<Absence> SaveAbsenceAsync(Absence absence, CancellationToken cancellationToken = default);
 
-    Task DeleteAbsenceAsync(int id);
+    Task DeleteAbsenceAsync(int id, CancellationToken cancellationToken = default);
 
     #endregion
 
     #region ticket
 
-    Task<Ticket> GetTicketAsync(int id);
+    Task<Ticket> GetTicketAsync(int id, CancellationToken cancellationToken = default);
 
-    Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null);
+    Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null, CancellationToken cancellationToken = default);
 
-    Task<Ticket> SaveTicketAsync(Ticket ticket);
+    Task<Ticket> SaveTicketAsync(Ticket ticket, CancellationToken cancellationToken = default);
 
-    Task DeleteTicketAsync(int id);
+    Task DeleteTicketAsync(int id, CancellationToken cancellationToken = default);
 
-    Task<List<TicketStatusLog>> GetTicketStatusLogsAsync(int ticketId);
+    Task<List<TicketStatusLog>> GetTicketStatusLogsAsync(int ticketId, CancellationToken cancellationToken = default);
 
-    Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog);
+    Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog, CancellationToken cancellationToken = default);
 
     #endregion
 
     #region worklog
 
-    Task<Worklog> GetWorklogAsync(int id);
+    Task<Worklog> GetWorklogAsync(int id, CancellationToken cancellationToken = default);
 
-    Task<Page<Worklog>> GetWorklogsAsync(int pageSize, int pageIndex, string? filter = null);
+    Task<Page<Worklog>> GetWorklogsAsync(int pageSize, int pageIndex, string? filter = null, CancellationToken cancellationToken = default);
 
-    Task<Worklog> SaveWorklogAsync(Worklog worklog);
+    Task<Worklog> SaveWorklogAsync(Worklog worklog, CancellationToken cancellationToken = default);
 
-    Task DeleteWorklogAsync(int id);
+    Task DeleteWorklogAsync(int id, CancellationToken cancellationToken = default);
 
     #endregion
 }
@@ -76,28 +76,28 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     #region statistics
 
-    public async Task<OvertimeInfo> GetOvertimeAsync()
+    public async Task<OvertimeInfo> GetOvertimeAsync(CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<OvertimeInfo>(HttpMethod.Get, "statistics/overtime");
+        return await ExecuteWithDataStateAsync<OvertimeInfo>(HttpMethod.Get, "statistics/overtime", cancellationToken: cancellationToken);
     }
 
-    public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null)
+    public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null, CancellationToken cancellationToken = default)
     {
         var queryParams = year.HasValue ? new Dictionary<string, string> { ["year"] = year.Value.ToString() } : null;
 
-        return await ExecuteWithDataStateAsync<Dictionary<CalendarEntryType, int>>(HttpMethod.Get, "statistics/calendar", queryParams);
+        return await ExecuteWithDataStateAsync<Dictionary<CalendarEntryType, int>>(HttpMethod.Get, "statistics/calendar", queryParams, cancellationToken: cancellationToken);
     }
 
-    public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync()
+    public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync(CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Dictionary<TicketStatus, int>>(HttpMethod.Get, "statistics/tickets");
+        return await ExecuteWithDataStateAsync<Dictionary<TicketStatus, int>>(HttpMethod.Get, "statistics/tickets", cancellationToken: cancellationToken);
     }
 
     #endregion
 
     #region calendar
 
-    public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState)
+    public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -105,10 +105,10 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             { "to", to.ToString("yyyy-MM-dd") }
         };
 
-        return await ExecuteWithDataStateAsync<List<Holiday>>(HttpMethod.Get, $"holidays/{federalState}", queryParams);
+        return await ExecuteWithDataStateAsync<List<Holiday>>(HttpMethod.Get, $"holidays/{federalState}", queryParams, cancellationToken: cancellationToken);
     }
 
-    public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to)
+    public async Task<List<WorkTime>> GetWorkTimesAsync(DateOnly from, DateOnly to, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -116,27 +116,27 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             { "filter", $@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""" }
         };
 
-        var page = await ExecuteWithDataStateAsync<Page<WorkTime>>(HttpMethod.Get, "worktimes", queryParams);
+        var page = await ExecuteWithDataStateAsync<Page<WorkTime>>(HttpMethod.Get, "worktimes", queryParams, cancellationToken: cancellationToken);
 
         return page.Items.ToList();
     }
 
-    public async Task<List<DateOnly>> GetDatesWithWorkTimesAsync()
+    public async Task<List<DateOnly>> GetDatesWithWorkTimesAsync(CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<List<DateOnly>>(HttpMethod.Get, "worktimes/dates");
+        return await ExecuteWithDataStateAsync<List<DateOnly>>(HttpMethod.Get, "worktimes/dates", cancellationToken: cancellationToken);
     }
 
-    public async Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime)
+    public async Task<WorkTime> SaveWorkTimeAsync(WorkTime workTime, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<WorkTime>(HttpMethod.Post, "worktimes", content: workTime);
+        return await ExecuteWithDataStateAsync<WorkTime>(HttpMethod.Post, "worktimes", content: workTime, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteWorkTimeAsync(int id)
+    public async Task DeleteWorkTimeAsync(int id, CancellationToken cancellationToken = default)
     {
-        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"worktimes/{id}");
+        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"worktimes/{id}", cancellationToken: cancellationToken);
     }
 
-    public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to)
+    public async Task<List<Absence>> GetAbsencesAsync(DateOnly from, DateOnly to, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -144,36 +144,36 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             { "filter", $@"Date >= ""{from:yyyy-MM-dd}"" && Date <= ""{to:yyyy-MM-dd}""" }
         };
 
-        var page = await ExecuteWithDataStateAsync<Page<Absence>>(HttpMethod.Get, "absences", queryParams);
+        var page = await ExecuteWithDataStateAsync<Page<Absence>>(HttpMethod.Get, "absences", queryParams, cancellationToken: cancellationToken);
 
         return page.Items.ToList();
     }
 
-    public async Task<List<DateOnly>> GetDatesWithAbsencesAsync()
+    public async Task<List<DateOnly>> GetDatesWithAbsencesAsync(CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<List<DateOnly>>(HttpMethod.Get, "absences/dates");
+        return await ExecuteWithDataStateAsync<List<DateOnly>>(HttpMethod.Get, "absences/dates", cancellationToken: cancellationToken);
     }
 
-    public async Task<Absence> SaveAbsenceAsync(Absence absence)
+    public async Task<Absence> SaveAbsenceAsync(Absence absence, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Absence>(HttpMethod.Post, "absences", content: absence);
+        return await ExecuteWithDataStateAsync<Absence>(HttpMethod.Post, "absences", content: absence, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteAbsenceAsync(int id)
+    public async Task DeleteAbsenceAsync(int id, CancellationToken cancellationToken = default)
     {
-        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"absences/{id}");
+        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"absences/{id}", cancellationToken: cancellationToken);
     }
 
     #endregion
 
     #region ticket
 
-    public async Task<Ticket> GetTicketAsync(int id)
+    public async Task<Ticket> GetTicketAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Get, $"tickets/{id}");
+        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Get, $"tickets/{id}", cancellationToken: cancellationToken);
     }
 
-    public async Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null)
+    public async Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -186,46 +186,46 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             queryParams.Add("filter", filter);
         }
 
-        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams);
+        return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams, cancellationToken: cancellationToken);
     }
 
-    public async Task<Ticket> SaveTicketAsync(Ticket ticket)
+    public async Task<Ticket> SaveTicketAsync(Ticket ticket, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Post, "tickets", content: ticket);
+        return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Post, "tickets", content: ticket, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteTicketAsync(int id)
+    public async Task DeleteTicketAsync(int id, CancellationToken cancellationToken = default)
     {
-        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"tickets/{id}");
+        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"tickets/{id}", cancellationToken: cancellationToken);
     }
 
-    public async Task<List<TicketStatusLog>> GetTicketStatusLogsAsync(int ticketId)
+    public async Task<List<TicketStatusLog>> GetTicketStatusLogsAsync(int ticketId, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
             { "ticketId", ticketId.ToString() }
         };
 
-        var page = await ExecuteWithDataStateAsync<Page<TicketStatusLog>>(HttpMethod.Get, "ticketStatusLogs", queryParams);
+        var page = await ExecuteWithDataStateAsync<Page<TicketStatusLog>>(HttpMethod.Get, "ticketStatusLogs", queryParams, cancellationToken: cancellationToken);
 
         return page.Items.ToList();
     }
 
-    public async Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog)
+    public async Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<TicketStatusLog>(HttpMethod.Post, "ticketStatusLogs", content: ticketStatusLog);
+        return await ExecuteWithDataStateAsync<TicketStatusLog>(HttpMethod.Post, "ticketStatusLogs", content: ticketStatusLog, cancellationToken: cancellationToken);
     }
 
     #endregion
 
     #region worklog
 
-    public async Task<Worklog> GetWorklogAsync(int id)
+    public async Task<Worklog> GetWorklogAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Get, $"worklogs/{id}");
+        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Get, $"worklogs/{id}", cancellationToken: cancellationToken);
     }
 
-    public async Task<Page<Worklog>> GetWorklogsAsync(int pageSize, int pageIndex, string? filter = null)
+    public async Task<Page<Worklog>> GetWorklogsAsync(int pageSize, int pageIndex, string? filter = null, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -238,25 +238,25 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             queryParams.Add("filter", filter);
         }
 
-        return await ExecuteWithDataStateAsync<Page<Worklog>>(HttpMethod.Get, "worklogs", queryParams);
+        return await ExecuteWithDataStateAsync<Page<Worklog>>(HttpMethod.Get, "worklogs", queryParams, cancellationToken: cancellationToken);
     }
 
-    public async Task<Worklog> SaveWorklogAsync(Worklog ticket)
+    public async Task<Worklog> SaveWorklogAsync(Worklog ticket, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Post, "worklogs", content: ticket);
+        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Post, "worklogs", content: ticket, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteWorklogAsync(int id)
+    public async Task DeleteWorklogAsync(int id, CancellationToken cancellationToken = default)
     {
-        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"worklogs/{id}");
+        await ExecuteWithDataStateAsync(HttpMethod.Delete, $"worklogs/{id}", cancellationToken: cancellationToken);
     }
 
     #endregion
 
-    private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null)
-        => await ExecuteWithDataStateAsync<HttpResponseMessage>(method, endpoint, queryParams, content);
+    private async Task<HttpResponseMessage> ExecuteWithDataStateAsync(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null, CancellationToken cancellationToken = default)
+        => await ExecuteWithDataStateAsync<HttpResponseMessage>(method, endpoint, queryParams, content, cancellationToken);
 
-    private async Task<T> ExecuteWithDataStateAsync<T>(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null)
+    private async Task<T> ExecuteWithDataStateAsync<T>(HttpMethod method, string endpoint, Dictionary<string, string>? queryParams = null, object? content = null, CancellationToken cancellationToken = default)
     {
         _dataStateService.StartOperation();
 
@@ -277,7 +277,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
             var jsonContent = JsonContent.Create(content);
 
-            var res = await client.SendAsync(new(method, $"{endpoint}{GetQueryString(queryParams, true)}") { Content = jsonContent });
+            var res = await client.SendAsync(new(method, $"{endpoint}{GetQueryString(queryParams, true)}") { Content = jsonContent }, cancellationToken);
 
             var statusCode = (int)res.StatusCode;
 
@@ -287,7 +287,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
             }
             catch
             {
-                var error = (await res.Content.ReadAsStringAsync()).Trim('"');
+                var error = (await res.Content.ReadAsStringAsync(cancellationToken)).Trim('"');
 
                 _logger.LogError("Antwort {Methode} {API} {StatusCode} {Error}", method.Method, api, statusCode, error);
                 _dataStateService.SetError(error);
@@ -301,7 +301,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
                 return (T)(object)res;
             }
 
-            var resContent = (await res.Content.ReadFromJsonAsync<T>())!;
+            var resContent = (await res.Content.ReadFromJsonAsync<T>(cancellationToken))!;
 
             _logger.LogInformation("Antwort {Methode} {API} {StatusCode} {@Content}", method.Method, api, statusCode, resContent);
 

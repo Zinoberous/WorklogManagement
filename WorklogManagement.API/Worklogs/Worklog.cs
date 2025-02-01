@@ -1,18 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Context;
 using DB = WorklogManagement.Data.Models;
-using Shd = WorklogManagement.Shared.Models;
+using DTO = WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.API.Worklogs;
 
-public record Worklog : Shd.Worklog
+public record Worklog : DTO.Worklog
 {
     private int _id;
     public new int Id { get => _id; init => _id = value; }
 
     public new IEnumerable<WorklogAttachment> Attachments { get; init; } = [];
 
-    // Shd > DB
+    // DTO > DB
     internal static Dictionary<string, string> PropertyMappings { get; } = new()
     {
         { "Id", "Id" },
