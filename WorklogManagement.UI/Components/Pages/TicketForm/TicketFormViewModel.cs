@@ -33,10 +33,10 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { Description = value });
     }
 
-    public RefTicket? Ref
+    public Ticket? Ref
     {
-        get => _ticket.Ref;
-        set => _ = SaveTicketAsync(_ticket with { Ref = value });
+        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
+        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
     }
 
     public TicketStatus Status
@@ -51,10 +51,21 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { StatusNote = value });
     }
 
-    public IEnumerable<TicketAttachment> Attachments
+    public IEnumerable<TicketAttachment> Attachments => _ticket.Attachments;
+    public async Task AttachmentsChanged(IEnumerable<Attachment> attachments)
     {
-        get => _ticket.Attachments;
-        set => _ = SaveTicketAsync(_ticket with { Attachments = value });
+        await SaveTicketAsync(_ticket with
+        {
+            Attachments = attachments
+                .Select(x => new TicketAttachment
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Comment = x.Comment,
+                    Data = x.Data,
+                })
+                .ToArray()
+        });
     }
 
     public TimeSpan TimeSpent => _ticket.TimeSpent;

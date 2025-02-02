@@ -7,10 +7,8 @@ public partial class TicketForm
     [Parameter]
     public required int Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await base.OnInitializedAsync();
-
         await ViewModel.LoadAsync(Id);
     }
 }

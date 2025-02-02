@@ -9,31 +9,41 @@
             <FlexCol>
                 <FlexRow>
                     <FlexFill>
-                        <RadzenTextBox Placeholder="Titel:" />
+                        <RadzenTextBox Placeholder="Titel:" @bind-Value="ViewModel.Title" />
                     </FlexFill>
-                    <TicketStatusDropDown />
-                    <RadzenIcon Icon="delete" />
+                    <TicketStatusDropDown @bind-Value="ViewModel.Status" />
+                    <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
                 </FlexRow>
                 <FlexRow>
                     <FlexFill>
-                        <TicketSearch Placeholder="Referenz:" />
+                        <TicketSearch Placeholder="Referenz:" @bind-Value="ViewModel.Ref" />
                     </FlexFill>
-                    <RadzenIcon Icon="open_in_new" />
+                    @if (ViewModel.Ref is not null)
+                    {
+                        <a href="tickets/@ViewModel.Ref.Id">
+                            <RadzenIcon Icon="open_in_new" />
+                        </a>
+                    }
+                    else
+                    {
+                        @* um den selben Abstand zu behalten *@
+                        <RadzenIcon Icon="open_in_new" Style="visibility:hidden;" />
+                    }
                 </FlexRow>
-                <Editor Placeholder="Beschreibung:" />
-                <AttachmentPanel />
-                <RadzenButton>SubTicket hinzufügen</RadzenButton>
-                @* TODO: SubTickets *@
+                <Editor Placeholder="Beschreibung:" @bind-Value="ViewModel.Description" />
+                <AttachmentPanel Attachments="@ViewModel.Attachments" AttachmentsChanged="@ViewModel.AttachmentsChanged" />
+                @* <RadzenButton>SubTicket hinzufügen</RadzenButton>
+                TODO: SubTickets
                 <RadzenTabs>
                     <Tabs>
                         <RadzenTabsItem Text="Statusverlauf">
-                            @* TODO: Statusverlauf *@
+                            TODO: Statusverlauf
                         </RadzenTabsItem>
                         <RadzenTabsItem Text="@($"Arbeitsprotokoll ({(int)ViewModel.TimeSpent.TotalHours}:{ViewModel.TimeSpent.Minutes})")">
-                            @* TODO: Arbeitsprotokoll *@
+                            TODO: Arbeitsprotokoll
                         </RadzenTabsItem>
                     </Tabs>
-                </RadzenTabs>
+                </RadzenTabs> *@
             </FlexCol>
         </AsyncContent>
     </Body>
