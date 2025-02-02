@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
-using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.TicketList;
 public partial class TicketListEntry
@@ -14,9 +13,6 @@ public partial class TicketListEntry
 
     [Parameter]
     public EventCallback OnDelete { get; set; }
-
-    [Inject]
-    private INavigationService NavigationService { get; set; } = null!;
 
     private string Title
     {
@@ -79,10 +75,5 @@ public partial class TicketListEntry
     {
         Ticket = ticket;
         await OnEdit.InvokeAsync(ticket);
-    }
-
-    private void NavigateToTicket()
-    {
-        NavigationService.NavigateToPage($"/tickets/{Ticket.Id}");
     }
 }

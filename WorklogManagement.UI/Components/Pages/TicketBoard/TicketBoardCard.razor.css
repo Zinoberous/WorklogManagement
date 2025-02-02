@@ -1,15 +1,4 @@
 ::deep i {
     font-size: 20px;
-}
-
-::deep i, ::deep a {
     cursor: pointer;
-}
-
-::deep a {
-    width: fit-content;
-}
-
-::deep a:hover {
-    text-decoration: underline
 }

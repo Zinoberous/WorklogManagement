@@ -28,7 +28,7 @@ public partial class TicketBoardDropZone
 
     private static void OnItemRender(RadzenDropZoneItemRenderEventArgs<Ticket> args)
     {
-        args.Attributes["class"] = "rz-card rz-variant-filled rz-background-color-primary-darker rz-color-on-primary-dark";
+        args.Attributes["class"] = "rz-card rz-variant-filled";
         args.Attributes["style"] = "padding:5px; font-size:14px;";
     }
 

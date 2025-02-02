@@ -63,6 +63,16 @@ body:has(.footer):has(.header) .body {
     bottom: 0;
 }
 
+/* Navigation */
+a {
+    color: inherit;
+    width: fit-content;
+    text-decoration: unset;
+}
+a:hover {
+    text-decoration: underline !important;
+}
+
 /* Editor */
 pre {
     margin: 5px 0;

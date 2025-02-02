@@ -1,16 +1,18 @@
 <FlexCol Style="gap:0;">
     <FlexRow>
-        <div style="width: 50px; text-align: end; line-height: initial;">#@Ticket.Id</div>
+        <div style="width: 50px; text-align: end; line-height: initial;">
+            <a href="/tickets/@Ticket.Id">#@Ticket.Id</a>
+        </div>
         <FlexFill>
             <RadzenTextBox @bind-Value="Title" Placeholder="Titel:" />
         </FlexFill>
         @if (string.IsNullOrEmpty(Description))
         {
-            <RadzenIcon Icon="square" @onclick="ToggleDescription" />
+            <RadzenIcon Icon="chat_bubble" @onclick="ToggleDescription" />
         }
         else
         {
-            <RadzenIcon Icon="article" @onclick="ToggleDescription" />
+            <RadzenIcon Icon="chat" @onclick="ToggleDescription" />
         }
         <span style="display: flex; cursor: pointer;" @onclick="OpenAttachmentsDialog">
             <RadzenIcon Icon="attach_file" />
@@ -19,13 +21,12 @@
         <TicketStatusDropDown @bind-Value="SelectedStatus" />
         @if (string.IsNullOrEmpty(StatusNote))
         {
-            <RadzenIcon Icon="square" @onclick="ToggleStatusNote" />
+            <RadzenIcon Icon="chat_bubble" @onclick="ToggleStatusNote" />
         }
         else
         {
-            <RadzenIcon Icon="article" @onclick="ToggleStatusNote" />
+            <RadzenIcon Icon="chat" @onclick="ToggleStatusNote" />
         }
-        <RadzenIcon Icon="edit_square" Style="rotate: 180deg;" @onclick="NavigateToTicket" />
         <RadzenIcon Icon="delete" @onclick="OnDelete" />
     </FlexRow>
     <Accordion IsOpen="@ShowDescription">
@@ -40,4 +41,4 @@
     Title="@Title"
     Attachments="@Attachments"
     AttachmentsChanged="@AttachmentsChanged"
-/> 
+/>

@@ -3,7 +3,7 @@
         <FlexFill>
             <FlexCol>
                 <span>@Ticket.Title</span>
-                <a @onclick="NavigateToTicket">#@Ticket.Id</a>
+                <a href="/tickets/@Ticket.Id">#@Ticket.Id</a>
             </FlexCol>
         </FlexFill>
         <FlexCol Style="gap:0;">
