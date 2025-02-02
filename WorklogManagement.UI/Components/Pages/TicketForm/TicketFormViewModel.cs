@@ -33,11 +33,14 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { Description = value });
     }
 
-    public Ticket? Ref
+    private bool _showDescription = false;
+    public bool ShowDescription
     {
-        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
-        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
+        get => _showDescription;
+        set => SetValue(ref _showDescription, value);
     }
+
+    public void ToggleDescription() => ShowDescription = !ShowDescription;
 
     public TicketStatus Status
     {
@@ -50,6 +53,15 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         get => _ticket.StatusNote;
         set => _ = SaveTicketAsync(_ticket with { StatusNote = value });
     }
+
+    private bool _showStatusNote = false;
+    public bool ShowStatusNote
+    {
+        get => _showStatusNote;
+        set => SetValue(ref _showStatusNote, value);
+    }
+
+    public void ToggleStatusNote() => ShowStatusNote = !ShowStatusNote;
 
     public IEnumerable<TicketAttachment> Attachments => _ticket.Attachments;
     public async Task AttachmentsChanged(IEnumerable<Attachment> attachments)
@@ -68,7 +80,20 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         });
     }
 
-    public TimeSpan TimeSpent => _ticket.TimeSpent;
+    private bool _isOpenAttachmentsDialog = false;
+    public bool IsOpenAttachmentsDialog
+    {
+        get => _isOpenAttachmentsDialog;
+        set => SetValue(ref _isOpenAttachmentsDialog, value);
+    }
+
+    public void OpenAttachmentsDialog() => IsOpenAttachmentsDialog = true;
+
+    public Ticket? Ref
+    {
+        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
+        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
+    }
 
     public IEnumerable<Ticket> _subTickets = [];
     public IEnumerable<Ticket> SubTickets
@@ -77,19 +102,10 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => SetValue(ref _subTickets, value);
     }
 
-    public IEnumerable<TicketStatusLog> _statusLogs = [];
-    public IEnumerable<TicketStatusLog> StatusLogs
-    {
-        get => _statusLogs;
-        set => SetValue(ref _statusLogs, value);
-    }
+    public TimeSpan TimeSpent => _ticket.TimeSpent;
 
-    public IEnumerable<Worklog> _worklogs = [];
-    public IEnumerable<Worklog> Worklogs
-    {
-        get => _worklogs;
-        set => SetValue(ref _worklogs, value);
-    }
+    private IEnumerable<Worklog> _worklogs = [];
+    public IEnumerable<Worklog> Worklogs => _worklogs;
 
     public async Task LoadAsync(int ticketId)
     {
@@ -99,7 +115,6 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         {
             await Task.WhenAll([
                 LoadTicketAsync(ticketId),
-                LoadStatusHistory(ticketId),
                 LoadWorklogsAsync(ticketId)
             ]);
         }
@@ -114,14 +129,9 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         _ticket = await _dataService.GetTicketAsync(id);
     }
 
-    private async Task LoadStatusHistory(int ticketId)
-    {
-
-    }
-
     private async Task LoadWorklogsAsync(int ticketId)
     {
-
+        _worklogs = (await _dataService.GetWorklogsAsync(0, 0, $"TicketId == {ticketId}")).Items;
     }
 
     private async Task SaveTicketAsync(Ticket ticket)
@@ -147,5 +157,15 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         _navigationService.NavigateToPage("/ticket-list");
 
         return true;
+    }
+
+    public async Task SaveWorklogAsync(Worklog worklog)
+    {
+        await _dataService.SaveWorklogAsync(worklog);
+    }
+
+    public async Task DeleteWorklogAsync(Worklog worklog)
+    {
+        await _dataService.DeleteWorklogAsync(worklog.Id);
     }
 }

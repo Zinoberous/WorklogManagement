@@ -4,7 +4,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 $dockerDesktopPath = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 $containerName = "worklogmanagement-sqlserver"
 
-# Prüfen, ob Docker bereits läuft (Docker-CLI-Check)
+# Prüfen, ob Docker läuft
 function Test-DockerRunning {
     try {
         $output = docker info 2>&1  # Fängt Standard- & Fehlerausgabe ab

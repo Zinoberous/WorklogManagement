@@ -24,7 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{2F7C16
 		Docker\.env = Docker\.env
 		Docker\docker-compose.yml = Docker\docker-compose.yml
 		Docker\README.md = Docker\README.md
-		Docker\start-docker-compose.ps1 = Docker\start-docker-compose.ps1
+		Docker\start-docker.ps1 = Docker\start-docker.ps1
+		Docker\stop-docker.ps1 = Docker\stop-docker.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transformation", "Transformation", "{CDFE670D-CA68-4C3C-8618-1802335F83EE}"

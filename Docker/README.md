@@ -11,7 +11,7 @@ SA_PASSWORD=DeinSicheresPasswort123!
 #### **Automatische Variante (empfohlen)**
 Falls Docker noch nicht läuft oder der Container gestoppt ist, starte das folgende PowerShell-Skript:
 ```powershell
-.\start-docker-compose.ps1
+.\start-docker.ps1
 ```
 Dieses Skript:
 - Startet Docker Desktop, falls es nicht läuft
@@ -37,7 +37,18 @@ Falls du Docker manuell starten möchtest, kannst du folgende Befehle nutzen:
    docker-compose up -d
    ```
 
-### 3. **Container stoppen oder entfernen**
+### 3. **Docker stoppen**
+Falls du den Container stoppen möchtest, kannst du das folgende PowerShell-Skript ausführen:
+```powershell
+.\stop-docker.ps1
+```
+
+Falls du den Container manuell stoppen möchtest:
+```sh
+docker stop worklogmanagement-sqlserver
+```
+
+### 4. **Container entfernen oder gesamte Docker-Umgebung stoppen**
 - **Container nur stoppen (aber nicht löschen):**
   ```sh
   docker stop worklogmanagement-sqlserver
@@ -58,14 +69,14 @@ Falls du Docker manuell starten möchtest, kannst du folgende Befehle nutzen:
   docker-compose down -v
   ```
 
-### 4. **Daten zurücksetzen**
+### 5. **Daten zurücksetzen**
 Falls du den gesamten Datenbank-Container inklusive aller gespeicherten Daten entfernen möchtest:
 ```sh
 docker volume rm sqlserver_data
 ```
 **Achtung:** Dies löscht alle gespeicherten Daten endgültig!
 
-### 5. **Container-Status prüfen**
+### 6. **Container-Status prüfen**
 
 - **Laufende Container anzeigen:**
   ```sh
@@ -77,5 +88,4 @@ docker volume rm sqlserver_data
   ```
 
 ---
-Mit diesem Setup bleibt deine SQL Server Instanz auch nach Neustarts erhalten und du kannst sie einfach mit `start-docker-compose.ps1` wieder starten.
-
+Mit diesem Setup bleibt deine SQL Server Instanz auch nach Neustarts erhalten und du kannst sie einfach mit `start-docker.ps1` wieder starten oder mit `stop-docker.ps1` beenden.

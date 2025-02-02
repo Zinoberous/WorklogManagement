@@ -11,7 +11,27 @@
                     <FlexFill>
                         <RadzenTextBox Placeholder="Titel:" @bind-Value="ViewModel.Title" />
                     </FlexFill>
+                    @if (string.IsNullOrEmpty(ViewModel.Description))
+                    {
+                        <RadzenIcon Icon="chat_bubble" @onclick="ViewModel.ToggleDescription" />
+                    }
+                    else
+                    {
+                        <RadzenIcon Icon="chat" @onclick="ViewModel.ToggleDescription" />
+                    }
+                    <span style="display: flex; cursor: pointer;" @onclick="ViewModel.OpenAttachmentsDialog">
+                        <RadzenIcon Icon="attach_file" />
+                        @ViewModel.Attachments.Count()
+                    </span>
                     <TicketStatusDropDown @bind-Value="ViewModel.Status" />
+                    @if (string.IsNullOrEmpty(ViewModel.StatusNote))
+                    {
+                        <RadzenIcon Icon="chat_bubble" @onclick="ViewModel.ToggleStatusNote" />
+                    }
+                    else
+                    {
+                        <RadzenIcon Icon="chat" @onclick="ViewModel.ToggleStatusNote" />
+                    }
                     <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
                 </FlexRow>
                 <FlexRow>
@@ -30,21 +50,31 @@
                         <RadzenIcon Icon="open_in_new" Style="visibility:hidden;" />
                     }
                 </FlexRow>
-                <Editor Placeholder="Beschreibung:" @bind-Value="ViewModel.Description" />
-                <AttachmentPanel Attachments="@ViewModel.Attachments" AttachmentsChanged="@ViewModel.AttachmentsChanged" />
-                @* <RadzenButton>SubTicket hinzufügen</RadzenButton>
-                TODO: SubTickets
+                <Accordion IsOpen="@ViewModel.ShowDescription">
+                    <Editor @bind-Value="ViewModel.Description" Placeholder="Beschreibung:" />
+                </Accordion>
+                <Accordion IsOpen="@ViewModel.ShowStatusNote">
+                    <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Anmerkung:" />
+                </Accordion>
                 <RadzenTabs>
                     <Tabs>
-                        <RadzenTabsItem Text="Statusverlauf">
-                            TODO: Statusverlauf
+                        <RadzenTabsItem Text="SubTickets">
+                            <RadzenButton>Hinzufügen</RadzenButton>
+                            TODO: SubTickets
                         </RadzenTabsItem>
                         <RadzenTabsItem Text="@($"Arbeitsprotokoll ({(int)ViewModel.TimeSpent.TotalHours}:{ViewModel.TimeSpent.Minutes})")">
+                            <RadzenButton>Hinzufügen</RadzenButton>
                             TODO: Arbeitsprotokoll
                         </RadzenTabsItem>
                     </Tabs>
-                </RadzenTabs> *@
+                </RadzenTabs>
             </FlexCol>
+            <AttachmentsDialog
+                @bind-IsOpen="ViewModel.IsOpenAttachmentsDialog"
+                Title="Anhänge"
+                Attachments="@ViewModel.Attachments"
+                AttachmentsChanged="@ViewModel.AttachmentsChanged"
+            />
         </AsyncContent>
     </Body>
 </div>
