@@ -1,4 +1,3 @@
-using Delta;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Reflection;
@@ -89,8 +88,6 @@ services.AddDbContext<WorklogManagementContext>(options =>
 });
 
 var app = builder.Build();
-
-app.UseDelta<WorklogManagementContext>();
 
 app.UseCors();
 
