@@ -23,7 +23,7 @@ public partial class TicketListEntry
     private string Description
     {
         get => Ticket.Description ?? string.Empty;
-        set => _ = UpdateTicketAsync(Ticket with { Description = string.IsNullOrEmpty(value) ? null : value });
+        set => _ = UpdateTicketAsync(Ticket with { Description = value });
     }
 
     private bool ShowDescription { get; set; }
@@ -64,7 +64,7 @@ public partial class TicketListEntry
     private string StatusNote
     {
         get => Ticket.StatusNote ?? string.Empty;
-        set => _ = UpdateTicketAsync(Ticket with { StatusNote = string.IsNullOrEmpty(value) ? null : value });
+        set => _ = UpdateTicketAsync(Ticket with { StatusNote = value });
     }
 
     private bool ShowStatusNote { get; set; }

@@ -27,8 +27,8 @@ public partial class Home : BasePage<HomeViewModel>
                     days.Add(new()
                     {
                         Date = currentDate,
-                        WorkTimes = ViewModel.WorkTimes.Where(x => x.Date == currentDate).ToArray(),
-                        Absences = ViewModel.Absences.Where(x => x.Date == currentDate).ToArray(),
+                        WorkTimes = [.. ViewModel.WorkTimes.Where(x => x.Date == currentDate)],
+                        Absences = [.. ViewModel.Absences.Where(x => x.Date == currentDate)],
                         Holiday = ViewModel.Holidays.FirstOrDefault(x => x.Date == currentDate),
                     });
                 }
@@ -49,8 +49,6 @@ public partial class Home : BasePage<HomeViewModel>
     {
         await Task.WhenAll([
             ViewModel.LoadOvertimeAsync(),
-            ViewModel.LoadCalendarStatisticsAsync(),
-            ViewModel.LoadTicketStatisticsAsync(),
             ViewModel.LoadWorkTimesAsync(),
             ViewModel.LoadAbsencesAsync(),
             ViewModel.LoadHolidaysAsync(),

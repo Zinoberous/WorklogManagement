@@ -34,9 +34,8 @@ public partial class TicketBoard
             ];
         }
 
-        return ViewModel.Tickets
+        return [.. ViewModel.Tickets
             .Where(x => x.Ref is not null && x.Ref.Id == ticketId)
-            .Select(x => new TicketGroup { Parent = x, Childs = GetTicketGroups(x.Id) })
-            .ToArray();
+            .Select(x => new TicketGroup { Parent = x, Childs = GetTicketGroups(x.Id) })];
     }
 }

@@ -17,7 +17,7 @@ public partial class TicketBoardAccordion
     [Parameter]
     public EventCallback<Ticket> OnDelete { get; set; }
 
-    private bool IsOpen { get; set; }
+    private bool IsOpen { get; set; } = true;
 
     private void Toggle()
     {

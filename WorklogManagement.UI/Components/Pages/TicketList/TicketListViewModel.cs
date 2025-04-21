@@ -118,7 +118,7 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
 
         if (statusFilter is not null)
         {
-            StatusFilter = statusFilter.Split(',').Select(Enum.Parse<TicketStatus>).ToList();
+            StatusFilter = [.. statusFilter.Split(',').Select(Enum.Parse<TicketStatus>)];
         }
 
         if (search is not null)
@@ -159,7 +159,7 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
 
     public async Task<bool> SaveTicketAsync(Ticket ticket)
     {
-        Page = Page with { Items = Page.Items.Select(x => x.Id == ticket.Id ? ticket : x).ToArray() };
+        Page = Page with { Items = [.. Page.Items.Select(x => x.Id == ticket.Id ? ticket : x)] };
 
         Ticket savedTicket;
 
@@ -191,7 +191,7 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
             return false;
         }
 
-        Page = Page with { Items = Page.Items.Where(x => x.Id != ticket.Id).ToArray() };
+        Page = Page with { Items = [.. Page.Items.Where(x => x.Id != ticket.Id)] };
 
         try
         {

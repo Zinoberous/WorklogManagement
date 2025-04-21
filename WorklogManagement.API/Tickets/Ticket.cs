@@ -40,9 +40,7 @@ public record Ticket : DTO.Ticket
             StatusNote = ticket.TicketStatusLogs.Last().Note,
             CreatedAt = ticket.CreatedAt,
             TimeSpent = TimeSpan.FromTicks(ticket.Worklogs.Sum(x => x.TimeSpent.Ticks)),
-            Attachments = ticket.TicketAttachments
-                .Select(TicketAttachment.Map)
-                .ToArray(),
+            Attachments = [.. ticket.TicketAttachments.Select(TicketAttachment.Map)],
         };
     }
 

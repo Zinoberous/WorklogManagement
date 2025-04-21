@@ -98,7 +98,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
     {
         AllTickets = AllTickets.Any(x => x.Id == ticket.Id)
             ? AllTickets.Select(x => x.Id == ticket.Id ? ticket : x).ToArray()
-            : AllTickets.Append(ticket).ToArray();
+            : [.. AllTickets, ticket];
 
         Ticket savedTicket;
 
@@ -130,7 +130,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
             return false;
         }
 
-        AllTickets = AllTickets.Where(x => x.Id != ticket.Id).ToArray();
+        AllTickets = [.. AllTickets.Where(x => x.Id != ticket.Id)];
 
         try
         {

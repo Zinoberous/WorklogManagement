@@ -1,4 +1,4 @@
-﻿namespace WorklogManagement.Shared.Enums;
+namespace WorklogManagement.Shared.Enums;
 
 public enum TicketStatus
 {

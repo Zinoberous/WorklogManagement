@@ -5,17 +5,9 @@ namespace WorklogManagement.UI.Services;
 
 public interface IDataService
 {
-    #region statistics
+    #region calendar
 
     Task<OvertimeInfo> GetOvertimeAsync(CancellationToken cancellationToken = default);
-
-    Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null, CancellationToken cancellationToken = default);
-
-    Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync(CancellationToken cancellationToken = default);
-
-    #endregion
-
-    #region calendar
 
     Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState, CancellationToken cancellationToken = default);
 
@@ -74,28 +66,12 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
     private HttpClient CreateClient() => _httpClientFactory.CreateClient(nameof(WorklogManagement));
 
-    #region statistics
+    #region calendar
 
     public async Task<OvertimeInfo> GetOvertimeAsync(CancellationToken cancellationToken = default)
     {
         return await ExecuteWithDataStateAsync<OvertimeInfo>(HttpMethod.Get, "statistics/overtime", cancellationToken: cancellationToken);
     }
-
-    public async Task<Dictionary<CalendarEntryType, int>> GetCalendarStaticsAsync(int? year = null, CancellationToken cancellationToken = default)
-    {
-        var queryParams = year.HasValue ? new Dictionary<string, string> { ["year"] = year.Value.ToString() } : null;
-
-        return await ExecuteWithDataStateAsync<Dictionary<CalendarEntryType, int>>(HttpMethod.Get, "statistics/calendar", queryParams, cancellationToken: cancellationToken);
-    }
-
-    public async Task<Dictionary<TicketStatus, int>> GetTicketStatisticsAsync(CancellationToken cancellationToken = default)
-    {
-        return await ExecuteWithDataStateAsync<Dictionary<TicketStatus, int>>(HttpMethod.Get, "statistics/tickets", cancellationToken: cancellationToken);
-    }
-
-    #endregion
-
-    #region calendar
 
     public async Task<List<Holiday>> GetHolidaysAsync(DateOnly from, DateOnly to, string federalState, CancellationToken cancellationToken = default)
     {
@@ -118,7 +94,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
         var page = await ExecuteWithDataStateAsync<Page<WorkTime>>(HttpMethod.Get, "worktimes", queryParams, cancellationToken: cancellationToken);
 
-        return page.Items.ToList();
+        return [.. page.Items];
     }
 
     public async Task<List<DateOnly>> GetDatesWithWorkTimesAsync(CancellationToken cancellationToken = default)
@@ -146,7 +122,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
         var page = await ExecuteWithDataStateAsync<Page<Absence>>(HttpMethod.Get, "absences", queryParams, cancellationToken: cancellationToken);
 
-        return page.Items.ToList();
+        return [.. page.Items];
     }
 
     public async Task<List<DateOnly>> GetDatesWithAbsencesAsync(CancellationToken cancellationToken = default)
@@ -208,7 +184,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
 
         var page = await ExecuteWithDataStateAsync<Page<TicketStatusLog>>(HttpMethod.Get, "ticketStatusLogs", queryParams, cancellationToken: cancellationToken);
 
-        return page.Items.ToList();
+        return [.. page.Items];
     }
 
     public async Task<TicketStatusLog> SaveTicketStatusLogAsync(TicketStatusLog ticketStatusLog, CancellationToken cancellationToken = default)

@@ -33,15 +33,15 @@ public partial class TicketNewDialog
 
     private void AttachmentsChanged(IEnumerable<Attachment> attachments)
     {
-        Attachments = attachments
-            .Select(x => new TicketAttachment
+        Attachments = [
+            .. attachments.Select(x => new TicketAttachment
             {
                 Id = x.Id,
                 Name = x.Name,
                 Comment = x.Comment,
                 Data = x.Data,
             })
-            .ToArray();
+        ];
     }
 
     private async Task Close()

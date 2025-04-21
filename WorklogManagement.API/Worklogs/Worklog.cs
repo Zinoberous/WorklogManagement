@@ -33,9 +33,7 @@ public record Worklog : DTO.Worklog
             TicketTitle = worklog.Ticket.Title,
             Description = worklog.Description,
             TimeSpent = worklog.TimeSpent,
-            Attachments = worklog.WorklogAttachments
-                .Select(WorklogAttachment.Map)
-                .ToArray()
+            Attachments = [.. worklog.WorklogAttachments.Select(WorklogAttachment.Map)]
         };
     }
 

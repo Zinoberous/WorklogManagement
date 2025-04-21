@@ -17,10 +17,9 @@ public partial class CheckInNewDialog
     public IEnumerable<string> UsedTypeOptions { get; set; } = [];
 
     private IEnumerable<string> TypeOptions =>
-        Constant.WorkTimeLabels.Values
+        [.. Constant.WorkTimeLabels.Values
         .Concat(Constant.AbsenceLabels.Values)
-        .Where(value => !UsedTypeOptions.Contains(value))
-        .ToArray();
+        .Where(value => !UsedTypeOptions.Contains(value))];
 
     private string? _selectedType;
     private string SelectedType
@@ -102,7 +101,7 @@ public partial class CheckInNewDialog
             return;
         }
 
-        UsedTypeOptions = UsedTypeOptions.Append(SelectedType).ToArray();
+        UsedTypeOptions = [.. UsedTypeOptions.Append(SelectedType)];
 
         _selectedType = null;
     }

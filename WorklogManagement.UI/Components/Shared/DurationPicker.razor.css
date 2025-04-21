@@ -4,8 +4,8 @@
 }
 
 ::deep .rz-datepicker > input {
-    /*padding-inline: var(--rz-input-padding-inline);*/
     padding: 8px;
+    padding-inline-end: unset !important;
 }
 
 ::deep .rz-datepicker > button {

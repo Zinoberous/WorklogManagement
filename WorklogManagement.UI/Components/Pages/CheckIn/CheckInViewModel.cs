@@ -21,10 +21,10 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
 
     public void OpenNewDialog() => IsOpenNewDialog = true;
 
-    public IEnumerable<string> UsedTypes =>
-        WorkTimes.Select(x => Constant.WorkTimeLabels[x.Type])
-        .Concat(Absences.Select(x => Constant.AbsenceLabels[x.Type]))
-        .ToArray();
+    public IEnumerable<string> UsedTypes => [
+        .. WorkTimes.Select(x => Constant.WorkTimeLabels[x.Type]),
+        .. Absences.Select(x => Constant.AbsenceLabels[x.Type])
+    ];
 
     public bool CreateNewDisabled =>
         Constant.WorkTimeLabels.Values
@@ -161,8 +161,8 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             _popupService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
         }
 
-        WorkTimes = WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime).ToArray();
-        DatesWithWorkTimes = DatesWithWorkTimes.Append(SelectedDate).Distinct().ToArray();
+        WorkTimes = [.. WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime)];
+        DatesWithWorkTimes = [.. DatesWithWorkTimes.Append(SelectedDate).Distinct()];
 
         return true;
     }
@@ -184,11 +184,11 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             return false;
         }
 
-        WorkTimes = WorkTimes.Where(x => x.Id != workTime.Id).ToArray();
+        WorkTimes = [.. WorkTimes.Where(x => x.Id != workTime.Id)];
 
         if (!WorkTimes.Any())
         {
-            DatesWithWorkTimes = DatesWithWorkTimes.Where(x => x != SelectedDate).ToArray();
+            DatesWithWorkTimes = [.. DatesWithWorkTimes.Where(x => x != SelectedDate)];
         }
 
         _popupService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht!");
@@ -216,8 +216,8 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             _popupService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
         }
 
-        Absences = Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence).ToArray();
-        DatesWithAbsences = DatesWithAbsences.Append(SelectedDate).Distinct().ToArray();
+        Absences = [.. Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence)];
+        DatesWithAbsences = [.. DatesWithAbsences.Append(SelectedDate).Distinct()];
 
         return true;
     }
@@ -239,11 +239,11 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             return false;
         }
 
-        Absences = Absences.Where(x => x.Id != absence.Id).ToArray();
+        Absences = [.. Absences.Where(x => x.Id != absence.Id)];
 
         if (!Absences.Any())
         {
-            DatesWithAbsences = DatesWithAbsences.Where(x => x != SelectedDate).ToArray();
+            DatesWithAbsences = [.. DatesWithAbsences.Where(x => x != SelectedDate)];
         }
 
         _popupService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht!");

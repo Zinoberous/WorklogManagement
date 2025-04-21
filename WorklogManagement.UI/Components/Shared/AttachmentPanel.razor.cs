@@ -41,13 +41,13 @@ public partial class AttachmentPanel
 
     private async Task Edit(Attachment attachment)
     {
-        Attachments = Attachments.Select(old => old.Name == attachment.Name ? attachment : old).ToArray();
+        Attachments = [.. Attachments.Select(old => old.Name == attachment.Name ? attachment : old)];
         await AttachmentsChanged.InvokeAsync(Attachments);
     }
 
     private async Task Remove(Attachment attachment)
     {
-        Attachments = Attachments.Where(a => a.Name != attachment.Name).ToArray();
+        Attachments = [.. Attachments.Where(a => a.Name != attachment.Name)];
         await AttachmentsChanged.InvokeAsync(Attachments);
     }
 

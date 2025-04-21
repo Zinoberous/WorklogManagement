@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
+using System.Text.RegularExpressions;
 
 namespace WorklogManagement.UI.Components.Shared;
 
@@ -33,6 +34,20 @@ public partial class Editor
         {
             await JSRuntime.InvokeVoidAsync("initializeEditorTabKeyHandling", _editor.Element);
         }
+    }
+
+    private void OnValueChanged(string value)
+    {
+        ValueChanged.InvokeAsync(IsHtmlEmpty(value) ? null : value);
+    }
+
+    private static bool IsHtmlEmpty(string html)
+    {
+        // Entferne alle HTML-Tags
+        string textContent = Regex.Replace(html, "<[^>]*>", "", RegexOptions.None, TimeSpan.FromSeconds(1));
+
+        // Falls nach dem Entfernen der Tags kein Text übrig bleibt, ist der Editor "leer"
+        return string.IsNullOrEmpty(textContent);
     }
 
     private async Task OnExecute(HtmlEditorExecuteEventArgs args)

@@ -1,4 +1,3 @@
-using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
@@ -24,41 +23,6 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         set => SetValue(ref _overtime, value);
     }
 
-    private bool _loadCalendarStatistics = true;
-    public bool LoadCalendarStatistics
-    {
-        get => _loadCalendarStatistics;
-        set => SetValue(ref _loadCalendarStatistics, value);
-    }
-
-    private Dictionary<CalendarEntryType, int> _calendarStatisticsYear = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
-    public Dictionary<CalendarEntryType, int> CalendarStatisticsYear
-    {
-        get => _calendarStatisticsYear;
-        set => SetValue(ref _calendarStatisticsYear, value);
-    }
-
-    private Dictionary<CalendarEntryType, int> _calendarStatisticsAll = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
-    public Dictionary<CalendarEntryType, int> CalendarStatisticsAll
-    {
-        get => _calendarStatisticsAll;
-        set => SetValue(ref _calendarStatisticsAll, value);
-    }
-
-    private bool _loadTicketStatistics = true;
-    public bool LoadTicketStatistics
-    {
-        get => _loadTicketStatistics;
-        set => SetValue(ref _loadTicketStatistics, value);
-    }
-
-    private Dictionary<TicketStatus, int> _ticketStatistics = Enum.GetValues<TicketStatus>().ToDictionary(x => x, _ => 0);
-    public Dictionary<TicketStatus, int> TicketStatistics
-    {
-        get => _ticketStatistics;
-        set => SetValue(ref _ticketStatistics, value);
-    }
-
     private int _selectedYear = DateTimeOffset.Now.Year;
     public int SelectedYear
     {
@@ -69,7 +33,6 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
     public async Task OnSelectedYearChanged()
     {
         await Task.WhenAll([
-            LoadCalendarYearStatisticsAsync(),
             LoadWorkTimesAsync(),
             LoadAbsencesAsync(),
             LoadHolidaysAsync(),
@@ -168,85 +131,6 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         finally
         {
             LoadOvertime = false;
-        }
-    }
-
-    public async Task LoadCalendarStatisticsAsync()
-    {
-        LoadCalendarStatistics = true;
-
-        await LoadCalendarYearStatisticsAsync();
-        await LoadCalendarAllStatisticsAsync();
-
-        LoadCalendarStatistics = false;
-    }
-
-    private async Task LoadCalendarYearStatisticsAsync()
-    {
-        try
-        {
-            CalendarStatisticsYear = await _dataService.GetCalendarStaticsAsync(SelectedYear);
-        }
-        catch
-        {
-            _popupService.Error($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!");
-
-            Dictionary<CalendarEntryType, int> calendarStatistics = [];
-
-            foreach (var type in Enum.GetValues<CalendarEntryType>())
-            {
-                calendarStatistics[type] = 0;
-            }
-
-            CalendarStatisticsYear = calendarStatistics;
-        }
-    }
-
-    private async Task LoadCalendarAllStatisticsAsync()
-    {
-        try
-        {
-            CalendarStatisticsAll = await _dataService.GetCalendarStaticsAsync();
-        }
-        catch
-        {
-            _popupService.Error("Fehler beim Laden der Kalendarstatistiken!");
-
-            Dictionary<CalendarEntryType, int> calendarStatistics = [];
-
-            foreach (var type in Enum.GetValues<CalendarEntryType>())
-            {
-                calendarStatistics[type] = 0;
-            }
-
-            CalendarStatisticsAll = calendarStatistics;
-        }
-    }
-
-    public async Task LoadTicketStatisticsAsync()
-    {
-        LoadTicketStatistics = true;
-
-        try
-        {
-            TicketStatistics = await _dataService.GetTicketStatisticsAsync();
-        }
-        catch
-        {
-            _popupService.Error("Fehler beim Laden der Ticketstatistiken!");
-
-            Dictionary<TicketStatus, int> ticketStatistics = [];
-
-            foreach (var type in Enum.GetValues<TicketStatus>())
-            {
-                ticketStatistics[type] = 0;
-            }
-
-            TicketStatistics = ticketStatistics;
-        }
-        finally
-        {
-            LoadTicketStatistics = false;
         }
     }
 

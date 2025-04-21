@@ -15,11 +15,12 @@ public partial class TicketBoardLayer
     public EventCallback<Ticket> OnDelete { get; set; }
 
     // Parent kann nur RefTicket sein, wenn es durch ein Ticket (Child) angegeben wurde und das zugehörige Ticket nicht in der Liste der Tickets enthalten ist
-    private IEnumerable<Ticket> LayerTickets => TicketGroups
-        .Where(x => !x.Childs.Any())
-        .Select(x => x.Parent.AsT0)
-        .OrderBy(x => x.Title)
-        .ToArray();
+    private IEnumerable<Ticket> LayerTickets => [
+        .. TicketGroups
+            .Where(x => !x.Childs.Any())
+            .Select(x => x.Parent.AsT0)
+            .OrderBy(x => x.Title)
+    ];
 
     private Dictionary<string, IEnumerable<TicketGroup>> SubLayer => TicketGroups
         .Where(x => x.Childs.Any())
