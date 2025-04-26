@@ -30,7 +30,7 @@ public class LoggerService<T>(ILoggerFactory loggerFactory, IJSRuntime jsRuntime
     {
         _logger.Log(logLevel, eventId, state, exception, formatter);
 
-        // Das entdprechende Paket für BrowserConsole funktioniert nur bei WASM und Sinks für Serilog unterstützen kein Dependency Injection für IJSRuntime
+        // Das entsprechende Paket für BrowserConsole funktioniert nur bei WASM und Sinks für Serilog unterstützen kein Dependency Injection für IJSRuntime
         _ = LogToBrowserConsole(logLevel, state, exception);
     }
 

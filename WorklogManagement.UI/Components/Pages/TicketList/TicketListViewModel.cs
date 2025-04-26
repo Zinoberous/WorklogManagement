@@ -22,7 +22,7 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
 
     public void OpenNewDialog() => IsOpenNewDialog = true;
 
-    public IReadOnlyDictionary<TicketStatus, string> StatusFilterOptions => Enum.GetValues<TicketStatus>().ToDictionary(x => x, x => x.ToString());
+    public IDictionary<TicketStatus, string> StatusFilterOptions => Enum.GetValues<TicketStatus>().ToDictionary(x => x, x => x.ToString());
 
     private IList<TicketStatus> _statusFilter = [
         TicketStatus.Todo,

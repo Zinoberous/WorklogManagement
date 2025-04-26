@@ -6,6 +6,8 @@ public partial class Home : BasePage<HomeViewModel>
 {
     private static string CalendarStyle => "max-width: calc(100vw - var(--sidebar-width) - 2 * var(--rz-row-gap) - 2 * var(--rz-panel-padding) - var(--scrollbar-width));";
 
+    private bool IsOpenCalendarStatisticsDialog { get; set; } = false;
+
     private IEnumerable<HomeCalendarDataRow> CalendarData
     {
         get
@@ -49,6 +51,7 @@ public partial class Home : BasePage<HomeViewModel>
     {
         await Task.WhenAll([
             ViewModel.LoadOvertimeAsync(),
+            ViewModel.LoadCalendarStatisticsAsync(),
             ViewModel.LoadWorkTimesAsync(),
             ViewModel.LoadAbsencesAsync(),
             ViewModel.LoadHolidaysAsync(),

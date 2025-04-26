@@ -17,6 +17,17 @@ internal static class Constant
         { AbsenceType.Ill, "Krank" },
     };
 
+    internal static readonly Dictionary<CalendarEntryType, string> CalendarEntryLabels = new()
+    {
+        { CalendarEntryType.Workday, "Arbeitstag" },
+        { CalendarEntryType.Mobile, WorkTimeLabels[WorkTimeType.Mobile] },
+        { CalendarEntryType.Office, WorkTimeLabels[WorkTimeType.Office] },
+        { CalendarEntryType.TimeCompensation, "Zeitausgleich" },
+        { CalendarEntryType.Holiday, AbsenceLabels[AbsenceType.Holiday] },
+        { CalendarEntryType.Vacation, AbsenceLabels[AbsenceType.Vacation] },
+        { CalendarEntryType.Ill, AbsenceLabels[AbsenceType.Ill] },
+    };
+
     internal static readonly Dictionary<string, string> CalendarEntryColor = new()
     {
         { WorkTimeLabels[WorkTimeType.Mobile], "#8dd0ff" },

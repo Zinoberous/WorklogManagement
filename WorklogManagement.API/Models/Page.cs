@@ -20,7 +20,7 @@ public record Page
         int pageSize,
         string? sortBy,
         string? filter,
-        IReadOnlyDictionary<string, string> propertyNameMappings)
+        IDictionary<string, string> propertyNameMappings)
     {
         if (!string.IsNullOrWhiteSpace(filter))
         {
@@ -61,7 +61,7 @@ public record Page
         return page;
     }
 
-    private static string TranslatePropertyNames(string s, IReadOnlyDictionary<string, string> propertyNameMapping)
+    private static string TranslatePropertyNames(string s, IDictionary<string, string> propertyNameMapping)
     {
         foreach (var map in propertyNameMapping)
         {
@@ -77,7 +77,7 @@ public record Page
         return s;
     }
 
-    private static string TranslateFilter(string filter, IReadOnlyDictionary<string, string> propertyNameMapping)
+    private static string TranslateFilter(string filter, IDictionary<string, string> propertyNameMapping)
     {
         StringBuilder result = new();
 

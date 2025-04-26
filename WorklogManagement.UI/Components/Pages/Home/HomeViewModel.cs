@@ -1,3 +1,4 @@
+using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
@@ -23,6 +24,20 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         set => SetValue(ref _overtime, value);
     }
 
+    private bool _loadCalendarStatistics = true;
+    public bool LoadCalendarStatistics
+    {
+        get => _loadCalendarStatistics;
+        set => SetValue(ref _loadCalendarStatistics, value);
+    }
+
+    private IDictionary<CalendarEntryType, int> _calendarStatistics = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
+    public IDictionary<CalendarEntryType, int> CalendarStatistics
+    {
+        get => _calendarStatistics;
+        set => SetValue(ref _calendarStatistics, value);
+    }
+
     private int _selectedYear = DateTimeOffset.Now.Year;
     public int SelectedYear
     {
@@ -33,6 +48,7 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
     public async Task OnSelectedYearChanged()
     {
         await Task.WhenAll([
+            LoadCalendarStatisticsAsync(),
             LoadWorkTimesAsync(),
             LoadAbsencesAsync(),
             LoadHolidaysAsync(),
@@ -131,6 +147,33 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
         finally
         {
             LoadOvertime = false;
+        }
+    }
+
+    public async Task LoadCalendarStatisticsAsync()
+    {
+        LoadCalendarStatistics = true;
+
+        try
+        {
+            CalendarStatistics = await _dataService.GetCalendarStaticsAsync(SelectedYear);
+        }
+        catch
+        {
+            _popupService.Error($"Fehler beim Laden der Kalendarstatistiken für {SelectedYear}!");
+
+            Dictionary<CalendarEntryType, int> calendarStatistics = [];
+
+            foreach (var type in Enum.GetValues<CalendarEntryType>())
+            {
+                calendarStatistics[type] = 0;
+            }
+
+            CalendarStatistics = calendarStatistics;
+        }
+        finally
+        {
+            LoadCalendarStatistics = false;
         }
     }
 

@@ -46,7 +46,7 @@ internal static class WorkTimeEndpoints
         return WorkTime.Map(item);
     }
 
-    private static async Task<List<DateOnly>> GetDatesWithWorkTimesAsync(WorklogManagementContext context)
+    private static async Task<IEnumerable<DateOnly>> GetDatesWithWorkTimesAsync(WorklogManagementContext context)
     {
         var dates = await context.WorkTimes
             .Select(x => x.Date)

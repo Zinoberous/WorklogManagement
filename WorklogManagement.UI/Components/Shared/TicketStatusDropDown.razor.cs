@@ -17,7 +17,7 @@ public partial class TicketStatusDropDown
     [Inject]
     private ITicketStatusService TicketStatusService { get; set; } = null!;
 
-    private IReadOnlyDictionary<TicketStatus, string> TicketStatusChangeOptions
+    private IDictionary<TicketStatus, string> TicketStatusChangeOptions
         => TicketStatusService.GetNextStatusOptions(Value).ToDictionary(x => x, x => x.ToString());
 
     private string StatusStyle => $"color: {Constant.TicketStatusColor[Value]}; background-color: {Constant.TicketStatusBgColor[Value]}";

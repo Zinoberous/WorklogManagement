@@ -21,20 +21,20 @@
             var duration = TimeSpan.FromTicks(timeCompensations.Sum(x => x.Expected.Ticks));
 
             var notes = timeCompensations
-                .Where(x => !string.IsNullOrWhiteSpace(x.Note) && !x.Note.Equals("Zeitausgleich", StringComparison.OrdinalIgnoreCase))
+                .Where(x => !string.IsNullOrWhiteSpace(x.Note) && !x.Note.Equals(CalendarEntryLabels[CalendarEntryType.TimeCompensation], StringComparison.OrdinalIgnoreCase))
                 .Select(x => $"{x.Expected:HH:mm} => {x.Note}")
                 .ToArray();
 
             var note = string.Join("\n", notes);
 
-            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle("Zeitausgleich", duration, note)" />
+            <RadzenIcon Icon="@_timeCompensationIcon" title="@GetIconTitle(CalendarEntryLabels[CalendarEntryType.TimeCompensation], duration, note)" />
         }
         @foreach(var workTime in WorkTimes.Where(x => x.Actual > TimeSpan.Zero).OrderBy(x => x.Type))
         {
             var label = workTime.Type switch
             {
-                WorkTimeType.Office => "Büro",
-                WorkTimeType.Mobile => "Mobil",
+                WorkTimeType.Office => WorkTimeLabels[WorkTimeType.Office],
+                WorkTimeType.Mobile => WorkTimeLabels[WorkTimeType.Mobile],
                 _ => "Unbekannt"
             };
 
@@ -44,9 +44,9 @@
         {
             var label = absence.Type switch
             {
-                AbsenceType.Holiday => "Feiertag",
-                AbsenceType.Vacation => "Urlaub",
-                AbsenceType.Ill => "Krank",
+                AbsenceType.Holiday => AbsenceLabels[AbsenceType.Holiday],
+                AbsenceType.Vacation => AbsenceLabels[AbsenceType.Vacation],
+                AbsenceType.Ill => AbsenceLabels[AbsenceType.Ill],
                 _ => "Unbekannt"
             };
 

@@ -46,7 +46,7 @@ internal static class AbsenceEndpoints
         return Absence.Map(item);
     }
 
-    private static async Task<List<DateOnly>> GetDatesWithAbsencesAsync(WorklogManagementContext context)
+    private static async Task<IEnumerable<DateOnly>> GetDatesWithAbsencesAsync(WorklogManagementContext context)
     {
         var dates = await context.Absences
             .Select(x => x.Date)

@@ -1,12 +1,12 @@
 <div>
-    <FlexRow Style="align-items:start;">
+    <FlexRow Style="align-items: start;">
         <FlexFill>
             <FlexCol>
                 <span>@Ticket.Title</span>
                 <a href="/tickets/@Ticket.Id">#@Ticket.Id</a>
             </FlexCol>
         </FlexFill>
-        <FlexCol Style="gap:0;">
+        <FlexCol Style="gap: 0;">
             @if (string.IsNullOrEmpty(@Ticket.StatusNote))
             {
                 <RadzenIcon Icon="chat_bubble" @onclick="OpenStatusNoteDialog" />

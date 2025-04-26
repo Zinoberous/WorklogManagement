@@ -62,7 +62,7 @@ internal static class StatisticEndpoints
         };
     }
 
-    private static async Task<Dictionary<CalendarEntryType, int>> GetCalendarStatics(WorklogManagementContext context, int? year = null)
+    private static async Task<IDictionary<CalendarEntryType, int>> GetCalendarStatics(WorklogManagementContext context, int? year = null)
     {
         static Task<int> CountDistinctDatesAsync(IQueryable<CalendarEntry> entries)
         {
@@ -139,7 +139,7 @@ internal static class StatisticEndpoints
         return result;
     }
 
-    private static async Task<Dictionary<TicketStatus, int>> GetTicketStatistics(WorklogManagementContext context)
+    private static async Task<IDictionary<TicketStatus, int>> GetTicketStatistics(WorklogManagementContext context)
     {
         var statistics = await context.Tickets
             .GroupBy(x => x.TicketStatusId)

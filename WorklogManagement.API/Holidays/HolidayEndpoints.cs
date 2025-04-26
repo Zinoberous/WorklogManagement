@@ -11,7 +11,7 @@ internal static class HolidayEndpoints
         return app;
     }
 
-    private static async Task<List<Holiday>> GetAsync(IHttpClientFactory httpClientFactory, string federalState, DateOnly from, DateOnly to)
+    private static async Task<IEnumerable<Holiday>> GetAsync(IHttpClientFactory httpClientFactory, string federalState, DateOnly from, DateOnly to)
     {
         using var client = httpClientFactory.CreateClient();
 

@@ -33,6 +33,7 @@
                         <RadzenIcon Icon="chat" @onclick="ViewModel.ToggleStatusNote" />
                     }
                     <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
+                    <RadzenIcon Icon="alarm_on" @onclick="() => IsOpenWorklogsDialog = true" />
                 </FlexRow>
                 <FlexRow>
                     <FlexFill>
@@ -46,8 +47,7 @@
                     }
                     else
                     {
-                        @* um den selben Abstand zu behalten *@
-                        <RadzenIcon Icon="open_in_new" Style="visibility:hidden;" />
+                        <RadzenIcon Icon="open_in_new" Style="opacity: .5; cursor: default;" />
                     }
                 </FlexRow>
                 <Accordion IsOpen="@ViewModel.ShowDescription">
@@ -56,18 +56,6 @@
                 <Accordion IsOpen="@ViewModel.ShowStatusNote">
                     <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Anmerkung:" />
                 </Accordion>
-                <RadzenTabs>
-                    <Tabs>
-                        <RadzenTabsItem Text="SubTickets">
-                            <RadzenButton>Hinzufügen</RadzenButton>
-                            TODO: SubTickets
-                        </RadzenTabsItem>
-                        <RadzenTabsItem Text="@($"Arbeitsprotokoll ({(int)ViewModel.TimeSpent.TotalHours}:{ViewModel.TimeSpent.Minutes})")">
-                            <RadzenButton>Hinzufügen</RadzenButton>
-                            TODO: Arbeitsprotokoll
-                        </RadzenTabsItem>
-                    </Tabs>
-                </RadzenTabs>
             </FlexCol>
             <AttachmentsDialog
                 @bind-IsOpen="ViewModel.IsOpenAttachmentsDialog"
@@ -75,6 +63,9 @@
                 Attachments="@ViewModel.Attachments"
                 AttachmentsChanged="@ViewModel.AttachmentsChanged"
             />
+            <Dialog @bind-IsOpen="IsOpenWorklogsDialog" Title="@($"Arbeitsprotokoll ({(int)ViewModel.TimeSpent.TotalHours}:{ViewModel.TimeSpent.Minutes})")">
+                TODO: Arbeitsprotokoll
+            </Dialog>
         </AsyncContent>
     </Body>
 </div>

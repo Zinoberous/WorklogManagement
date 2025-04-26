@@ -11,18 +11,23 @@
         <RadzenPanel>
             <FlexCol>
                 <FlexRow>
+                    <AsyncContent IsLoading="@ViewModel.LoadCalendarStatistics">
+                        <RadzenIcon Icon="info" @onclick="() => IsOpenCalendarStatisticsDialog = true" Style="cursor: pointer; font-size: xxx-large;" />
+                    </AsyncContent>
                     <YearPicker @bind-Value="ViewModel.SelectedYear" OnChanged="@ViewModel.OnSelectedYearChanged" />
                     <RadzenDropDown @bind-Value="ViewModel.SelectedFederalState" SelectedItemChanged="@ViewModel.OnSelectedFederalStateChanged" Data="@FederalStates" ValueProperty="Key" TextProperty="Value" />
                     <FlexFill/>
-                    <AsyncContent IsLoading="@ViewModel.LoadOvertime" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
-                        <div class="overtime">
-                            <div style="text-align:center;">Überstunden: @ViewModel.Overtime.Total.ToTimeString()</div>
-                            <div>
-                                (@WorkTimeLabels[WorkTimeType.Office]: @ViewModel.Overtime.Office.ToTimeString() /
-                                @WorkTimeLabels[WorkTimeType.Mobile]: @ViewModel.Overtime.Mobile.ToTimeString())
+                    <div style="margin-right: 50px;">
+                        <AsyncContent IsLoading="@ViewModel.LoadOvertime" RenderMode="@Enums.AsyncContentRenderMode.WhileLoading">
+                            <div class="overtime">
+                                <div style="text-align:center;">Überstunden: @ViewModel.Overtime.Total.ToTimeString()</div>
+                                <div>
+                                    (@WorkTimeLabels[WorkTimeType.Office]: @ViewModel.Overtime.Office.ToTimeString() /
+                                    @WorkTimeLabels[WorkTimeType.Mobile]: @ViewModel.Overtime.Mobile.ToTimeString())
+                                </div>
                             </div>
-                        </div>
-                    </AsyncContent>
+                        </AsyncContent>
+                    </div>
                 </FlexRow>
                 <FlexFill>
                     <div style="@CalendarStyle">
@@ -63,5 +68,15 @@
                 </FlexFill>
             </FlexCol>
         </RadzenPanel>
+        <Dialog @bind-IsOpen="IsOpenCalendarStatisticsDialog">
+            <ul>
+                <li>@CalendarEntryLabels[CalendarEntryType.Office]: <strong>@ViewModel.CalendarStatistics[CalendarEntryType.Office]</strong></li>
+                <li>@CalendarEntryLabels[CalendarEntryType.Mobile]: <strong>@ViewModel.CalendarStatistics[CalendarEntryType.Mobile]</strong></li>
+                <li>@CalendarEntryLabels[CalendarEntryType.Holiday]: <strong>@ViewModel.CalendarStatistics[CalendarEntryType.Holiday]</strong></li>
+                <li>@CalendarEntryLabels[CalendarEntryType.Vacation]: <strong>@ViewModel.CalendarStatistics[CalendarEntryType.Vacation]</strong></li>
+                <li>@CalendarEntryLabels[CalendarEntryType.TimeCompensation]: <strong>@ViewModel.CalendarStatistics[CalendarEntryType.TimeCompensation]</strong></li>
+                <li>@CalendarEntryLabels[CalendarEntryType.Ill]: <strong>@ViewModel.CalendarStatistics[CalendarEntryType.Ill]</strong></li>
+            </ul>
+        </Dialog>
     </Body>
 </div>
