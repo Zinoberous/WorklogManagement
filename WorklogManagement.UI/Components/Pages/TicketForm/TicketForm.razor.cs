@@ -7,7 +7,7 @@ public partial class TicketForm
     [Parameter]
     public required int Id { get; set; }
 
-    private bool IsOpenWorklogsDialog { get; set; } = false;
+    private string TimeSpent => $"Arbeitsprotokoll ({$"{(int)ViewModel.TimeSpent.TotalHours}".PadLeft(2, '0')}:{$"{ViewModel.TimeSpent.Minutes}".PadLeft(2, '0')})";
 
     protected override async Task OnParametersSetAsync()
     {

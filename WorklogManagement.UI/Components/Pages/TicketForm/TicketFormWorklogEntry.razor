@@ -1,0 +1,30 @@
+﻿<FlexRow>
+    <DatePicker @bind-Value="Date" />
+    <DurationPicker @bind-Value="TimeSpent" />
+    @if (string.IsNullOrEmpty(Description))
+    {
+        <RadzenIcon Icon="chat_bubble" @onclick="ToggleDescription" />
+    }
+    else
+    {
+        <RadzenIcon Icon="chat" @onclick="ToggleDescription" />
+    }
+    <span style="display: flex; cursor: pointer;" @onclick="OpenAttachmentsDialog">
+        <RadzenIcon Icon="attach_file" />
+        @Attachments.Count()
+    </span>
+    @* TODO: Link via <RadzenIcon /> *@
+    <RadzenIcon Icon="delete" @onclick="OnDelete" />
+</FlexRow>
+<Accordion IsOpen="@ShowDescription">
+    <div>
+        <RadzenLabel Text="Beschreibung:" />
+        <Editor @bind-Value="Description" Placeholder="Beschreibung:" />
+    </div>
+</Accordion>
+<AttachmentsDialog
+    @bind-IsOpen="IsOpenAttachmentsDialog"
+    Title="Anhänge"
+    Attachments="@Attachments"
+    AttachmentsChanged="@AttachmentsChanged"
+/>

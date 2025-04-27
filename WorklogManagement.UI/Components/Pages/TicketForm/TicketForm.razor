@@ -33,7 +33,7 @@
                         <RadzenIcon Icon="chat" @onclick="ViewModel.ToggleStatusNote" />
                     }
                     <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
-                    <RadzenIcon Icon="alarm_on" @onclick="() => IsOpenWorklogsDialog = true" />
+                    <RadzenIcon Icon="alarm_on" @onclick="ViewModel.OpenWorklogsDialog" title="@TimeSpent" />
                 </FlexRow>
                 <FlexRow>
                     <FlexFill>
@@ -51,9 +51,11 @@
                     }
                 </FlexRow>
                 <Accordion IsOpen="@ViewModel.ShowDescription">
+                    <RadzenLabel Text="Beschreibung:" />
                     <Editor @bind-Value="ViewModel.Description" Placeholder="Beschreibung:" />
                 </Accordion>
                 <Accordion IsOpen="@ViewModel.ShowStatusNote">
+                    <RadzenLabel Text="Anmerkung:" />
                     <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Anmerkung:" />
                 </Accordion>
             </FlexCol>
@@ -63,8 +65,16 @@
                 Attachments="@ViewModel.Attachments"
                 AttachmentsChanged="@ViewModel.AttachmentsChanged"
             />
-            <Dialog @bind-IsOpen="IsOpenWorklogsDialog" Title="@($"Arbeitsprotokoll ({(int)ViewModel.TimeSpent.TotalHours}:{ViewModel.TimeSpent.Minutes})")">
-                TODO: Arbeitsprotokoll
+            <Dialog @bind-IsOpen="ViewModel.IsOpenWorklogsDialog" Title="@TimeSpent">
+                <FlexCol>
+                    <RadzenButton Text="Hinzufügen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />
+                    @foreach (var worklog in ViewModel.Worklogs)
+                    {
+                        <TicketFormWorklogEntry Worklog="@worklog" OnEdit="@ViewModel.SaveWorklogAsync" OnDelete="@(() => ViewModel.DeleteWorklogAsync(worklog))" />
+                    }
+                    @* leerer Editor, dient dazu die Breite vom Dialog einheitlich zu halten *@
+                    <Editor style="visibility: hidden; height: 0;" />
+                </FlexCol>
             </Dialog>
         </AsyncContent>
     </Body>

@@ -95,17 +95,21 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
     }
 
-    public IEnumerable<Ticket> _subTickets = [];
-    public IEnumerable<Ticket> SubTickets
+    public TimeSpan TimeSpent => TimeSpan.FromTicks(_worklogs.Sum(x => x.TimeSpent.Ticks));
+
+    private ICollection<Worklog> _worklogs = [];
+    public IEnumerable<Worklog> Worklogs => _worklogs
+        .OrderByDescending(x => x.Date)
+        .ThenByDescending(x => x.Id);
+
+    private bool _isOpenWorklogsDialog = false;
+    public bool IsOpenWorklogsDialog
     {
-        get => _subTickets;
-        set => SetValue(ref _subTickets, value);
+        get => _isOpenWorklogsDialog;
+        set => SetValue(ref _isOpenWorklogsDialog, value);
     }
 
-    public TimeSpan TimeSpent => _ticket.TimeSpent;
-
-    private IEnumerable<Worklog> _worklogs = [];
-    public IEnumerable<Worklog> Worklogs => _worklogs;
+    public void OpenWorklogsDialog() => IsOpenWorklogsDialog = true;
 
     public async Task LoadAsync(int ticketId)
     {
@@ -131,7 +135,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     private async Task LoadWorklogsAsync(int ticketId)
     {
-        _worklogs = (await _dataService.GetWorklogsAsync(0, 0, $"TicketId == {ticketId}")).Items;
+        _worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $"TicketId == {ticketId}")).Items];
     }
 
     private async Task SaveTicketAsync(Ticket ticket)
@@ -159,13 +163,53 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         return true;
     }
 
-    public async Task SaveWorklogAsync(Worklog worklog)
+    public async Task<bool> SaveWorklogAsync(Worklog? worklog = null)
     {
-        await _dataService.SaveWorklogAsync(worklog);
+        worklog ??= new Worklog
+        {
+            Date = DateOnly.FromDateTime(DateTimeOffset.Now.Date),
+            TicketId = _ticket.Id,
+            TicketTitle = _ticket.Title,
+            TimeSpent = TimeSpan.Zero,
+        };
+
+        Worklog savedWorklog;
+
+        try
+        {
+            savedWorklog = await _dataService.SaveWorklogAsync(worklog);
+        }
+        catch
+        {
+            _popupService.Error("Fehler beim Speichern vom Worklog!");
+            return false;
+        }
+
+        var existingWorklog = _worklogs.FirstOrDefault(x => x.Id == savedWorklog.Id);
+        if (existingWorklog is not null)
+        {
+            _worklogs.Remove(existingWorklog);
+        }
+
+        _worklogs.Add(savedWorklog);
+
+        return true;
     }
 
-    public async Task DeleteWorklogAsync(Worklog worklog)
+    public async Task<bool> DeleteWorklogAsync(Worklog worklog)
     {
-        await _dataService.DeleteWorklogAsync(worklog.Id);
+        _worklogs.Remove(worklog);
+
+        try
+        {
+            await _dataService.DeleteWorklogAsync(worklog.Id);
+        }
+        catch
+        {
+            _popupService.Error("Fehler beim Löschen vom Worklog!");
+            return false;
+        }
+
+        return true;
     }
 }
