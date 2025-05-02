@@ -52,7 +52,7 @@ public class TrackingViewModel(
     private async Task OnSearchChanged()
     {
         _navigationService.UpdateQuery("search", Search);
-        await LoadWorklogsAsync(true);
+        await LoadWorklogsAsync();
     }
 
     private bool _loadWorklogs = true;
@@ -65,7 +65,7 @@ public class TrackingViewModel(
     private IEnumerable<Worklog> _worklogs = [];
     public IEnumerable<Worklog> Worklogs
     {
-        get => _worklogs;
+        get => _worklogs.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id);
         set => SetValue(ref _worklogs, value);
     }
 
@@ -84,22 +84,19 @@ public class TrackingViewModel(
         await LoadWorklogsAsync();
     }
 
-    public async Task LoadWorklogsAsync(bool silent = false)
+    public async Task LoadWorklogsAsync()
     {
-        if (!silent)
-        {
-            LoadWorklogs = true;
-        }
+        LoadWorklogs = true;
 
         try
         {
             if (!string.IsNullOrWhiteSpace(Search))
             {
-                Worklogs = (await _dataService.GetWorklogsAsync(0, 0, $@"Description.Contains(""{Search}"")")).Items;
+                Worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $@"Description.Contains(""{Search}"")")).Items];
             }
             else
             {
-                Worklogs = (await _dataService.GetWorklogsAsync(0, 0, $@"Date == ""{_selectedDate:yyyy-MM-dd}""")).Items;
+                Worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $@"Date == ""{_selectedDate:yyyy-MM-dd}""")).Items];
             }
         }
         catch
@@ -110,5 +107,68 @@ public class TrackingViewModel(
         {
             LoadWorklogs = false;
         }
+    }
+
+    public async Task<bool> SaveWorklogAsync(Worklog? worklog = null)
+    {
+        if (worklog is null)
+        {
+            try
+            {
+                var defaultTicket = (await _dataService.GetTicketsAsync(1, 0)).Items.FirstOrDefault();
+
+                if (defaultTicket is null)
+                {
+                    _popupService.Error("Es gibt noch kein Ticket!");
+                    return false;
+                }
+
+                worklog = new Worklog
+                {
+                    Date = DateOnly.FromDateTime(DateTimeOffset.Now.Date),
+                    TicketId = defaultTicket.Id,
+                    TicketTitle = defaultTicket.Title,
+                    TimeSpent = TimeSpan.Zero,
+                };
+            }
+            catch
+            {
+                _popupService.Error("Fehler beim Speichern vom Arbeitsaufwand!");
+                return false;
+            }
+        }
+
+        Worklog savedWorklog;
+
+        try
+        {
+            savedWorklog = await _dataService.SaveWorklogAsync(worklog);
+        }
+        catch
+        {
+            _popupService.Error("Fehler beim Speichern vom Arbeitsaufwand!");
+            return false;
+        }
+
+        Worklogs = [.. Worklogs.Select(x => x.Id == savedWorklog.Id ? savedWorklog : x)];
+
+        return true;
+    }
+
+    public async Task<bool> DeleteWorklogAsync(Worklog worklog)
+    {
+        try
+        {
+            await _dataService.DeleteWorklogAsync(worklog.Id);
+        }
+        catch
+        {
+            _popupService.Error("Fehler beim Löschen vom Worklog!");
+            return false;
+        }
+
+        Worklogs = [.. Worklogs.Where(x => x.Id != worklog.Id)];
+
+        return true;
     }
 }

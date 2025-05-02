@@ -1,30 +1,40 @@
 <FlexCol Style="gap: 0;">
     <FlexRow>
-        <TicketSearch />
-        @* @if (string.IsNullOrEmpty(Description))
+        @if (ShowDate)
+        {
+            <DatePicker @bind-Value="Date" />
+        }
+        <FlexFill>
+            <TicketSearch @bind-Value="Ticket" />
+        </FlexFill>
+        <a href="/tickets/@Ticket.Id">
+            <RadzenIcon Icon="open_in_new" />
+        </a>
+        <DurationPicker @bind-Value="TimeSpent" />
+        @if (string.IsNullOrEmpty(Description))
         {
             <RadzenIcon Icon="chat_bubble" @onclick="ToggleDescription" />
         }
         else
         {
             <RadzenIcon Icon="chat" @onclick="ToggleDescription" />
-        } *@
-        @* <span style="display: flex; cursor: pointer;" @onclick="OpenAttachmentsDialog">
+        }
+        <span style="display: flex; cursor: pointer;" @onclick="OpenAttachmentsDialog">
             <RadzenIcon Icon="attach_file" />
             @Attachments.Count()
-        </span> *@
+        </span>
         <RadzenIcon Icon="delete" @onclick="OnDelete" />
     </FlexRow>
-    @* <Accordion IsOpen="@ShowDescription">
+    <Accordion IsOpen="@ShowDescription">
         <div style="margin-top: calc(var(--rz-row-gap) / 2);">
             <RadzenLabel Text="Beschreibung:" />
             <Editor @bind-Value="Description" Placeholder="Beschreibung:" />
         </div>
-    </Accordion> *@
+    </Accordion>
 </FlexCol>
-@* <AttachmentsDialog
+<AttachmentsDialog
     @bind-IsOpen="IsOpenAttachmentsDialog"
-    Title="@Title"
+    Title="Anhänge"
     Attachments="@Attachments"
     AttachmentsChanged="@AttachmentsChanged"
-/> *@
+/>

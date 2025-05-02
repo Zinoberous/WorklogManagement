@@ -1,4 +1,4 @@
-using WorklogManagement.Shared.Enums;
+﻿using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
@@ -97,10 +97,12 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public TimeSpan TimeSpent => TimeSpan.FromTicks(_worklogs.Sum(x => x.TimeSpent.Ticks));
 
-    private ICollection<Worklog> _worklogs = [];
-    public IEnumerable<Worklog> Worklogs => _worklogs
-        .OrderByDescending(x => x.Date)
-        .ThenByDescending(x => x.Id);
+    private IEnumerable<Worklog> _worklogs = [];
+    public IEnumerable<Worklog> Worklogs
+    {
+        get => _worklogs.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id);
+        set => SetValue(ref _worklogs, value);
+    }
 
     private bool _isOpenWorklogsDialog = false;
     public bool IsOpenWorklogsDialog
@@ -135,7 +137,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     private async Task LoadWorklogsAsync(int ticketId)
     {
-        _worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $"TicketId == {ticketId}")).Items];
+        Worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $"TicketId == {ticketId}")).Items];
     }
 
     private async Task SaveTicketAsync(Ticket ticket)
@@ -181,24 +183,18 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         }
         catch
         {
-            _popupService.Error("Fehler beim Speichern vom Worklog!");
+            _popupService.Error("Fehler beim Speichern vom Arbeitsaufwand!");
             return false;
         }
 
-        var existingWorklog = _worklogs.FirstOrDefault(x => x.Id == savedWorklog.Id);
-        if (existingWorklog is not null)
-        {
-            _worklogs.Remove(existingWorklog);
-        }
-
-        _worklogs.Add(savedWorklog);
+        Worklogs = [.. _worklogs.Select(x => x.Id == savedWorklog.Id ? savedWorklog : x)];
 
         return true;
     }
 
     public async Task<bool> DeleteWorklogAsync(Worklog worklog)
     {
-        _worklogs.Remove(worklog);
+        Worklogs = [.. _worklogs.Where(x => x.Id != worklog.Id)];
 
         try
         {
@@ -206,7 +202,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         }
         catch
         {
-            _popupService.Error("Fehler beim Löschen vom Worklog!");
+            _popupService.Error("Fehler beim Löschen vom Arbeitsaufwand!");
             return false;
         }
 

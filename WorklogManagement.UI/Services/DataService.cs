@@ -1,4 +1,4 @@
-using WorklogManagement.Shared.Enums;
+﻿using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.UI.Services;
@@ -229,9 +229,9 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         return await ExecuteWithDataStateAsync<Page<Worklog>>(HttpMethod.Get, "worklogs", queryParams, cancellationToken: cancellationToken);
     }
 
-    public async Task<Worklog> SaveWorklogAsync(Worklog ticket, CancellationToken cancellationToken = default)
+    public async Task<Worklog> SaveWorklogAsync(Worklog worklog, CancellationToken cancellationToken = default)
     {
-        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Post, "worklogs", content: ticket, cancellationToken: cancellationToken);
+        return await ExecuteWithDataStateAsync<Worklog>(HttpMethod.Post, "worklogs", content: worklog, cancellationToken: cancellationToken);
     }
 
     public async Task DeleteWorklogAsync(int id, CancellationToken cancellationToken = default)

@@ -5,7 +5,7 @@
 
 <div class="tracking">
     <Header>
-        <RadzenButton>Erstellen</RadzenButton>
+        <RadzenButton Text="Hinzufügen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />
         <DatePicker @bind-Value="ViewModel.SelectedDate" Disabled="@(!string.IsNullOrWhiteSpace(ViewModel.Search))" />
         <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
         <FlexFill />
@@ -17,7 +17,12 @@
             <FlexCol>
                 @foreach (var worklog in ViewModel.Worklogs)
                 {
-                    <TrackingEntry Worklog="@worklog" />
+                    <TrackingEntry
+                        Worklog="@worklog"
+                        OnEdit="@ViewModel.SaveWorklogAsync"
+                        OnDelete="@(() => ViewModel.DeleteWorklogAsync(worklog))"
+                        ShowDate="@(!string.IsNullOrWhiteSpace(ViewModel.Search))"
+                    />
                 }
             </FlexCol>
         </AsyncContent>
