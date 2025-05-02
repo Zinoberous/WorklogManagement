@@ -42,7 +42,6 @@ public class TrackingViewModel(
         get => _search;
         set
         {
-            
             if (SetValue(ref _search, string.IsNullOrWhiteSpace(value) ? string.Empty : value))
             {
                 _ = OnSearchChanged();
