@@ -33,7 +33,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { Description = value });
     }
 
-    private bool _showDescription = false;
+    private bool _showDescription = true;
     public bool ShowDescription
     {
         get => _showDescription;

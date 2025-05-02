@@ -55,8 +55,8 @@
                     <Editor @bind-Value="ViewModel.Description" Placeholder="Beschreibung:" />
                 </Accordion>
                 <Accordion IsOpen="@ViewModel.ShowStatusNote">
-                    <RadzenLabel Text="Anmerkung:" />
-                    <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Anmerkung:" />
+                    <RadzenLabel Text="Anmerkung zum Status:" />
+                    <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Statusanmerkung:" />
                 </Accordion>
             </FlexCol>
             <AttachmentsDialog

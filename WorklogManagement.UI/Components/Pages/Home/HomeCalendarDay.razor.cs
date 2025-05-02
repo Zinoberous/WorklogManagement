@@ -84,11 +84,11 @@ public partial class HomeCalendarDay
 
         if (actual > expected)
         {
-            return $"Überstunden: {actual - expected}";
+            return $"Überstunden: {(actual - expected).ToTimeString()}";
         }
         else if (actual < expected)
         {
-            return $"Minusstunden: {expected - actual}";
+            return $"Minusstunden: {(expected - actual).ToTimeString()}";
         }
 
         return string.Empty;

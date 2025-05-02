@@ -2,8 +2,8 @@ namespace WorklogManagement.UI.Extensions;
 
 internal static class TimeSpanExtensions
 {
-    internal static string ToTimeString(this TimeSpan timeSpan)
+    internal static string ToTimeString(this TimeSpan value)
     {
-        return timeSpan.ToString(@"hh\:mm");
+        return $"{(value < TimeSpan.Zero ? "-" : string.Empty)}{value:hh\\:mm}";
     }
 }
