@@ -6,19 +6,19 @@
 <div class="tracking">
     <Header>
         <RadzenButton>Erstellen</RadzenButton>
-        <RadzenDatePicker TValue="@DateTime" />
-        <RadzenTextBox Placeholder="Suche:" />
+        <DatePicker @bind-Value="ViewModel.SelectedDate" Disabled="@(!string.IsNullOrWhiteSpace(ViewModel.Search))" />
+        <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
         <FlexFill />
-        Gesamt: 00:00
+        Gesamt: @TimeSpan.FromTicks(ViewModel.Worklogs.Sum(x => x.TimeSpent.Ticks)).ToTimeString()
     </Header>
 
     <Body>
         <AsyncContent>
             <FlexCol>
-                @* @foreach (var ticket in ViewModel.Page.Items)
+                @foreach (var worklog in ViewModel.Worklogs)
                 {
-                    <TicketListEntry Ticket="@ticket" OnEdit="@ViewModel.SaveTicketAsync" OnDelete="@(() => ViewModel.DeleteTicketAsync(ticket))" />
-                } *@
+                    <TrackingEntry Worklog="@worklog" />
+                }
             </FlexCol>
         </AsyncContent>
     </Body>

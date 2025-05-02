@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
@@ -16,6 +16,9 @@ public partial class TicketSearch
 
     [Parameter]
     public string Placeholder { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool AllowClear { get; set; }
 
     [Inject]
     private IDataService DataService { get; set; } = null!;

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
@@ -18,11 +18,11 @@ public partial class CheckIn
     {
         ICollection<string> background = [];
 
-        if (ViewModel.DatesWithWorkTimes.Contains(DateOnly.FromDateTime(args.Date.Date)))
+        if (ViewModel.DatesWithWorkTimes.Contains(DateOnly.FromDateTime(args.Date)))
         {
             background.Add("steelblue");
         }
-        if (ViewModel.DatesWithAbsences.Contains(DateOnly.FromDateTime(args.Date.Date)))
+        if (ViewModel.DatesWithAbsences.Contains(DateOnly.FromDateTime(args.Date)))
         {
             background.Add("lightcoral");
         }

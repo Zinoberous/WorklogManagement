@@ -6,7 +6,7 @@
             </FlexFill>
             <TicketStatusDropDown @bind-Value="Status" />
         </FlexRow>
-        <TicketSearch Placeholder="Referenz:" @bind-Value="RefTicketSearch" />
+        <TicketSearch Placeholder="Referenz:" @bind-Value="RefTicketSearch" AllowClear />
         <div>
             <RadzenLabel Text="Beschreibung:" />
             <Editor Placeholder="Beschreibung:" @bind-Value="Description" />

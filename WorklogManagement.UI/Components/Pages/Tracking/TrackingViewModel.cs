@@ -1,95 +1,115 @@
+﻿using Blazored.LocalStorage;
+using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
+using WorklogManagement.UI.Services;
 
 namespace WorklogManagement.UI.Components.Pages.Tracking;
 
-public class TrackingViewModel : BaseViewModel
+public class TrackingViewModel(
+    IDataService dataService,
+    IPopupService popupService,
+    ILocalStorageService localStorageService,
+    INavigationService navigationService)
+    : BaseViewModel
 {
-    //    public ObservableProperty<bool> IsLoading { get; }
-    //    public ObservableProperty<Exception?> LoadError { get; }
-    //    public ObservableProperty<DateOnly> Date { get; }
-    //    public ObservableProperty<string> Search { get; }
-    //    public ObservableProperty<IEnumerable<Ticket>> RunningTickets { get; }
-    //    public ObservableProperty<IEnumerable<Worklog>> Worklogs { get; }
-    //    public ObservableProperty<IEnumerable<int>> VisibleWorklogNotes { get; }
-    //    public ObservableProperty<(bool IsOpen, bool Load, int WorklogId, IEnumerable<WorklogAttachment> Attachments)> AttachmentDialog { get; }
+    private readonly IDataService _dataService = dataService;
+    private readonly IPopupService _popupService = popupService;
+    private readonly ILocalStorageService _localStorageService = localStorageService;
+    private readonly INavigationService _navigationService = navigationService;
 
-    //    private readonly NavigationManager _navigationManager;
-    //    private readonly IWorklogManagementService _service;
+    private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
+    public DateOnly SelectedDate
+    {
+        get => _selectedDate;
+        set
+        {
+            if (SetValue(ref _selectedDate, value))
+            {
+                _ = OnSelectedDateChanged();
+            }
+        }
+    }
 
-    //    public TrackingViewModel(NavigationManager navigationManager, IWorklogManagementService service)
-    //    {
-    //        _navigationManager = navigationManager;
-    //        _service = service;
+    public async Task OnSelectedDateChanged()
+    {
+        _navigationService.UpdateQuery("date", $"{SelectedDate:yyyy-MM-dd}");
+        await LoadWorklogsAsync();
+    }
 
-    //        IsLoading = new(true);
-    //        LoadError = new();
-    //        Date = new(DateOnly.FromDateTime(DateTime.Today), OnDateChangedAsync);
-    //        Search = new(string.Empty, OnSearchChangedAsync);
-    //        RunningTickets = new();
-    //        Worklogs = new();
-    //        VisibleWorklogNotes = new();
-    //        AttachmentDialog = new();
-    //    }
+    private string _search = string.Empty;
+    public string Search
+    {
+        get => _search;
+        set
+        {
+            
+            if (SetValue(ref _search, string.IsNullOrWhiteSpace(value) ? string.Empty : value))
+            {
+                _ = OnSearchChanged();
+            }
+        }
+    }
 
-    //    public async Task InitAsync(DateOnly? initialDate = null, string? initialSearch = null)
-    //    {
-    //        await LoadContentHelper.TryLoadAsync(IsLoading, LoadError, async () =>
-    //        {
-    //            if (initialDate.HasValue)
-    //            {
-    //                Date.SetValueNoChangeEvent(initialDate.Value);
-    //            }
+    private async Task OnSearchChanged()
+    {
+        _navigationService.UpdateQuery("search", Search);
+        await LoadWorklogsAsync(true);
+    }
 
-    //            if (!string.IsNullOrWhiteSpace(initialSearch))
-    //            {
-    //                Search.SetValueNoChangeEvent(initialSearch);
-    //            }
+    private bool _loadWorklogs = true;
+    public bool LoadWorklogs
+    {
+        get => _loadWorklogs;
+        set => SetValue(ref _loadWorklogs, value);
+    }
 
-    //            await GetWorklogsAsync();
+    private IEnumerable<Worklog> _worklogs = [];
+    public IEnumerable<Worklog> Worklogs
+    {
+        get => _worklogs;
+        set => SetValue(ref _worklogs, value);
+    }
 
-    //            TicketQuery query = new()
-    //            {
-    //                Status = [TicketStatus.Running, TicketStatus.Continuous]
-    //            };
+    public async Task InitAsync(DateOnly? dateFilter, string? search)
+    {
+        if (dateFilter is not null)
+        {
+            SelectedDate = dateFilter.Value;
+        }
 
-    //            var page = await _service.GetTicketsAsync(query);
+        if (search is not null)
+        {
+            Search = search;
+        }
 
-    //            RunningTickets.Value = page.Items;
-    //        });
-    //    }
+        await LoadWorklogsAsync();
+    }
 
-    //    public async Task LoadWorklogsAsync()
-    //    {
-    //        await LoadContentHelper.TryLoadAsync(IsLoading, LoadError, GetWorklogsAsync);
-    //    }
+    public async Task LoadWorklogsAsync(bool silent = false)
+    {
+        if (!silent)
+        {
+            LoadWorklogs = true;
+        }
 
-    //    private async Task GetWorklogsAsync()
-    //    {
-    //        WorklogQuery query = string.IsNullOrWhiteSpace(Search.Value)
-    //            ? new() { Date = Date.Value }
-    //            : new() { Search = Search.Value };
-
-    //        var page = await _service.GetWorklogsAsync(query);
-
-    //        Worklogs.Value = page.Items;
-    //    }
-
-    //    private async Task OnDateChangedAsync()
-    //    {
-    //        if (!string.IsNullOrWhiteSpace(Search.Value))
-    //        {
-    //            return;
-    //        }
-
-    //        NavigationHelper.UpdateQuery(_navigationManager, "date", $"{Date!.Value:yyyy-MM-dd}");
-
-    //        await LoadWorklogsAsync();
-    //    }
-
-    //    private async Task OnSearchChangedAsync()
-    //    {
-    //        NavigationHelper.UpdateQuery(_navigationManager, "search", Search!.Value);
-
-    //        await LoadWorklogsAsync();
-    //    }
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                Worklogs = (await _dataService.GetWorklogsAsync(0, 0, $@"Description.Contains(""{Search}"")")).Items;
+            }
+            else
+            {
+                Worklogs = (await _dataService.GetWorklogsAsync(0, 0, $@"Date == ""{_selectedDate:yyyy-MM-dd}""")).Items;
+            }
+        }
+        catch
+        {
+            _popupService.Error("Fehler beim Laden der Arbeitsaufwände!");
+        }
+        finally
+        {
+            LoadWorklogs = false;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 
 namespace WorklogManagement.UI.Components.Shared;
@@ -16,6 +16,9 @@ public partial class DatePicker
 
     [Parameter]
     public Action<DateRenderEventArgs> DateRender { get; set; } = _ => { };
+
+    [Parameter]
+    public bool Disabled { get; set; }
 
     private DateOnly Date
     {

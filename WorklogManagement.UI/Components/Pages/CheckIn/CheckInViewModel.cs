@@ -1,4 +1,4 @@
-using Radzen;
+﻿using Radzen;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Common;
 using WorklogManagement.UI.Components.Pages.Base;
@@ -35,7 +35,13 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
     public DateOnly SelectedDate
     {
         get => _selectedDate;
-        set => SetValue(ref _selectedDate, value);
+        set
+        {
+            if (SetValue(ref _selectedDate, value))
+            {
+                _ = OnSelectedDateChanged();
+            }
+        }
     }
 
     public async Task OnSelectedDateChanged()

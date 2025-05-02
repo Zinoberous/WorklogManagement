@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace WorklogManagement.UI.Components.Pages.Tracking;
 
@@ -14,8 +15,6 @@ public partial class Tracking
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-
-        //await ViewModel.InitAsync(InitialDate, InitialSearch);
+        await ViewModel.InitAsync(InitialDate, InitialSearch);
     }
 }
