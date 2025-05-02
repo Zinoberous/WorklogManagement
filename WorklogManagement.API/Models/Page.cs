@@ -1,4 +1,4 @@
-using System.Linq.Dynamic.Core;
+﻿using System.Linq.Dynamic.Core;
 using System.Text;
 using DTO = WorklogManagement.Shared.Models;
 
@@ -68,7 +68,7 @@ public record Page
             var patterns = new[] { $" {map.Key} ", $" {map.Key}." };
             var replacements = new[] { $" {map.Value} ", $" {map.Value}." };
 
-            for (int i = 0; i < patterns.Length; i++)
+            for (var i = 0; i < patterns.Length; i++)
             {
                 s = $" {s}".Replace(patterns[i], replacements[i], StringComparison.OrdinalIgnoreCase)[1..];
             }

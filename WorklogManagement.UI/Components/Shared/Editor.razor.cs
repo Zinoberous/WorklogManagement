@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
@@ -44,7 +44,7 @@ public partial class Editor
     private static bool IsHtmlEmpty(string html)
     {
         // Entferne alle HTML-Tags
-        string textContent = Regex.Replace(html, "<[^>]*>", "", RegexOptions.None, TimeSpan.FromSeconds(1));
+        var textContent = Regex.Replace(html, "<[^>]*>", "", RegexOptions.None, TimeSpan.FromSeconds(1));
 
         // Falls nach dem Entfernen der Tags kein Text übrig bleibt, ist der Editor "leer"
         return string.IsNullOrEmpty(textContent);

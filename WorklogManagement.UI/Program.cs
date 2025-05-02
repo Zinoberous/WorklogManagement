@@ -1,4 +1,4 @@
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using Radzen;
 using Serilog;
 using System.Reflection;
@@ -9,7 +9,6 @@ using WorklogManagement.UI.Components.Pages.TicketBoard;
 using WorklogManagement.UI.Components.Pages.TicketForm;
 using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
-using WorklogManagement.UI.Components.Pages.WorklogForm;
 using WorklogManagement.UI.Services;
 
 #if DEBUG
@@ -65,8 +64,7 @@ services
     .AddScoped<TicketFormViewModel>()
     .AddScoped<TicketBoardViewModel>()
     .AddScoped<TicketListViewModel>()
-    .AddScoped<TrackingViewModel>()
-    .AddScoped<WorklogFormViewModel>();
+    .AddScoped<TrackingViewModel>();
 
 services
     .AddSingleton(TimeProvider.System)
