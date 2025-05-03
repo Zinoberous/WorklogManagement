@@ -1,4 +1,4 @@
-using WorklogManagement.Shared.Enums;
+﻿using WorklogManagement.Shared.Enums;
 
 namespace WorklogManagement.UI.Common;
 

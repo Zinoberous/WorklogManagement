@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Common;
@@ -16,10 +16,10 @@ public partial class CheckInNewDialog
     [Parameter]
     public IEnumerable<string> UsedTypeOptions { get; set; } = [];
 
-    private IEnumerable<string> TypeOptions =>
-        [.. Constant.WorkTimeLabels.Values
-        .Concat(Constant.AbsenceLabels.Values)
-        .Where(value => !UsedTypeOptions.Contains(value))];
+    private IEnumerable<string> TypeOptions => [
+        .. Constant.WorkTimeLabels.Values.Concat(Constant.AbsenceLabels.Values)
+            .Where(value => !UsedTypeOptions.Contains(value))
+    ];
 
     private string? _selectedType;
     private string SelectedType
@@ -63,6 +63,9 @@ public partial class CheckInNewDialog
     public Func<Absence, Task<bool>> OnSaveAbsence { get; set; } = _ => Task.FromResult(false);
 
     private async Task Save()
+        => await Save(false);
+
+    private async Task Save(bool close)
     {
         var saved = false;
 
@@ -101,20 +104,32 @@ public partial class CheckInNewDialog
             return;
         }
 
-        UsedTypeOptions = [.. UsedTypeOptions.Append(SelectedType)];
-
-        _selectedType = null;
+        if (close)
+        {
+            await Close();
+        }
+        else
+        {
+            Reset();
+        }
     }
 
     private async Task Close()
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(IsOpen);
+
+        Reset();
     }
 
     private async Task SaveAndClose()
+        => await Save(true);
+
+    private void Reset()
     {
-        await Save();
-        await Close();
+        _selectedType = null;
+        Actual = TimeSpan.FromHours(8);
+        Expected = TimeSpan.FromHours(8);
+        Note = null;
     }
 }

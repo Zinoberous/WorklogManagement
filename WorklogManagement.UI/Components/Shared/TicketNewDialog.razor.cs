@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 
@@ -44,17 +44,6 @@ public partial class TicketNewDialog
         ];
     }
 
-    private async Task Close()
-    {
-        IsOpen = false;
-        await IsOpenChanged.InvokeAsync(IsOpen);
-
-        Title = string.Empty;
-        Ref = null;
-        Description = null;
-        Attachments = [];
-    }
-
     private async Task Save()
     {
         Ticket ticket = new()
@@ -67,5 +56,22 @@ public partial class TicketNewDialog
         };
         await OnSave.Invoke(ticket);
         await Close();
+    }
+
+    private async Task Close()
+    {
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(IsOpen);
+
+        Reset();
+    }
+
+    private void Reset()
+    {
+        Title = string.Empty;
+        Status = TicketStatus.Todo;
+        Ref = null;
+        Description = null;
+        Attachments = [];
     }
 }

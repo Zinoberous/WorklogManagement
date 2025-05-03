@@ -1,12 +1,9 @@
 <Dialog IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Title="Neuer Eintrag">
     <FlexCol>
         <FlexRow>
-            <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" ItemRender="@TypeRender" Style="@TypeStyle" />
-            <RadzenDatePicker
-                @bind-Value="Date"
-                DateFormat="dd.MM.yyyy"
-                ReadOnly
-            />
+            <FlexFill>
+                <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" ItemRender="@TypeRender" Style="@TypeStyle" />
+            </FlexFill>
             @if (WorkTimeLabels.Values.Contains(SelectedType))
             {
                 <CheckInDurationPicker @bind-Actual="Actual" @bind-Expected="Expected" />

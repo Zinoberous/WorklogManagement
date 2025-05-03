@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.UI.Components.Pages.TicketBoard;
@@ -17,7 +17,7 @@ public partial class TicketBoardAccordion
     [Parameter]
     public EventCallback<Ticket> OnDelete { get; set; }
 
-    private bool IsOpen { get; set; } = true;
+    private bool IsOpen { get; set; }
 
     private void Toggle()
     {

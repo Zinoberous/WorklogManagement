@@ -4,6 +4,7 @@
     --scrollbar-width: 16px;
     --footer-height: 55px;
     /*--rz-row-gap: .5rem;*/
+    --confirm-zindex: calc(var(--rz-dialog-zindex) + 10);
 }
 
 /* soll nicht collapsed werden */
@@ -88,4 +89,9 @@ code {
     white-space: pre-wrap;
     tab-size: 4;
     overflow-x: auto;
+}
+
+/* Confirm */
+.rz-dialog-wrapper:has(.rz-dialog-confirm) {
+    z-index: var(--confirm-zindex) !important;
 }

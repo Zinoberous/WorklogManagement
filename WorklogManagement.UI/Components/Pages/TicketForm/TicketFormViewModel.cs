@@ -149,6 +149,11 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public async Task<bool> DeleteTicketAsync()
     {
+        if (!(await _popupService.Confim("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
+        {
+            return false;
+        }
+
         try
         {
             await _dataService.DeleteTicketAsync(_ticket.Id);
@@ -187,13 +192,18 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
             return false;
         }
 
-        Worklogs = [.. _worklogs.Select(x => x.Id == savedWorklog.Id ? savedWorklog : x)];
+        Worklogs = [.. _worklogs.Where(x => x.Id != worklog.Id).Append(savedWorklog)];
 
         return true;
     }
 
     public async Task<bool> DeleteWorklogAsync(Worklog worklog)
     {
+        if (!(await _popupService.Confim("Arbeitsaufwand löschen", "Möchtest du den Arbeitsaufwand wirklich löschen?")))
+        {
+            return false;
+        }
+
         Worklogs = [.. _worklogs.Where(x => x.Id != worklog.Id)];
 
         try
