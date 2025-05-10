@@ -87,19 +87,19 @@ if (!app.Environment.IsDevelopment())
 {
     app.UsePathBase("/stage-worklog-management/api");
     app.UseHsts();
-    
 }
+
 app.UseSwagger(c =>
 {
     c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
     {
         var serverUrl = $"https://{httpReq.Host.Value}{httpReq.PathBase}";
-        swaggerDoc.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
-        {
+        swaggerDoc.Servers = [
             new() { Url = serverUrl }
-        };
+        ];
     });
 });
+
 app.UseSwaggerUI();
 
 app.Use(async (context, next) =>
