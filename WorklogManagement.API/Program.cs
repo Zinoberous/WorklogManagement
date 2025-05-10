@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using WorklogManagement.API.Absences;
 using WorklogManagement.API.Common;
@@ -15,10 +16,6 @@ Console.Title = "WorklogManagement.API";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
-
-var env = builder.Environment;
-
-var isDevelopment = env.IsDevelopment();
 
 var config = builder.Configuration;
 
@@ -67,24 +64,19 @@ services.AddSwaggerGen(options =>
     options.CustomSchemaIds(type => type.FullName);
 });
 
-//services.Configure<SwaggerGenOptions>(options =>
-//{
-//    options.SwaggerGeneratorOptions.Servers = [
-//        new() { Url = "/worklog-management/api" }
-//    ];
-//});
+services.Configure<SwaggerGenOptions>(options =>
+{
+    options.SwaggerGeneratorOptions.Servers = [
+        new() { Url = "/stage-worklog-management/api" }
+    ];
+});
 
 services.AddHttpClient();
 
 services.AddDbContext<WorklogManagementContext>(options =>
 {
     var conStr = config.GetConnectionString("WorklogManagement");
-
     options.UseSqlServer(conStr);
-
-    //options
-    //    .EnableDetailedErrors(isDevelopment)
-    //    .EnableSensitiveDataLogging(isDevelopment);
 });
 
 var app = builder.Build();
