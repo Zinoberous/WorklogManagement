@@ -67,7 +67,7 @@ services.AddSwaggerGen(options =>
 services.Configure<SwaggerGenOptions>(options =>
 {
     options.SwaggerGeneratorOptions.Servers = [
-        new() { Url = "/stage-worklog-management/api" }
+        new() { Url = "/stage-worklog-management/api/" }
     ];
 });
 
@@ -83,7 +83,23 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.UseSwagger();
+if (!app.Environment.IsDevelopment())
+{
+    app.UsePathBase("/stage-worklog-management/api");
+    app.UseHsts();
+    
+}
+app.UseSwagger(c =>
+{
+    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+    {
+        var serverUrl = $"https://{httpReq.Host.Value}{httpReq.PathBase}";
+        swaggerDoc.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
+        {
+            new() { Url = serverUrl }
+        };
+    });
+});
 app.UseSwaggerUI();
 
 app.Use(async (context, next) =>
@@ -161,5 +177,6 @@ app.RegisterWorkTimeEndpoints();
 app.RegisterAbsenceEndpoints();
 app.RegisterTicketEndpoints();
 app.RegisterWorklogEndpoints();
+
 
 app.Run();
