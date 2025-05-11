@@ -82,6 +82,7 @@ if (isDevelopment)
 }
 else
 {
+    app.UsePathBase("/stage-worklog-management");
     app.UseHsts();
 }
 
