@@ -1,7 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Radzen;
 using Serilog;
-using System.Reflection;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
@@ -17,19 +16,19 @@ Console.Title = "WorklogManagement.UI";
 
 var builder = WebApplication.CreateBuilder(args);
 
+var isDevelopment = builder.Environment.IsDevelopment();
+
 var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
 
-var isDevelopment = builder.Environment.IsDevelopment();
-
 var services = builder.Services;
 
-// https://github.com/serilog/serilog-sinks-file/issues/56 => RollingInterval.Day mit utc statt local time
-var fileSinkTypes = typeof(Serilog.Sinks.File.FileSink).Assembly.GetTypes();
-var clockType = fileSinkTypes.FirstOrDefault(x => string.Equals(x.FullName, "Serilog.Sinks.File.Clock", StringComparison.Ordinal));
-var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
-timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
+//// https://github.com/serilog/serilog-sinks-file/issues/56 => RollingInterval.Day mit utc statt local time
+//var fileSinkTypes = typeof(Serilog.Sinks.File.FileSink).Assembly.GetTypes();
+//var clockType = fileSinkTypes.FirstOrDefault(x => string.Equals(x.FullName, "Serilog.Sinks.File.Clock", StringComparison.Ordinal));
+//var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
+//timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
 services
     .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
@@ -56,7 +55,8 @@ services
     .AddScoped<NotificationService>()
     .AddScoped<DialogService>();
 
-services.AddHttpClient(nameof(WorklogManagement), client => client.BaseAddress = new(config.GetValue<string>($"{nameof(WorklogManagement)}{nameof(HttpClient.BaseAddress)}")!));
+var apiBaseAddress = config.GetValue<string>($"{nameof(WorklogManagement)}Api{nameof(HttpClient.BaseAddress)}")!;
+services.AddHttpClient(nameof(WorklogManagement), client => client.BaseAddress = new(apiBaseAddress));
 
 services
     .AddScoped<CheckInViewModel>()

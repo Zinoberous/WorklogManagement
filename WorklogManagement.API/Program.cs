@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Reflection;
 using WorklogManagement.API.Absences;
 using WorklogManagement.API.Common;
 using WorklogManagement.API.Holidays;
@@ -17,6 +16,8 @@ Console.Title = "WorklogManagement.API";
 
 var builder = WebApplication.CreateBuilder(args);
 
+var isDevelopment = builder.Environment.IsDevelopment();
+
 var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
@@ -29,11 +30,11 @@ if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 
 var services = builder.Services;
 
-// https://github.com/serilog/serilog-sinks-file/issues/56 => RollingInterval.Day mit utc statt local time
-var fileSinkTypes = typeof(Serilog.Sinks.File.FileSink).Assembly.GetTypes();
-var clockType = fileSinkTypes.FirstOrDefault(x => string.Equals(x.FullName, "Serilog.Sinks.File.Clock", StringComparison.Ordinal));
-var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
-timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
+//// https://github.com/serilog/serilog-sinks-file/issues/56 => RollingInterval.Day mit utc statt local time
+//var fileSinkTypes = typeof(Serilog.Sinks.File.FileSink).Assembly.GetTypes();
+//var clockType = fileSinkTypes.FirstOrDefault(x => string.Equals(x.FullName, "Serilog.Sinks.File.Clock", StringComparison.Ordinal));
+//var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
+//timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
 services.AddLogging(loggingBuilder =>
 {
@@ -64,12 +65,16 @@ services.AddSwaggerGen(options =>
     options.CustomSchemaIds(type => type.FullName);
 });
 
-services.Configure<SwaggerGenOptions>(options =>
+
+if (!isDevelopment)
 {
-    options.SwaggerGeneratorOptions.Servers = [
-        new() { Url = "/stage-worklog-management/api/" }
-    ];
-});
+    services.Configure<SwaggerGenOptions>(options =>
+    {
+        options.SwaggerGeneratorOptions.Servers = [
+            new() { Url = "/stage-worklog-management/api/" }
+        ];
+    });
+}
 
 services.AddHttpClient();
 
@@ -83,7 +88,7 @@ var app = builder.Build();
 
 app.UseCors();
 
-if (!app.Environment.IsDevelopment())
+if (!isDevelopment)
 {
     app.UsePathBase("/stage-worklog-management/api");
     app.UseHsts();
@@ -177,6 +182,5 @@ app.RegisterWorkTimeEndpoints();
 app.RegisterAbsenceEndpoints();
 app.RegisterTicketEndpoints();
 app.RegisterWorklogEndpoints();
-
 
 app.Run();
