@@ -22,7 +22,7 @@ var config = builder.Configuration;
 
 config.AddJsonFile("local.settings.json", true);
 
-var attachmentsBaseDir = config.GetValue<string>("AttachmentsBaseDir");
+var attachmentsBaseDir = config.GetValue<string>("AttachmentsDir");
 if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 {
     Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
@@ -71,7 +71,7 @@ if (!isDevelopment)
     services.Configure<SwaggerGenOptions>(options =>
     {
         options.SwaggerGeneratorOptions.Servers = [
-            new() { Url = "/stage-worklog-management/api/" }
+            new() { Url = config.GetValue<string>("PathBase") }
         ];
     });
 }
@@ -90,7 +90,7 @@ app.UseCors();
 
 if (!isDevelopment)
 {
-    app.UsePathBase("/stage-worklog-management/api");
+    app.UsePathBase(config.GetValue<string>("PathBase"));
     app.UseHsts();
 }
 

@@ -54,7 +54,7 @@ services
     .AddScoped<NotificationService>()
     .AddScoped<DialogService>();
 
-var apiBaseAddress = config.GetValue<string>($"{nameof(WorklogManagement)}Api{nameof(HttpClient.BaseAddress)}")!;
+var apiBaseAddress = config.GetValue<string>($"Api{nameof(HttpClient.BaseAddress)}")!;
 services.AddHttpClient(nameof(WorklogManagement), client => client.BaseAddress = new(apiBaseAddress));
 
 services
@@ -81,7 +81,7 @@ if (isDevelopment)
 }
 else
 {
-    app.UsePathBase("/stage-worklog-management");
+    app.UsePathBase(config.GetValue<string>("PathBase"));
     app.UseHsts();
 }
 
