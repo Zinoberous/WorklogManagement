@@ -1,8 +1,10 @@
+@inject IConfiguration Config
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <base href="/" />
+    <base href="@(Config.GetValue<string>("PathBase"))" />
     <meta charset="utf-8" />
     <link rel="icon" href="favicon.ico" />
     <RadzenTheme Theme="material-dark" @rendermode="InteractiveServer" />
