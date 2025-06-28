@@ -1,10 +1,11 @@
 @inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <base href="@NavigationManager.BaseUri" />
+    <base href="@($"{NavigationManager.BaseUri}{Configuration.GetValue<string>("PathBase")}")" />
     <meta charset="utf-8" />
     <link rel="icon" href="favicon.ico" />
     <RadzenTheme Theme="material-dark" @rendermode="InteractiveServer" />
