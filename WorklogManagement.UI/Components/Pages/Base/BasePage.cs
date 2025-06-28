@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
 
 namespace WorklogManagement.UI.Components.Pages.Base;
@@ -36,12 +36,17 @@ public class BasePage<TViewModel> : ComponentBase, IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposed && disposing)
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
         {
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-
-            _disposed = true;
         }
+
+        _disposed = true;
     }
 
     #endregion

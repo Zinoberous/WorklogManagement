@@ -5,14 +5,14 @@
     <base href="/" />
     <meta charset="utf-8" />
     <link rel="icon" href="favicon.ico" />
-    <RadzenTheme Theme="material-dark" @rendermode="InteractiveAuto" />
+    <RadzenTheme Theme="material-dark" @rendermode="InteractiveServer" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="WorklogManagement.UI.styles.css" />
     <HeadOutlet />
 </head>
 
 <body>
-    <Routes @rendermode="new InteractiveServerRenderMode(false)" />
+    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
     <script src="_framework/blazor.web.js"></script>
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

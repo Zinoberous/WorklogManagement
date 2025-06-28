@@ -44,8 +44,7 @@ services
 
 services
     .AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents();
 
 services.AddBlazoredLocalStorage();
 
@@ -93,7 +92,6 @@ app.UseAntiforgery();
 
 app
     .MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
+    .AddInteractiveServerRenderMode();
 
 app.Run();
