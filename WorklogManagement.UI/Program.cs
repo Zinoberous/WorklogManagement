@@ -79,11 +79,9 @@ if (isDevelopment)
 {
     app.UseWebAssemblyDebugging();
 }
-else
-{
-    app.UsePathBase(config.GetValue<string>("PathBase"));
-    app.UseHsts();
-}
+
+app.UsePathBase(config.GetValue<string>("PathBase"));
+app.UseHsts();
 
 app.UseHttpsRedirection();
 

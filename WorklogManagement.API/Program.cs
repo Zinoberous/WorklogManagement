@@ -88,11 +88,8 @@ var app = builder.Build();
 
 app.UseCors();
 
-if (!isDevelopment)
-{
-    app.UsePathBase(config.GetValue<string>("PathBase"));
-    app.UseHsts();
-}
+app.UsePathBase(config.GetValue<string>("PathBase"));
+app.UseHsts();
 
 app.UseSwagger(c =>
 {
