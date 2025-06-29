@@ -1,4 +1,4 @@
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Display;
@@ -111,7 +111,7 @@ public class BrowserConsoleSink(IJSRuntime jsRuntime) : ILogEventSink
 
         var message = writer.ToString().Trim();
 
-        _ = Task.Run(async () => await _jsRuntime.InvokeAsync<string>(consoleMethod, message));
+        _ = Task.Run(() => _jsRuntime.InvokeAsync<string>(consoleMethod, message));
     }
 
     static string SelectConsoleMethod(LogEventLevel logLevel) =>
