@@ -16,7 +16,7 @@ public class NavigationService(NavigationManager navigationManager) : INavigatio
 
     public void NavigateToPage(string uri)
     {
-        _navigationManager.NavigateTo(uri, true);
+        _navigationManager.NavigateTo(uri);
     }
 
     public void UpdateQuery(string key, string? value)
