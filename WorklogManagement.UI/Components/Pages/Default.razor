@@ -1,10 +1,10 @@
 ﻿@page "/"
 
-@inject NavigationManager NavigationManager
+@inject INavigationService NavigationService
 
 @code {
     protected override void OnInitialized()
     {
-        NavigationManager.NavigateTo("/home", true);
+        NavigationService.NavigateToPage("home");
     }
 }

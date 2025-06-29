@@ -165,7 +165,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         }
 
         _popupService.Info("Ticket gelöscht!");
-        _navigationService.NavigateToPage("/ticket-list");
+        _navigationService.NavigateToPage("ticket-list");
 
         return true;
     }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System.Web;
 
 namespace WorklogManagement.UI.Services;
@@ -16,7 +16,7 @@ public class NavigationService(NavigationManager navigationManager) : INavigatio
 
     public void NavigateToPage(string uri)
     {
-        _navigationManager.NavigateTo(uri);
+        _navigationManager.NavigateTo(uri, true);
     }
 
     public void UpdateQuery(string key, string? value)
