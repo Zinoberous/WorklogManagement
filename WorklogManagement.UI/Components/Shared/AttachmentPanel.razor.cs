@@ -51,7 +51,7 @@ public partial class AttachmentPanel
 
     private async Task Remove(Attachment attachment)
     {
-        if (!(await PopupService.Confim("Anhang löschen", "Möchtest du den Anhang wirklich löschen?")))
+        if (!(await PopupService.Confirm("Anhang löschen", "Möchtest du den Anhang wirklich löschen?")))
         {
             return;
         }

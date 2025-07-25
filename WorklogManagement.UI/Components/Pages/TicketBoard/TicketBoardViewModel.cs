@@ -125,7 +125,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
 
     public async Task<bool> DeleteTicketAsync(Ticket ticket)
     {
-        if (!(await _popupService.Confim("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
+        if (!(await _popupService.Confirm("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
         {
             return false;
         }

@@ -175,7 +175,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
 
     public async Task<bool> DeleteWorkTimeAsync(WorkTime workTime)
     {
-        if (!(await _popupService.Confim("Eintrag löschen", "Möchtest du den Eintrag wirklich löschen?")))
+        if (!(await _popupService.Confirm("Eintrag löschen", "Möchtest du den Eintrag wirklich löschen?")))
         {
             return false;
         }
@@ -230,7 +230,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
 
     public async Task<bool> DeleteAbsenceAsync(Absence absence)
     {
-        if (!(await _popupService.Confim("Eintrag löschen", "Möchtest du den Eintrag wirklich löschen?")))
+        if (!(await _popupService.Confirm("Eintrag löschen", "Möchtest du den Eintrag wirklich löschen?")))
         {
             return false;
         }

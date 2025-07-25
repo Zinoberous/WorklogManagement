@@ -149,7 +149,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public async Task<bool> DeleteTicketAsync()
     {
-        if (!(await _popupService.Confim("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
+        if (!(await _popupService.Confirm("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
         {
             return false;
         }
@@ -199,7 +199,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public async Task<bool> DeleteWorklogAsync(Worklog worklog)
     {
-        if (!(await _popupService.Confim("Arbeitsaufwand löschen", "Möchtest du den Arbeitsaufwand wirklich löschen?")))
+        if (!(await _popupService.Confirm("Arbeitsaufwand löschen", "Möchtest du den Arbeitsaufwand wirklich löschen?")))
         {
             return false;
         }

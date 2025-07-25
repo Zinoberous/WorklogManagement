@@ -1,4 +1,4 @@
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
@@ -186,7 +186,7 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
 
     public async Task<bool> DeleteTicketAsync(Ticket ticket)
     {
-        if (!(await _popupService.Confim("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
+        if (!(await _popupService.Confirm("Ticket löschen", "Möchtest du das Ticket wirklich löschen?")))
         {
             return false;
         }

@@ -1,11 +1,11 @@
-using Radzen;
+﻿using Radzen;
 
 namespace WorklogManagement.UI.Services;
 
 public interface IPopupService
 {
     Task Alert(string title, string message);
-    Task<bool> Confim(string title, string message);
+    Task<bool> Confirm(string title, string message);
 
     void Info(string message);
     void Success(string message);
@@ -23,7 +23,7 @@ public class PopupService(DialogService dialogService, NotificationService notif
         await _dialogService.Alert(message, title, new() { OkButtonText = "Ja" });
     }
 
-    public async Task<bool> Confim(string title, string message)
+    public async Task<bool> Confirm(string title, string message)
     {
         return await _dialogService.Confirm(message, title, new() { OkButtonText = "Ja", CancelButtonText = "Nein" }) ?? false;
     }

@@ -157,7 +157,7 @@ public class TrackingViewModel(
 
     public async Task<bool> DeleteWorklogAsync(Worklog worklog)
     {
-        if (!(await _popupService.Confim("Arbeitsaufwand löschen", "Möchtest du den Arbeitsaufwand wirklich löschen?")))
+        if (!(await _popupService.Confirm("Arbeitsaufwand löschen", "Möchtest du den Arbeitsaufwand wirklich löschen?")))
         {
             return false;
         }
