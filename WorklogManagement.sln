@@ -11,28 +11,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "WorklogManagement.Database"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.Shared", "WorklogManagement.Shared\WorklogManagement.Shared.csproj", "{62C8844D-E7F1-4EF3-A869-CEB1E68DF6D8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F35EDF70-ABA0-452A-BB4D-640169CB6963}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		.gitignore = .gitignore
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.API", "WorklogManagement.API\WorklogManagement.API.csproj", "{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{2F7C16E4-4691-4FF5-B7FC-58A7876E6A15}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\.env = Docker\.env
-		Docker\docker-compose.yml = Docker\docker-compose.yml
-		Docker\README.md = Docker\README.md
-		Docker\start-docker.ps1 = Docker\start-docker.ps1
-		Docker\stop-docker.ps1 = Docker\stop-docker.ps1
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transformation", "Transformation", "{CDFE670D-CA68-4C3C-8618-1802335F83EE}"
-	ProjectSection(SolutionItems) = preProject
-		Transformation\CalendarEntryTransformation.sql = Transformation\CalendarEntryTransformation.sql
-		Transformation\CalendarEntryTypes.sql = Transformation\CalendarEntryTypes.sql
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,8 +45,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2F7C16E4-4691-4FF5-B7FC-58A7876E6A15} = {F35EDF70-ABA0-452A-BB4D-640169CB6963}
-		{CDFE670D-CA68-4C3C-8618-1802335F83EE} = {F35EDF70-ABA0-452A-BB4D-640169CB6963}
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EAD2E373-186D-46FD-9557-968CE3A422C7}
 	EndGlobalSection
 EndGlobal
