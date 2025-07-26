@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.Shared", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.API", "WorklogManagement.API\WorklogManagement.API.csproj", "{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorklogManagement.AI", "WorklogManagement.AI\WorklogManagement.AI.csproj", "{3629650D-B226-4E73-BA9D-3599387D1A17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2B00542-A6D9-4DE8-AD6E-9829C6DF52C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3629650D-B226-4E73-BA9D-3599387D1A17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3629650D-B226-4E73-BA9D-3599387D1A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3629650D-B226-4E73-BA9D-3599387D1A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3629650D-B226-4E73-BA9D-3599387D1A17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>2047fd45-e2ef-4dae-89fd-5aa62ea6ac90</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.61.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WorklogManagement.Data\WorklogManagement.Data.csproj" />
+    <ProjectReference Include="..\WorklogManagement.Shared\WorklogManagement.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

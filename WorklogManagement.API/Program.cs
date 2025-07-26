@@ -20,7 +20,8 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 var config = builder.Configuration;
 
-config.AddJsonFile("local.settings.json", true);
+config.AddUserSecrets<Program>(optional: true);
+config.AddJsonFile("local.settings.json", optional: true);
 
 var attachmentsBaseDir = config.GetValue<string>("AttachmentsDir");
 if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
