@@ -22,37 +22,77 @@ if (!apiReady)
 }
 
 var routes = await OpenApiHelper.GetGetRoutesAsync($"{baseUrl}/swagger/v1/swagger.json");
-var routeList = string.Join("\n", routes.Select(r => $"GET {r}"));
+var routeList = string.Join(Environment.NewLine, routes.Select(r => $"GET {r}"));
 
 var modelDescriptions = ModelDescriptionHelper.GenerateModelDescriptions("WorklogManagement.Data", "WorklogManagement.Data.Models");
 var enumDescriptions = ModelDescriptionHelper.GenerateEnumDescriptions("WorklogManagement.Shared");
 
-var systemPrompt = $"""
-Du bist ein API-Assistent.
-
-Die API ist unter folgender Basis-URL erreichbar:
+var dataModeling = $"""
+Basis-URL für APIs:
 {baseUrl}
 
-Folgende GET-Endpunkte stehen zur Verfügung:
+Endpunkte:
 {routeList}
 
 Query-Parameter:
-- `filter`: LINQ-Ausdruck basierend auf den tatsächlichen Spaltennamen
-- `sortBy`: Spaltenname mit optionalem Suffix ` desc` für absteigende Sortierung (z. B. `CreatedAt desc`).
-- `pageSize`: Anzahl Ergebnisse. 0 = alle.
-- `pageIndex`: 0-basiert. 0 = erste Seite.
+- filter: LINQ-Ausdruck basierend auf den tatsächlichen Spaltennamen
+- sortBy: Spaltenname mit optionalem Suffix ` desc` für absteigende Sortierung (z. B. `CreatedAt desc`).
+- pageSize: Anzahl Ergebnisse. 0 = alle.
+- pageIndex: 0-basiert. 0 = erste Seite.
 
 Modelle:
 {string.Join(Environment.NewLine, modelDescriptions)}
 
 Enums:
 {string.Join(Environment.NewLine, enumDescriptions)}
+""";
 
-Antwort: 
-1. Wenn die Frage eine Datenabfrage ist (z. B. "Zeige alle Tickets mit Status 'Todo'"), generiere eine vollständige GET-URL basierend auf den verfügbaren Endpunkten und Parametern. Gib ausschließlich die URL zurück. Keine Kommentare.
-2. Wenn JSON-Daten zur Analyse bereitgestellt werden, analysiere die Daten und beantworte die Frage.
-3. Wenn die Frage keine Datenabfrage ist (z. B. "Was ist ein Ticket?"), antworte direkt und präzise in natürlicher Sprache.
-4. Wenn du unsicher bist, ob es sich um eine Datenabfrage handelt, frage den Benutzer zur Klärung nach.
+var classifierSystemPrompt = $"""
+Du bist ein Assistent zur Klassifikation von Benutzeranfragen.
+
+Ziel ist es zu erkennen, ob der Benutzer Informationen aus einer Datenquelle (API) abrufen möchte.
+
+Antworte ausschließlich mit einem der folgenden Begriffe:
+- DATENABFRAGE
+- SONSTIGES
+
+Zur Beurteilung kannst du dich auf folgende Datenstruktur stützen:
+{dataModeling}
+
+Wenn du dir unsicher bist, wähle bitte SONSTIGES.
+""";
+
+var urlSystemPrompt = $"""
+Du bist ein API-URL-Generator.
+
+Ziel ist es, anhand der Benutzeranfrage möglichst passende GET-Endpunkte mit vollständiger URL inklusive Query-Parameter zu generieren, die die Anfrage beantworten könnten.
+
+Folgende Informationen stehen dir zur Verfügung:
+{dataModeling}
+
+Vorgehen:
+1. Interpretiere die Benutzeranfrage.
+2. Bestimme die relevanten GET-Endpunkte.
+3. Generiere **eine oder mehrere vollständige URLs** mit sinnvollen Parametern, um passende Daten abzufragen.
+
+Rückgabe:
+- Gib **ausschließlich die vollständigen URLs** (eine pro Zeile) zurück.
+- Kein Kommentar, keine Erklärung.
+""";
+
+var answerSystemPrompt = $"""
+Du bist ein Assistent zur Analyse von JSON-Daten oder zur direkten Beantwortung allgemeiner Anfragen.
+
+Wenn dir JSON-Daten übergeben werden:
+- Analysiere die Daten im Kontext der ursprünglichen Anfrage.
+- Gib prägnant und verständlich wieder, was sie bedeuten.
+- Vermeide technische Begriffe, wenn möglich.
+- Fasse zusammen, vergleiche, erkenne Muster oder Besonderheiten.
+
+Wenn dir keine JSON-Daten vorliegen:
+- Beantworte die Benutzeranfrage in natürlicher Sprache.
+- Nutze dein Wissen über die zugrunde liegende API und Datenstruktur:
+{dataModeling}
 """;
 
 var config = new ConfigurationBuilder()
@@ -66,15 +106,17 @@ var apiKey = config["OpenAI__ApiKey"]
 // Semantic Kernel Setup
 // ─────────────────────────────────────────────
 
-var builder = Kernel.CreateBuilder();
-builder.AddOpenAIChatCompletion(
-    modelId: "gpt-4o",
-    apiKey: apiKey,
-    serviceId: "openai"
-);
+var classifierHistory = new ChatHistory(classifierSystemPrompt);
+var urlHistory = new ChatHistory(urlSystemPrompt);
+var answerHistory = new ChatHistory(answerSystemPrompt);
 
-var kernel = builder.Build();
+var kernel = Kernel.CreateBuilder()
+    .AddOpenAIChatCompletion(modelId: "gpt-4o", apiKey: apiKey, serviceId: "openai")
+    .Build();
+
 var chat = kernel.GetRequiredService<IChatCompletionService>();
+
+using HttpClient http = new();
 
 while (true)
 {
@@ -82,47 +124,59 @@ while (true)
     // Benutzerabfrage & GPT-Generierung
     // ─────────────────────────────────────────────
 
-    Console.Write("Frage: ");
-    var question = Console.ReadLine();
+    Console.Write("Anfrage: ");
+    var request = Console.ReadLine()!;
 
-    ChatHistory chatHistory = new(systemPrompt);
-    chatHistory.AddUserMessage(question!);
+    classifierHistory.AddUserMessage(request);
+    var classification = await chat.GetChatMessageContentAsync(classifierHistory);
 
-    var gptResponse = await chat.GetChatMessageContentAsync(chatHistory);
-    if (!Uri.TryCreate(gptResponse.Content, UriKind.Absolute, out var generatedUrl))
+    if (classification.Content!.Equals("DATENABFRAGE", StringComparison.OrdinalIgnoreCase))
     {
-        Console.Write("Antwort: ");
-        Console.WriteLine(gptResponse.Content);
-        Console.WriteLine();
+        urlHistory.AddUserMessage(request);
+        var response = await chat.GetChatMessageContentAsync(urlHistory);
 
-        continue;
+        var urls = response.Content!
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(url => Uri.TryCreate(url, UriKind.Absolute, out _))
+            .ToArray();
+
+        // ─────────────────────────────────────────────
+        // API-Aufruf & Analyse
+        // ─────────────────────────────────────────────
+
+        var tasks = urls.Select(async url =>
+        {
+            try
+            {
+                var response = await http.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Fehler: {url} - {ex.Message}");
+                return null;
+            }
+        });
+
+        var jsonList = (await Task.WhenAll(tasks)).Where(json => json != null).ToArray();
+
+        var originalRequest = request;
+        request = $"""
+            Analysiere die folgenden JSON-Daten:
+            [{string.Join(',', jsonList)}]
+
+            Gib eine zusammengefasste Antwort auf die ursprüngliche Anfrage:
+            {originalRequest}
+            """;
     }
 
-    // ─────────────────────────────────────────────
-    // API-Aufruf & Analyse
-    // ─────────────────────────────────────────────
+    answerHistory.AddUserMessage(request);
 
-    using HttpClient http = new();
-
-    var apiResponse = await http.GetAsync(generatedUrl);
-
-    try
-    {
-        apiResponse.EnsureSuccessStatusCode();
-    }
-    catch (HttpRequestException ex)
-    {
-        Console.WriteLine($"Fehler: {generatedUrl} - {ex.Message}");
-        Console.WriteLine();
-    }
-
-    var json = await apiResponse.Content.ReadAsStringAsync();
-    chatHistory.AddUserMessage($"Analysiere die folgenden JSON-Daten:\n{json}");
-
-    var analysis = await chat.GetChatMessageContentAsync(chatHistory);
+    var answer = await chat.GetChatMessageContentAsync(answerHistory);
 
     Console.Write("Antwort: ");
-    Console.WriteLine(analysis.Content);
+    Console.WriteLine(answer.Content);
     Console.WriteLine();
 }
 
