@@ -123,6 +123,9 @@ Modelle:
 
 Enums:
 {string.Join(Environment.NewLine, enumDescriptions)}
+
+Anmerkungen:
+- RefId von Ticket entspricht einer ParentId
 """;
 
         _classifierSystemPrompt = $"""
@@ -162,7 +165,7 @@ Rückgabe:
 Du bist ein Assistent zur Analyse von JSON-Daten oder zur direkten Beantwortung allgemeiner Anfragen.
 
 Wenn dir JSON-Daten übergeben werden:
-- Analysiere die Daten im Kontext der ursprünglichen Anfrage.
+- Analysiere die Daten im Kontext der ursprünglichen Anfrage, sage aber nicht sowas wie "Die JSON-Daten ...".
 - Gib prägnant und verständlich wieder, was sie bedeuten.
 - Vermeide technische Begriffe, wenn möglich.
 - Fasse zusammen, vergleiche, erkenne Muster oder Besonderheiten.
