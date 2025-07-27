@@ -2,11 +2,11 @@
 
 namespace WorklogManagement.AI;
 
-public static class OpenApiHelper
+public static class SwaggerHelper
 {
-    public static async Task<List<string>> GetGetRoutesAsync(string swaggerUrl)
+    public static async Task<IEnumerable<string>> GetGetRoutesAsync(string swaggerUrl)
     {
-        using var http = new HttpClient();
+        using HttpClient http = new();
         using var stream = await http.GetStreamAsync(swaggerUrl);
 
         var document = await JsonDocument.ParseAsync(stream);

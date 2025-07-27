@@ -21,7 +21,7 @@ if (!apiReady)
     return;
 }
 
-var routes = await OpenApiHelper.GetGetRoutesAsync($"{baseUrl}/swagger/v1/swagger.json");
+var routes = await SwaggerHelper.GetGetRoutesAsync($"{baseUrl}/swagger/v1/swagger.json");
 var routeList = string.Join(Environment.NewLine, routes.Select(r => $"GET {r}"));
 
 var modelDescriptions = ModelDescriptionHelper.GenerateModelDescriptions("WorklogManagement.Data", "WorklogManagement.Data.Models");
@@ -106,9 +106,9 @@ var apiKey = config["OpenAI__ApiKey"]
 // Semantic Kernel Setup
 // ─────────────────────────────────────────────
 
-var classifierHistory = new ChatHistory(classifierSystemPrompt);
-var urlHistory = new ChatHistory(urlSystemPrompt);
-var answerHistory = new ChatHistory(answerSystemPrompt);
+ChatHistory classifierHistory = new(classifierSystemPrompt);
+ChatHistory urlHistory = new(urlSystemPrompt);
+ChatHistory answerHistory = new(answerSystemPrompt);
 
 var kernel = Kernel.CreateBuilder()
     .AddOpenAIChatCompletion(modelId: "gpt-4o", apiKey: apiKey, serviceId: "openai")

@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 
-namespace WorklogManagement.AI.Helpers;
+namespace WorklogManagement.API.Chat;
 
-public static class ModelDescriptionHelper
+public interface IModelDescriptionService
 {
     /// <summary>
     /// Generiert die Beschreibung aller Modelle in einem bestimmten Namespace.
@@ -10,7 +10,20 @@ public static class ModelDescriptionHelper
     /// <param name="assemblyName">Der Name der Assembly, die die Modelle enthält.</param>
     /// <param name="modelNamespace">Der Namespace, in dem sich die Modelle befinden.</param>
     /// <returns>Eine Liste von Modellbeschreibungen.</returns>
-    public static IEnumerable<string> GenerateModelDescriptions(string assemblyName, string modelNamespace)
+    IEnumerable<string> GenerateModelDescriptions(string assemblyName, string modelNamespace);
+
+    /// <summary>
+    /// Generiert die Beschreibung aller Enums in einer Assembly.
+    /// </summary>
+    /// <param name="assemblyName">Der Name der Assembly, die die Enums enthält.</param>
+    /// <returns>Eine Liste von Enum-Beschreibungen.</returns>
+    IEnumerable<string> GenerateEnumDescriptions(string assemblyName);
+}
+
+public class ModelDescriptionService : IModelDescriptionService
+{
+    /// <inheritdoc/>
+    public IEnumerable<string> GenerateModelDescriptions(string assemblyName, string modelNamespace)
     {
         var assembly = Assembly.Load(assemblyName);
         var modelTypes = GetModelTypes(assembly, modelNamespace);
@@ -24,12 +37,8 @@ public static class ModelDescriptionHelper
         return descriptions;
     }
 
-    /// <summary>
-    /// Generiert die Beschreibung aller Enums in einer Assembly.
-    /// </summary>
-    /// <param name="assemblyName">Der Name der Assembly, die die Enums enthält.</param>
-    /// <returns>Eine Liste von Enum-Beschreibungen.</returns>
-    public static IEnumerable<string> GenerateEnumDescriptions(string assemblyName)
+    /// <inheritdoc/>
+    public IEnumerable<string> GenerateEnumDescriptions(string assemblyName)
     {
         var assembly = Assembly.Load(assemblyName);
         var enumTypes = GetEnumTypes(assembly);

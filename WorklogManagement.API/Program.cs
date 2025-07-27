@@ -2,6 +2,7 @@
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WorklogManagement.API.Absences;
+using WorklogManagement.API.Chat;
 using WorklogManagement.API.Common;
 using WorklogManagement.API.Holidays;
 using WorklogManagement.API.Statistics;
@@ -20,8 +21,8 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 var config = builder.Configuration;
 
-config.AddUserSecrets<Program>(optional: true);
 config.AddJsonFile("local.settings.json", optional: true);
+config.AddUserSecrets<Program>(optional: true);
 
 var attachmentsBaseDir = config.GetValue<string>("AttachmentsDir");
 if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
@@ -84,6 +85,9 @@ services.AddDbContext<WorklogManagementContext>(options =>
     var conStr = config.GetConnectionString("WorklogManagement");
     options.UseSqlServer(conStr);
 });
+
+var openAiOption = config.GetSection("OpenAI").Get<OpenAiOptions>()!;
+services.AddChatService(openAiOption);
 
 var app = builder.Build();
 
@@ -180,5 +184,6 @@ app.RegisterWorkTimeEndpoints();
 app.RegisterAbsenceEndpoints();
 app.RegisterTicketEndpoints();
 app.RegisterWorklogEndpoints();
+app.RegisterChatEndpoints();
 
 app.Run();
