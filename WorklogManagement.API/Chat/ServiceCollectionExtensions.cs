@@ -7,10 +7,16 @@ internal static class ServiceCollectionExtensions
 {
     internal static IServiceCollection AddChatService(this IServiceCollection services, OpenAiOptions options)
     {
-        services.AddSingleton(_ => Kernel.CreateBuilder()
-            .AddOpenAIChatCompletion(modelId: options.ModelId, apiKey: options.ApiKey, serviceId: options.ServiceId)
+        var chatCompletionService = Kernel
+            .CreateBuilder()
+            .AddOpenAIChatCompletion(
+                modelId: options.ModelId,
+                apiKey: options.ApiKey,
+                serviceId: options.ServiceId)
             .Build()
-            .GetRequiredService<IChatCompletionService>());
+            .GetRequiredService<IChatCompletionService>();
+
+        services.AddSingleton(chatCompletionService);
 
         services.AddSingleton<ISwaggerService, SwaggerService>();
         services.AddSingleton<IModelDescriptionService, ModelDescriptionService>();

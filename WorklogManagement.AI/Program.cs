@@ -99,7 +99,7 @@ var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
 
-var apiKey = config["OpenAI__ApiKey"]
+var apiKey = config["OpenAI:ApiKey"]
     ?? throw new InvalidOperationException("API-Key nicht gefunden!");
 
 // ─────────────────────────────────────────────
@@ -172,7 +172,6 @@ while (true)
     }
 
     answerHistory.AddUserMessage(request);
-
     var answer = await chat.GetChatMessageContentAsync(answerHistory);
 
     Console.Write("Antwort: ");
