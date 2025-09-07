@@ -2,4 +2,12 @@
     @ChildContent
 </div>
 
-<script src="Components/Shared/Accordion.razor.js"></script>
+<script>
+    function slideDown(id, duration) {
+        $("#" + id).slideDown(duration);
+    }
+
+    function slideUp(id, duration) {
+        $("#" + id).slideUp(duration);
+    }
+</script>
