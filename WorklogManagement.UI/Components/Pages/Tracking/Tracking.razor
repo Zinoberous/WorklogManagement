@@ -5,7 +5,7 @@
 
 <div class="tracking">
     <Header>
-        <RadzenButton Text="Hinzufügen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />
+        <RadzenButton Text="Erstellen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />
         <DatePicker @bind-Value="ViewModel.SelectedDate" Disabled="@(!string.IsNullOrWhiteSpace(ViewModel.Search))" />
         <RadzenTextBox @bind-Value="ViewModel.Search" Placeholder="Suche:" />
         <FlexFill />
