@@ -2,8 +2,16 @@
     <div>
         <RadzenDatePicker @bind-Value="TimeValue" ShowTime TimeOnly DateFormat="HH:mm" ShowTimeOkButton="false" />
     </div>
-    <div>
-        <span class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="Increment" /></span>
-        <span class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="Decrement" /></span>
+    <div class="up-down">
+        <span title="+1min" class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="() => Increment(1)" /></span>
+        <span title="-1min" class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="() => Decrement(1)" /></span>
+    </div>
+    <div class="up-down">
+        <span title="+15min" class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="() => Increment(15)" /></span>
+        <span title="-15min" class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="() => Decrement(15)" /></span>
+    </div>
+    <div class="up-down">
+        <span title="+1std" class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="() => Increment(60)" /></span>
+        <span title="+1std" class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="() => Decrement(60)" /></span>
     </div>
 </div>

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace WorklogManagement.UI.Components.Shared;
 
@@ -20,7 +20,6 @@ public partial class DurationPicker
 
     private static TimeSpan MinValue => TimeSpan.Zero;
     private static TimeSpan MaxValue => new TimeOnly(23, 59).ToTimeSpan();
-    private static TimeSpan MinutesStep => TimeSpan.FromMinutes(15);
 
     private TimeOnly TimeValue
     {
@@ -55,38 +54,38 @@ public partial class DurationPicker
         await ValueChanged.InvokeAsync(Value);
     }
 
-    private async Task Increment()
+    private async Task Increment(int minutes)
     {
         if (Value == MaxValue)
         {
             return;
         }
 
-        // 1_425 = 23:45
-        if (Value.TotalMinutes > 1_425)
+        // 1_439 = 23:59
+        if (Value.TotalMinutes + minutes > 1_439)
         {
             await SetValue(MaxValue);
         }
         else
         {
-            await SetValue(Value.Add(MinutesStep));
+            await SetValue(Value.Add(TimeSpan.FromMinutes(minutes)));
         }
     }
 
-    private async Task Decrement()
+    private async Task Decrement(uint minutes)
     {
         if (Value == MinValue)
         {
             return;
         }
 
-        if (Value.TotalMinutes < 15)
+        if (Value.TotalMinutes - minutes < 0)
         {
             await SetValue(MinValue);
         }
         else
         {
-            await SetValue(Value.Add(-MinutesStep));
+            await SetValue(Value.Add(-TimeSpan.FromMinutes(minutes)));
         }
     }
 }

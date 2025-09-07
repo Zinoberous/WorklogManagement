@@ -96,9 +96,9 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
 
     public async Task<bool> SaveTicketAsync(Ticket ticket)
     {
-        AllTickets = AllTickets.Any(x => x.Id == ticket.Id)
-            ? AllTickets.Select(x => x.Id == ticket.Id ? ticket : x).ToArray()
-            : [.. AllTickets, ticket];
+        AllTickets = [.. AllTickets.Any(x => x.Id == ticket.Id)
+            ? AllTickets.Select(x => x.Id == ticket.Id ? ticket : x)
+            : AllTickets, ticket];
 
         Ticket savedTicket;
 

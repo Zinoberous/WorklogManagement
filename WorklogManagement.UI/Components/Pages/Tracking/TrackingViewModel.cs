@@ -123,7 +123,7 @@ public class TrackingViewModel(
                     return false;
                 }
 
-                worklog = new Worklog
+                worklog = new()
                 {
                     Date = SelectedDate,
                     TicketId = defaultTicket.Id,
@@ -150,7 +150,9 @@ public class TrackingViewModel(
             return false;
         }
 
-        Worklogs = [.. Worklogs.Where(x => x.Id != worklog.Id).Append(savedWorklog)];
+        Worklogs = [.. Worklogs.Any(x => x.Id == savedWorklog.Id)
+            ? Worklogs.Select(x => x.Id == savedWorklog.Id ? savedWorklog : x)
+            : Worklogs.Append(savedWorklog)];
 
         return true;
     }
