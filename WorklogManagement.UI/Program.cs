@@ -44,7 +44,7 @@ services
 
 services
     .AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents(config.Bind);
 
 services.AddBlazoredLocalStorage();
 
