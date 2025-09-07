@@ -125,7 +125,7 @@ public class TrackingViewModel(
 
                 worklog = new Worklog
                 {
-                    Date = DateOnly.FromDateTime(DateTimeOffset.Now.Date),
+                    Date = SelectedDate,
                     TicketId = defaultTicket.Id,
                     TicketTitle = defaultTicket.Title,
                     TimeSpent = TimeSpan.Zero,
