@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.UI.Components.Pages.TicketBoard;
@@ -19,7 +19,7 @@ public partial class TicketBoardLayer
         .. TicketGroups
             .Where(x => !x.Childs.Any())
             .Select(x => x.Parent.AsT0)
-            .OrderBy(x => x.Title)
+            .OrderBy(x => x.Id)
     ];
 
     private Dictionary<string, IEnumerable<TicketGroup>> SubLayer => TicketGroups

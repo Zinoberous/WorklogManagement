@@ -98,7 +98,7 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
     {
         AllTickets = [.. AllTickets.Any(x => x.Id == ticket.Id)
             ? AllTickets.Select(x => x.Id == ticket.Id ? ticket : x)
-            : AllTickets, ticket];
+            : AllTickets.Append(ticket)];
 
         Ticket savedTicket;
 

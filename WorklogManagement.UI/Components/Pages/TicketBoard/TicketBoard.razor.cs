@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.UI.Components.Pages.TicketBoard;
@@ -25,12 +25,10 @@ public partial class TicketBoard
             return [
                 .. ViewModel.Tickets
                     .Where(x => x.Ref is null)
-                    .Select(x => new TicketGroup { Parent = x, Childs = GetTicketGroups(x.Id) })
-                    .ToArray(),
+                    .Select(x => new TicketGroup { Parent = x, Childs = GetTicketGroups(x.Id) }),
                 .. ViewModel.Tickets
                     .Where(x => x.Ref is not null && !TicketDict.ContainsKey(x.Ref.Id))
                     .Select(x => new TicketGroup { Parent = x.Ref!, Childs = GetTicketGroups(x.Ref!.Id) })
-                    .ToArray()
             ];
         }
 
