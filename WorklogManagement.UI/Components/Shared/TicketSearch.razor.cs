@@ -40,7 +40,7 @@ public partial class TicketSearch
     {
         Tickets = string.IsNullOrWhiteSpace(searchText)
             ? (await DataService.GetTicketsAsync(0, 0, $"status in ({string.Join(',', (int)TicketStatus.Running)})")).Items
-            : (await DataService.GetTicketsAsync(0, 0, $@"Id == {searchText} || Title.Contains(""{searchText}"") || Description.Contains(""{searchText}"")")).Items;
+            : (await DataService.GetTicketsAsync(0, 0, $@"Title.Contains(""{searchText}"")")).Items;
 
         await InvokeAsync(StateHasChanged);
     }
