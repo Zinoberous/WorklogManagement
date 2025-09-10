@@ -15,6 +15,12 @@
     <Body>
         <AsyncContent>
             <FlexCol>
+                @if (!ViewModel.Worklogs.Any())
+                {
+                    <FlexFill>
+                        Keine Einträge vorhanden.
+                    </FlexFill>
+                }
                 @foreach (var worklog in ViewModel.Worklogs)
                 {
                     <TrackingEntry
