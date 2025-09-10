@@ -13,7 +13,7 @@
     </Header>
 
     <Body>
-        <AsyncContent>
+        <AsyncContent IsLoading="@ViewModel.LoadWorklogs">
             <FlexCol>
                 @if (!ViewModel.Worklogs.Any())
                 {

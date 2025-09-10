@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using WorklogManagement.Shared.Models;
+﻿using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
 
@@ -8,13 +7,11 @@ namespace WorklogManagement.UI.Components.Pages.Tracking;
 public class TrackingViewModel(
     IDataService dataService,
     IPopupService popupService,
-    ILocalStorageService localStorageService,
     INavigationService navigationService)
     : BaseViewModel
 {
     private readonly IDataService _dataService = dataService;
     private readonly IPopupService _popupService = popupService;
-    private readonly ILocalStorageService _localStorageService = localStorageService;
     private readonly INavigationService _navigationService = navigationService;
 
     private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
