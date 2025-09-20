@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="WorklogManagement.API/WorklogManagement.API.csproj" />
+  <Project Path="WorklogManagement.Data/WorklogManagement.Data.csproj" />
+  <Project Path="WorklogManagement.Database/WorklogManagement.Database.sqlproj" Id="c975a765-2543-4b29-b499-da945e5337bd">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="WorklogManagement.Shared/WorklogManagement.Shared.csproj" />
+  <Project Path="WorklogManagement.UI/WorklogManagement.UI.csproj" />
+</Solution>

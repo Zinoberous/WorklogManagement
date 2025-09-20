@@ -50,38 +50,16 @@ public partial class Editor
         return string.IsNullOrEmpty(textContent);
     }
 
-    private async Task OnExecute(HtmlEditorExecuteEventArgs args)
+    private static async Task OnExecute(HtmlEditorExecuteEventArgs args)
     {
         switch (args.CommandName)
         {
             case "InsertNewLine":
-                await InsertNewLine(args.Editor);
-                await SynchronizeEditorValue();
+                await args.Editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, "<div><br></div>");
                 break;
             case "InsertCode":
-                await InsertCode(args.Editor);
-                await SynchronizeEditorValue();
+                await args.Editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, "<pre><code><br/></code></pre>");
                 break;
         }
-    }
-
-    private async Task InsertNewLine(RadzenHtmlEditor editor)
-    {
-        const string newline = "<div><br></div>";
-
-        await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, newline);
-    }
-
-    private async Task InsertCode(RadzenHtmlEditor editor)
-    {
-        const string codeblock = "<pre><code><br/></code></pre>";
-
-        await JSRuntime.InvokeVoidAsync("insertEditorHtml", editor.Element, codeblock);
-    }
-
-    private async Task SynchronizeEditorValue()
-    {
-        // Zero-Width Space hinzufügen, um durch editor.ExecuteCommandAsync im Hintergrund benötigte Update-Logik auszuführen
-        await _editor.ExecuteCommandAsync(HtmlEditorCommands.InsertHtml, "&#8203;");
     }
 }
