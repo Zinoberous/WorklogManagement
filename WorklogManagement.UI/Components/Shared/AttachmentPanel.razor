@@ -14,7 +14,7 @@
             <FlexCol>
                 @foreach (var attachment in Attachments)
                 {
-                    <FlexRow>
+                    <FlexRow @key="attachment.Name">
                         <RadzenText>@attachment.Name</RadzenText>
                         <FlexFill>
                             <RadzenTextBox Placeholder="Kommentar:" Value="@attachment.Comment" ValueChanged="@((value) => Edit(attachment with { Comment = value }))" />

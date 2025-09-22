@@ -70,7 +70,7 @@
                     <RadzenButton Text="Hinzufügen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />
                     @foreach (var worklog in ViewModel.Worklogs)
                     {
-                        <TicketFormWorklogEntry Worklog="@worklog" OnEdit="@ViewModel.SaveWorklogAsync" OnDelete="@(() => ViewModel.DeleteWorklogAsync(worklog))" />
+                        <TicketFormWorklogEntry @key="worklog.Id" Worklog="@worklog" OnEdit="@ViewModel.SaveWorklogAsync" OnDelete="@(() => ViewModel.DeleteWorklogAsync(worklog))" />
                     }
                     @* leerer Editor, dient dazu die Breite vom Dialog einheitlich zu halten *@
                     <Editor style="visibility: hidden; height: 0;" />

@@ -28,7 +28,7 @@
             <FlexCol>
                 @foreach (var ticket in ViewModel.Page.Items)
                 {
-                    <TicketListEntry Ticket="@ticket" OnEdit="@ViewModel.SaveTicketAsync" OnDelete="@(() => ViewModel.DeleteTicketAsync(ticket))" />
+                    <TicketListEntry @key="ticket.Id" Ticket="@ticket" OnEdit="@ViewModel.SaveTicketAsync" OnDelete="@(() => ViewModel.DeleteTicketAsync(ticket))" />
                 }
             </FlexCol>
         </AsyncContent>

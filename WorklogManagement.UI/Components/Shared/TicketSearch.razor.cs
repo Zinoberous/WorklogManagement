@@ -44,6 +44,4 @@ public partial class TicketSearch
 
         await InvokeAsync(StateHasChanged);
     }
-
-
 }

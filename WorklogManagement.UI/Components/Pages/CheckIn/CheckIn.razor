@@ -22,6 +22,7 @@
                 @foreach (var workTime in ViewModel.WorkTimes)
                 {
                     <CheckInEntry
+                        @key="workTime.Id"
                         Type="@WorkTimeLabels[workTime.Type]"
                         Actual="@workTime.Actual"
                         ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
@@ -35,6 +36,7 @@
                 @foreach (var absence in ViewModel.Absences)
                 {
                     <CheckInEntry
+                        @key="absence.Id"
                         Type="@AbsenceLabels[absence.Type]"
                         Actual="@absence.Duration"
                         ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
