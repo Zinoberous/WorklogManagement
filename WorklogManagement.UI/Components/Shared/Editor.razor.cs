@@ -32,7 +32,7 @@ public partial class Editor
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("initializeEditorTabKeyHandling", _editor.Element);
+            await JSRuntime.InvokeVoidAsync("initializeEditorKeyHandling", _editor.Element);
         }
     }
 

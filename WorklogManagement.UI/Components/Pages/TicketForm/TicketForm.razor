@@ -11,14 +11,6 @@
                     <FlexFill>
                         <RadzenTextBox Placeholder="Titel:" @bind-Value="ViewModel.Title" />
                     </FlexFill>
-                    @if (string.IsNullOrEmpty(ViewModel.Description))
-                    {
-                        <RadzenIcon Icon="chat_bubble" @onclick="ViewModel.ToggleDescription" />
-                    }
-                    else
-                    {
-                        <RadzenIcon Icon="chat" @onclick="ViewModel.ToggleDescription" />
-                    }
                     <span style="display: flex; cursor: pointer;" @onclick="ViewModel.OpenAttachmentsDialog">
                         <RadzenIcon Icon="attach_file" />
                         @ViewModel.Attachments.Count()
@@ -26,14 +18,15 @@
                     <TicketStatusDropDown @bind-Value="ViewModel.Status" />
                     @if (string.IsNullOrEmpty(ViewModel.StatusNote))
                     {
-                        <RadzenIcon Icon="chat_bubble" @onclick="ViewModel.ToggleStatusNote" />
+                        <RadzenIcon Icon="chat_bubble" @onclick="ViewModel.OpenStatusNoteDialog" />
                     }
                     else
                     {
-                        <RadzenIcon Icon="chat" @onclick="ViewModel.ToggleStatusNote" />
+                        <RadzenIcon Icon="chat" @onclick="ViewModel.OpenStatusNoteDialog" />
                     }
-                    <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
+                    @* TODO: open ticket status log dialog <RadzenIcon Icon="history" /> *@
                     <RadzenIcon Icon="alarm_on" @onclick="ViewModel.OpenWorklogsDialog" title="@TimeSpent" />
+                    <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
                 </FlexRow>
                 <FlexRow>
                     <FlexFill>
@@ -50,14 +43,9 @@
                         <RadzenIcon Icon="open_in_new" Style="opacity: .5; cursor: default;" />
                     }
                 </FlexRow>
-                <Accordion IsOpen="@ViewModel.ShowDescription">
-                    <RadzenLabel Text="Beschreibung:" />
+                <FlexFill>
                     <Editor @bind-Value="ViewModel.Description" Placeholder="Beschreibung:" />
-                </Accordion>
-                <Accordion IsOpen="@ViewModel.ShowStatusNote">
-                    <RadzenLabel Text="Anmerkung zum Status:" />
-                    <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Statusanmerkung:" />
-                </Accordion>
+                </FlexFill>
             </FlexCol>
             <AttachmentsDialog
                 @bind-IsOpen="ViewModel.IsOpenAttachmentsDialog"
@@ -65,6 +53,10 @@
                 Attachments="@ViewModel.Attachments"
                 AttachmentsChanged="@ViewModel.AttachmentsChanged"
             />
+            <Dialog @bind-IsOpen="@ViewModel.IsOpenStatusNoteDialog" Title="Anmerkung zum Status">
+                <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Statusanmerkung:" />
+            </Dialog>
+            @* TODO: Ticket status log *@
             <Dialog @bind-IsOpen="ViewModel.IsOpenWorklogsDialog" Title="@TimeSpent">
                 <FlexCol>
                     <RadzenButton Text="Hinzufügen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />

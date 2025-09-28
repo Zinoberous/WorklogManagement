@@ -27,42 +27,6 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { Title = value });
     }
 
-    public string? Description
-    {
-        get => _ticket.Description;
-        set => _ = SaveTicketAsync(_ticket with { Description = value });
-    }
-
-    private bool _showDescription = true;
-    public bool ShowDescription
-    {
-        get => _showDescription;
-        set => SetValue(ref _showDescription, value);
-    }
-
-    public void ToggleDescription() => ShowDescription = !ShowDescription;
-
-    public TicketStatus Status
-    {
-        get => _ticket.Status;
-        set => _ = SaveTicketAsync(_ticket with { Status = value });
-    }
-
-    public string? StatusNote
-    {
-        get => _ticket.StatusNote;
-        set => _ = SaveTicketAsync(_ticket with { StatusNote = value });
-    }
-
-    private bool _showStatusNote = false;
-    public bool ShowStatusNote
-    {
-        get => _showStatusNote;
-        set => SetValue(ref _showStatusNote, value);
-    }
-
-    public void ToggleStatusNote() => ShowStatusNote = !ShowStatusNote;
-
     public IEnumerable<TicketAttachment> Attachments => _ticket.Attachments;
     public async Task AttachmentsChanged(IEnumerable<Attachment> attachments)
     {
@@ -89,11 +53,26 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public void OpenAttachmentsDialog() => IsOpenAttachmentsDialog = true;
 
-    public Ticket? Ref
+    public TicketStatus Status
     {
-        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
-        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
+        get => _ticket.Status;
+        set => _ = SaveTicketAsync(_ticket with { Status = value });
     }
+
+    public string? StatusNote
+    {
+        get => _ticket.StatusNote;
+        set => _ = SaveTicketAsync(_ticket with { StatusNote = value });
+    }
+
+    private bool _isOpenStatusNoteDialog = false;
+    public bool IsOpenStatusNoteDialog
+    {
+        get => _isOpenStatusNoteDialog;
+        set => SetValue(ref _isOpenStatusNoteDialog, value);
+    }
+
+    public void OpenStatusNoteDialog() => _isOpenStatusNoteDialog = true;
 
     public TimeSpan TimeSpent => TimeSpan.FromTicks(_worklogs.Sum(x => x.TimeSpent.Ticks));
 
@@ -112,6 +91,18 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
     }
 
     public void OpenWorklogsDialog() => IsOpenWorklogsDialog = true;
+
+    public Ticket? Ref
+    {
+        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
+        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
+    }
+
+    public string? Description
+    {
+        get => _ticket.Description;
+        set => _ = SaveTicketAsync(_ticket with { Description = value });
+    }
 
     public async Task LoadAsync(int ticketId)
     {
