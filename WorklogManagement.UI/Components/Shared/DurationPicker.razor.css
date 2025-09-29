@@ -21,18 +21,11 @@
     gap: 1px;
 }
 
-.up-down > span {
-    height: 20px;
-}
-
-.up-down > span ::deep i {
-    height: 20px;
-    background-color: var(--rz-primary);
-    color: var(--rz-on-primary);
-    cursor: pointer;
-}
-
-.up-down > span.disabled ::deep i {
-    opacity: var(--rz-button-disabled-opacity);
-    cursor: not-allowed;
+.up-down > ::deep button {
+    padding: 0;
+    min-height: unset;
+    min-width: unset;
+    font-size: xx-small;
+    letter-spacing: unset;
+    width: 15px;
 }

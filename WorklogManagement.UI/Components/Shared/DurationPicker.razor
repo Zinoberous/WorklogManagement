@@ -1,17 +1,17 @@
 <div class="@ClassValue" style="@Style">
+    <div class="up-down">
+        <RadzenButton Text="1" title="+1std" Click="@(args => Increment(60))" ButtonStyle="ButtonStyle.Success" Shade="Shade.Darker" Disabled="@(Value >= MaxValue)" />
+        <RadzenButton Text="1" title="-1std" Click="@(args => Decrement(60))" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Darker" Disabled="@(Value <= MinValue)" />
+    </div>
     <div>
         <RadzenDatePicker @bind-Value="TimeValue" ShowTime TimeOnly DateFormat="HH:mm" ShowTimeOkButton="false" />
     </div>
     <div class="up-down">
-        <span title="+1min" class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="() => Increment(1)" /></span>
-        <span title="-1min" class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="() => Decrement(1)" /></span>
+        <RadzenButton Text="1" title="+1min" Click="@(args => Increment(1))" ButtonStyle="ButtonStyle.Success" Shade="Shade.Darker" Disabled="@(Value >= MaxValue)" />
+        <RadzenButton Text="1" title="-1min" Click="@(args => Decrement(1))" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Darker" Disabled="@(Value <= MinValue)" />
     </div>
     <div class="up-down">
-        <span title="+15min" class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="() => Increment(15)" /></span>
-        <span title="-15min" class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="() => Decrement(15)" /></span>
-    </div>
-    <div class="up-down">
-        <span title="+1std" class="@(Value >= MaxValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_up" @onclick="() => Increment(60)" /></span>
-        <span title="+1std" class="@(Value <= MinValue ? "disabled" : null)"><RadzenIcon Icon="keyboard_arrow_down" @onclick="() => Decrement(60)" /></span>
-    </div>
+        <RadzenButton Text="15" title="+15min" Click="@(args => Increment(15))" ButtonStyle="ButtonStyle.Success" Shade="Shade.Darker" Disabled="@(Value >= MaxValue)" />
+        <RadzenButton Text="15" title="-15min" Click="@(args => Decrement(15))" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Darker" Disabled="@(Value <= MinValue)" />
+    </div>                                                                     
 </div>
