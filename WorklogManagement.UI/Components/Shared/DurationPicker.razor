@@ -4,11 +4,7 @@
         <RadzenButton Text="-1" title="-1std" Click="@(args => Decrement(60))" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Darker" Disabled="@(Value <= MinValue)" />
     </div>
     <div>
-        <RadzenDatePicker @bind-Value="TimeValue" ShowTime TimeOnly DateFormat="HH:mm" ShowTimeOkButton="false" />
-    </div>
-    <div class="up-down">
-        <RadzenButton Text="+1" title="+1min" Click="@(args => Increment(1))" ButtonStyle="ButtonStyle.Success" Shade="Shade.Darker" Disabled="@(Value >= MaxValue)" />
-        <RadzenButton Text="-1" title="-1min" Click="@(args => Decrement(1))" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Darker" Disabled="@(Value <= MinValue)" />
+        <RadzenDatePicker @bind-Value="TimeValue" ShowTime TimeOnly DateFormat="HH:mm" ShowTimeOkButton="false" ReadOnly />
     </div>
     <div class="up-down">
         <RadzenButton Text="+15" title="+15min" Click="@(args => Increment(15))" ButtonStyle="ButtonStyle.Success" Shade="Shade.Darker" Disabled="@(Value >= MaxValue)" />
