@@ -78,11 +78,18 @@ if (!isDevelopment)
 
 services.AddHttpClient();
 
+string conStr = config.GetConnectionString("WorklogManagement")
+        ?? Environment.GetEnvironmentVariable("ConnectionStrings__WorklogManagement")
+        ?? throw new InvalidOperationException("Keine Connectionstring für 'WorklogManagement' angegeben.");
+
 services.AddDbContext<WorklogManagementContext>(options =>
 {
-    var conStr = config.GetConnectionString("WorklogManagement");
     options.UseSqlServer(conStr);
 });
+
+services.AddHealthChecks()
+    .AddSqlServer(conStr, name: "MSSQLServer", timeout: TimeSpan.FromSeconds(5), tags: ["db", "sql", "mssql"])
+    .AddDbContextCheck<WorklogManagementContext>();
 
 var app = builder.Build();
 
