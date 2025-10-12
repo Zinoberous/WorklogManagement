@@ -1,0 +1,139 @@
+name: Deploy WorklogManagement (main)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: worklogmanagement-main
+  cancel-in-progress: false
+
+env:
+  REPO_DIR: /srv/repos/WorklogManagement
+  PUBLISH_DIR: /srv/publish/WorklogManagement
+  API_PROJ: /srv/repos/WorklogManagement/WorklogManagement.API
+  UI_PROJ: /srv/repos/WorklogManagement/WorklogManagement.UI
+  API_OUT: /srv/publish/WorklogManagement/WorklogManagement.API
+  UI_OUT: /srv/publish/WorklogManagement/WorklogManagement.UI
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  ASPNETCORE_ENVIRONMENT: CI
+
+jobs:
+  update:
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+     - name: Update Repo
+       run: |
+          set -euo pipefail
+          git -C "${REPO_DIR}" checkout main
+          git -C "${REPO_DIR}" pull
+          
+  build:
+    runs-on: [self-hosted, Linux, X64]
+    needs: update
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
+        with:
+          dotnet-version: 8.0.x
+          cache: false
+
+      - name: dotnet --info
+        run: dotnet --info
+
+      - name: Restore API
+        run: |
+          dotnet restore "${API_PROJ}"
+          
+      - name: Restore UI
+        run: |
+          dotnet restore "${UI_PROJ}"
+
+      - name: Build API
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build "${API_PROJ}"
+          
+      - name: Build UI
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build "${UI_PROJ}"
+          
+  deploy:
+    runs-on: [self-hosted, Linux, X64]
+    needs: build
+    steps:
+    - name: Remove Last API Publish
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo rm -rf "${API_OUT}" || true
+
+    - name: Remove Last UI Publish
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo rm -rf "${UI_OUT}" || true
+
+    - name: Publish API
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo dotnet publish "${API_PROJ}" -o "${API_OUT}"
+        
+    - name: Publish UI
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo dotnet publish "${UI_PROJ}" -o "${UI_OUT}"
+        
+  restart:
+    runs-on: [self-hosted, Linux, X64]
+    needs: deploy
+    steps:
+    - name: WorklogManagement-WM.API neu starten
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo systemctl restart WorklogManagement-WM.API
+        
+    - name: Status WorklogManagement-WM.API
+      shell: bash
+      if: always()
+      run: |
+        sudo systemctl status WorklogManagement-WM.API --no-pager || true
+
+    - name: WorklogManagement-WM.UI neu starten
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo systemctl restart WorklogManagement-WM.UI
+        
+    - name: Status WorklogManagement-WM.UI
+      shell: bash
+      if: always()
+      run: |
+        sudo systemctl status WorklogManagement-WM.UI --no-pager || true
+
+    - name: nginx neu starten
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo systemctl restart nginx
+        
+    - name: Status nginx
+      shell: bash
+      if: always()
+      run: |
+        sudo systemctl status nginx --no-pager || true
+        
+
+
