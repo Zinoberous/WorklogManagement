@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
+using Elastic.Transport;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WorklogManagement.API.Absences;
@@ -10,8 +15,10 @@ using WorklogManagement.API.Worklogs;
 using WorklogManagement.API.WorkTimes;
 using WorklogManagement.Data.Context;
 
+var assemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version?.ToString() ?? string.Empty;
+
 #if DEBUG
-Console.Title = "WorklogManagement.API";
+Console.Title = $"WorklogManagement.API {assemblyVersion}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,15 +43,51 @@ var services = builder.Services;
 //var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
 //timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
-services.AddLogging(loggingBuilder =>
+if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
 {
-    var logger = new LoggerConfiguration()
-        .ReadFrom.Configuration(config)
-        .CreateLogger();
+    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
 
-    loggingBuilder.ClearProviders();
-    loggingBuilder.AddSerilog(logger, dispose: true);
-});
+    var esUri = new Uri("http://localhost:9200");
+
+    services.AddLogging(loggingBuilder =>
+    {
+        var logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .Enrich.FromLogContext()
+            .WriteTo.Elasticsearch(
+                    [esUri],
+                    opts =>
+                    {
+                        // type = "logs", dataset = "worklogmanagement-api", namespace = "prod"
+                        opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
+                        opts.BootstrapMethod = BootstrapMethod.Failure;
+                    },
+                    transport =>
+                    {
+                        transport.Authentication(new ApiKey(
+                            !string.IsNullOrEmpty(apiKey)
+                                ? apiKey
+                                : throw new NotImplementedException("apiKey musn't be empty or null")
+                        ));
+                    })
+            .CreateLogger();
+
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(logger, dispose: true);
+    });
+}
+else
+{
+    services.AddLogging(loggingBuilder =>
+    {
+        var logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(config)
+            .CreateLogger();
+
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(logger, dispose: true);
+    });
+}
 
 services.AddCors(options =>
 {
@@ -61,7 +104,7 @@ services.AddCors(options =>
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new() { Title = "WorklogManagement", Version = "v1" });
+    options.SwaggerDoc("v1", new() { Title = $"WorklogManagement {assemblyVersion}", Version = "v1" });
     options.CustomSchemaIds(type => type.FullName);
 });
 
@@ -78,9 +121,9 @@ if (!isDevelopment)
 
 services.AddHttpClient();
 
-string conStr = config.GetConnectionString("WorklogManagement")
-        ?? Environment.GetEnvironmentVariable("ConnectionStrings__WorklogManagement")
-        ?? throw new InvalidOperationException("Keine Connectionstring für 'WorklogManagement' angegeben.");
+var conStr = !string.IsNullOrEmpty(config.GetConnectionString("WorklogManagement"))
+        ? config.GetConnectionString("WorklogManagement")
+        : throw new NotImplementedException("Kein Connectionstring für 'WorklogManagement' angegeben.");
 
 services.AddDbContext<WorklogManagementContext>(options =>
 {
@@ -88,7 +131,6 @@ services.AddDbContext<WorklogManagementContext>(options =>
 });
 
 services.AddHealthChecks()
-    .AddSqlServer(conStr, name: "MSSQLServer", timeout: TimeSpan.FromSeconds(5), tags: ["db", "sql", "mssql"])
     .AddDbContextCheck<WorklogManagementContext>();
 
 var app = builder.Build();
@@ -179,6 +221,7 @@ app.Use(async (context, next) =>
 });
 
 app.MapGroup("/health").WithTags("Health").MapGet("", () => Results.Ok());
+app.MapHealthChecks("/healthcheck");
 
 app.RegisterHolidayEndpoints();
 app.RegisterStatisticEndpoints();
