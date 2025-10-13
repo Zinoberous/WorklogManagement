@@ -1,10 +1,11 @@
 @page "/home"
 @inherits BasePage<HomeViewModel>
+@inject BrandingExtension Branding
 
 @using WorklogManagement.Shared.Enums
 @using WorklogManagement.UI.Extensions
 
-<PageTitle>Startseite</PageTitle>
+<PageTitle>@($"{Branding.TitlePrefix}Startseite")"</PageTitle>
 
 <div class="home">
     <Body>

@@ -13,9 +13,12 @@ using WorklogManagement.UI.Components.Pages.TicketBoard;
 using WorklogManagement.UI.Components.Pages.TicketForm;
 using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
+using WorklogManagement.UI.Extensions;
 using WorklogManagement.UI.Services;
 
 var assemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version?.ToString() ?? string.Empty;
+
+Environment.SetEnvironmentVariable("TITLE_PREFIX", $"WorklogManagement {assemblyVersion} - ");
 
 #if DEBUG
 Console.Title = $"WorklogManagement.UI {assemblyVersion}";
@@ -108,7 +111,8 @@ services
     .AddScoped<TicketFormViewModel>()
     .AddScoped<TicketBoardViewModel>()
     .AddScoped<TicketListViewModel>()
-    .AddScoped<TrackingViewModel>();
+    .AddScoped<TrackingViewModel>()
+    .AddSingleton(new BrandingExtension(assemblyVersion));
 
 services
     .AddSingleton(TimeProvider.System)

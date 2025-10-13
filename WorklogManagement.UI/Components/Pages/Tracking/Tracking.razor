@@ -1,7 +1,8 @@
 @page "/tracking"
 @inherits BasePage<TrackingViewModel>
+@inject BrandingExtension Branding
 
-<PageTitle>Aufwand</PageTitle>
+<PageTitle>@($"{Branding.TitlePrefix}Aufwand")"</PageTitle>
 
 <div class="tracking">
     <Header>
