@@ -49,23 +49,23 @@ jobs:
 
       - name: Restore API
         run: |
-          dotnet restore "${API_PROJ}"
+          sudo dotnet restore "${API_PROJ}"
           
       - name: Restore UI
         run: |
-          dotnet restore "${UI_PROJ}"
+          sudo dotnet restore "${UI_PROJ}"
 
       - name: Build API
         shell: bash
         run: |
           set -euo pipefail
-          dotnet build "${API_PROJ}"
+          sudo dotnet build "${API_PROJ}"
           
       - name: Build UI
         shell: bash
         run: |
           set -euo pipefail
-          dotnet build "${UI_PROJ}"
+          sudo dotnet build "${UI_PROJ}"
           
   deploy:
     runs-on: [self-hosted, Linux, X64]
