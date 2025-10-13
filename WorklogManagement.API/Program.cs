@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Elastic.Ingest.Elasticsearch;
+﻿using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;
 using Elastic.Transport;
@@ -14,11 +13,10 @@ using WorklogManagement.API.Tickets;
 using WorklogManagement.API.Worklogs;
 using WorklogManagement.API.WorkTimes;
 using WorklogManagement.Data.Context;
-
-var assemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version?.ToString() ?? string.Empty;
+using WorklogManagement.Shared;
 
 #if DEBUG
-Console.Title = $"WorklogManagement.API {assemblyVersion}";
+Console.Title = $"WorklogManagement.API {Assembly.Version}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,51 +41,39 @@ var services = builder.Services;
 //var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
 //timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
-if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
+services.AddLogging(loggingBuilder =>
 {
-    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+    var loggerConfig = new LoggerConfiguration()
+        .ReadFrom.Configuration(config);
 
-    var esUri = new Uri("http://localhost:9200");
+    var logger = loggerConfig.CreateLogger();
 
-    services.AddLogging(loggingBuilder =>
+    if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
     {
-        var logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .Enrich.FromLogContext()
-            .WriteTo.Elasticsearch(
-                    [esUri],
-                    opts =>
-                    {
-                        // type = "logs", dataset = "worklogmanagement-api", namespace = "prod"
-                        opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
-                        opts.BootstrapMethod = BootstrapMethod.Silent;
-                    },
-                    transport =>
-                    {
-                        transport.Authentication(new ApiKey(
-                            !string.IsNullOrEmpty(apiKey)
-                                ? apiKey
-                                : throw new NotImplementedException("apiKey musn't be empty or null")
-                        ));
-                    })
-            .CreateLogger();
+        var esUri = new Uri("http://localhost:9200");
+        var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
 
-        loggingBuilder.ClearProviders();
-        loggingBuilder.AddSerilog(logger, dispose: true);
-    });
-}
-else
-{
-    services.AddLogging(loggingBuilder =>
-    {
-        var logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(config)
-            .CreateLogger();
+        loggerConfig.WriteTo.Elasticsearch(
+            [esUri],
+            opts =>
+            {
+                // type = "logs", dataset = "worklogmanagement-api", namespace = "prod"
+                opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
+                opts.BootstrapMethod = BootstrapMethod.Silent;
+            },
+            transport =>
+            {
+                transport.Authentication(new ApiKey(
+                    !string.IsNullOrEmpty(apiKey)
+                        ? apiKey
+                        : throw new NotImplementedException("apiKey musn't be empty or null")
+                ));
+            });
+    }
 
-        loggingBuilder.ClearProviders();
-        loggingBuilder.AddSerilog(logger, dispose: true);
-    });
-}
+    loggingBuilder.ClearProviders();
+    loggingBuilder.AddSerilog(logger, dispose: true);
+});
 
 services.AddCors(options =>
 {
@@ -104,7 +90,7 @@ services.AddCors(options =>
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new() { Title = $"WorklogManagement {assemblyVersion}", Version = "v1" });
+    options.SwaggerDoc("v1", new() { Title = $"WorklogManagement {Assembly.Version}", Version = "v1" });
     options.CustomSchemaIds(type => type.FullName);
 });
 
@@ -121,17 +107,23 @@ if (!isDevelopment)
 
 services.AddHttpClient();
 
-var conStr = !string.IsNullOrEmpty(config.GetConnectionString("WorklogManagement"))
-        ? config.GetConnectionString("WorklogManagement")
-        : throw new NotImplementedException("Kein Connectionstring für 'WorklogManagement' angegeben.");
-
-services.AddDbContext<WorklogManagementContext>(options =>
+var conStr = config.GetConnectionString("WorklogManagement");
+if (string.IsNullOrEmpty(conStr))
 {
-    options.UseSqlServer(conStr);
-});
+    throw new NotImplementedException("Kein ConnectionString für 'WorklogManagement' angegeben.");
+}
 
-services.AddHealthChecks()
-    .AddDbContextCheck<WorklogManagementContext>();
+services
+    .AddDbContext<WorklogManagementContext>(options => options.UseSqlServer(conStr))
+    .AddHealthChecks()
+    .AddDbContextCheck<WorklogManagementContext>(
+        name: "dbcontext",
+        tags: ["db", "sql", "ef"],
+        customTestQuery: async (ctx, ct) =>
+        {
+            await ctx.Database.ExecuteSqlRawAsync("SELECT 1", ct);
+            return true; // wird bei Exception nicht erreicht
+        });
 
 var app = builder.Build();
 
@@ -220,8 +212,7 @@ app.Use(async (context, next) =>
     await resBodyStream.CopyToAsync(originalBodyStream);
 });
 
-app.MapGroup("/health").WithTags("Health").MapGet("", () => Results.Ok());
-app.MapHealthChecks("/healthcheck");
+app.MapHealthChecks("/health");
 
 app.RegisterHolidayEndpoints();
 app.RegisterStatisticEndpoints();

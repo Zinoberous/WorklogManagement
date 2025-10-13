@@ -1,11 +1,10 @@
-﻿using System.Reflection;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using Elastic.Ingest.Elasticsearch;
-using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;
 using Elastic.Transport;
 using Radzen;
 using Serilog;
+using WorklogManagement.Shared;
 using WorklogManagement.UI.Components;
 using WorklogManagement.UI.Components.Pages.CheckIn;
 using WorklogManagement.UI.Components.Pages.Home;
@@ -13,15 +12,10 @@ using WorklogManagement.UI.Components.Pages.TicketBoard;
 using WorklogManagement.UI.Components.Pages.TicketForm;
 using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
-using WorklogManagement.UI.Extensions;
 using WorklogManagement.UI.Services;
 
-var assemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version?.ToString() ?? string.Empty;
-
-Environment.SetEnvironmentVariable("TITLE_PREFIX", $"WorklogManagement {assemblyVersion} - ");
-
 #if DEBUG
-Console.Title = $"WorklogManagement.UI {assemblyVersion}";
+Console.Title = $"WorklogManagement.UI {Assembly.Version}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,55 +34,41 @@ var services = builder.Services;
 //var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
 //timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
-if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
-{
-    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
-
-    var esUri = new Uri("http://localhost:9200");
-
-    services
-        .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
-        .AddLogging(loggingBuilder =>
+services
+    .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
+    .AddLogging(loggingBuilder =>
     {
-        var logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .Enrich.FromLogContext()
-            .WriteTo.Elasticsearch(
-                    [esUri],
-                    opts =>
-                    {
-                        // type = "logs", dataset = "worklogmanagement-ui", namespace = "prod"
-                        opts.DataStream = new DataStreamName("logs", "worklogmanagement-ui", "prod");
-                        opts.BootstrapMethod = BootstrapMethod.Silent;
-                    },
-                    transport =>
-                    {
-                        transport.Authentication(new ApiKey(
-                            !string.IsNullOrEmpty(apiKey)
-                                ? apiKey
-                                : throw new NotImplementedException("apiKey musn't be empty or null")
-                        ));
-                    })
-            .CreateLogger();
+        var loggerConfig = new LoggerConfiguration()
+            .ReadFrom.Configuration(config);
+
+        if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
+        {
+            var esUri = new Uri("http://localhost:9200");
+            var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+
+            loggerConfig.WriteTo.Elasticsearch(
+                [esUri],
+                opts =>
+                {
+                    // type = "logs", dataset = "worklogmanagement-ui", namespace = "prod"
+                    opts.DataStream = new("logs", "worklogmanagement-ui", "prod");
+                    opts.BootstrapMethod = BootstrapMethod.Silent;
+                },
+                transport =>
+                {
+                    transport.Authentication(new ApiKey(
+                        !string.IsNullOrEmpty(apiKey)
+                            ? apiKey
+                            : throw new NotImplementedException("apiKey musn't be empty or null")
+                    ));
+                });
+        }
+
+        var logger = loggerConfig.CreateLogger();
 
         loggingBuilder.ClearProviders();
         loggingBuilder.AddSerilog(logger, dispose: true);
     });
-}
-else
-{
-    services
-        .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
-        .AddLogging(loggingBuilder =>
-    {
-        var logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(config)
-            .CreateLogger();
-
-        loggingBuilder.ClearProviders();
-        loggingBuilder.AddSerilog(logger, dispose: true);
-    });
-}
 
 services
     .AddRazorComponents()
@@ -111,8 +91,7 @@ services
     .AddScoped<TicketFormViewModel>()
     .AddScoped<TicketBoardViewModel>()
     .AddScoped<TicketListViewModel>()
-    .AddScoped<TrackingViewModel>()
-    .AddSingleton(new BrandingExtension(assemblyVersion));
+    .AddScoped<TrackingViewModel>();
 
 services
     .AddSingleton(TimeProvider.System)
