@@ -60,7 +60,7 @@ if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetE
                     {
                         // type = "logs", dataset = "worklogmanagement-api", namespace = "prod"
                         opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
-                        opts.BootstrapMethod = BootstrapMethod.Failure;
+                        opts.BootstrapMethod = BootstrapMethod.Silent;
                     },
                     transport =>
                     {

@@ -1,4 +1,9 @@
-﻿using Blazored.LocalStorage;
+﻿using System.Reflection;
+using Blazored.LocalStorage;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
+using Elastic.Transport;
 using Radzen;
 using Serilog;
 using WorklogManagement.UI.Components;
@@ -10,8 +15,10 @@ using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
 using WorklogManagement.UI.Services;
 
+var assemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version?.ToString() ?? string.Empty;
+
 #if DEBUG
-Console.Title = "WorklogManagement.UI";
+Console.Title = $"WorklogManagement.UI {assemblyVersion}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +37,46 @@ var services = builder.Services;
 //var timestampProviderField = clockType?.GetField("_dateTimeNow", BindingFlags.Static | BindingFlags.NonPublic);
 //timestampProviderField?.SetValue(null, new Func<DateTime>(() => DateTime.UtcNow));
 
-services
-    .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
-    .AddLogging(loggingBuilder =>
+if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
+{
+    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+
+    var esUri = new Uri("http://localhost:9200");
+
+    services
+        .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
+        .AddLogging(loggingBuilder =>
+    {
+        var logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .Enrich.FromLogContext()
+            .WriteTo.Elasticsearch(
+                    [esUri],
+                    opts =>
+                    {
+                        // type = "logs", dataset = "worklogmanagement-ui", namespace = "prod"
+                        opts.DataStream = new DataStreamName("logs", "worklogmanagement-ui", "prod");
+                        opts.BootstrapMethod = BootstrapMethod.Silent;
+                    },
+                    transport =>
+                    {
+                        transport.Authentication(new ApiKey(
+                            !string.IsNullOrEmpty(apiKey)
+                                ? apiKey
+                                : throw new NotImplementedException("apiKey musn't be empty or null")
+                        ));
+                    })
+            .CreateLogger();
+
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(logger, dispose: true);
+    });
+}
+else
+{
+    services
+        .AddTransient(typeof(ILoggerService<>), typeof(LoggerService<>))
+        .AddLogging(loggingBuilder =>
     {
         var logger = new LoggerConfiguration()
             .ReadFrom.Configuration(config)
@@ -41,6 +85,7 @@ services
         loggingBuilder.ClearProviders();
         loggingBuilder.AddSerilog(logger, dispose: true);
     });
+}
 
 services
     .AddRazorComponents()
