@@ -18,8 +18,6 @@ using WorklogManagement.UI.Services;
 
 var assemblyVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version?.ToString() ?? string.Empty;
 
-Environment.SetEnvironmentVariable("TITLE_PREFIX", $"WorklogManagement {assemblyVersion} - ");
-
 #if DEBUG
 Console.Title = $"WorklogManagement.UI {assemblyVersion}";
 #endif
@@ -42,7 +40,8 @@ var services = builder.Services;
 
 if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
 {
-    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY")
+        ?? throw new InvalidOperationException("ELASTIC_API_KEY must be provided in Production.");
 
     var esUri = new Uri("http://localhost:9200");
 
@@ -52,23 +51,20 @@ if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetE
     {
         var logger = new LoggerConfiguration()
             .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+            .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
             .Enrich.FromLogContext()
+            .Enrich.WithProperty("service.name", "worklogmanagement-ui")
+            .Enrich.WithProperty("service.version", assemblyVersion)
             .WriteTo.Elasticsearch(
-                    [esUri],
-                    opts =>
-                    {
-                        // type = "logs", dataset = "worklogmanagement-ui", namespace = "prod"
-                        opts.DataStream = new DataStreamName("logs", "worklogmanagement-ui", "prod");
-                        opts.BootstrapMethod = BootstrapMethod.Silent;
-                    },
-                    transport =>
-                    {
-                        transport.Authentication(new ApiKey(
-                            !string.IsNullOrEmpty(apiKey)
-                                ? apiKey
-                                : throw new NotImplementedException("apiKey musn't be empty or null")
-                        ));
-                    })
+                [esUri],
+                opts =>
+                {
+                    opts.DataStream = new DataStreamName("logs", "worklogmanagement-ui", "prod");
+                    opts.BootstrapMethod = BootstrapMethod.None;
+                },
+                transport => transport.Authentication(new ApiKey(apiKey!))
+            )
             .CreateLogger();
 
         loggingBuilder.ClearProviders();
@@ -131,11 +127,10 @@ if (isDevelopment)
 else
 {
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UsePathBase(config.GetValue<string>("PathBase"));
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

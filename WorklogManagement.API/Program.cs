@@ -30,6 +30,7 @@ var config = builder.Configuration;
 config.AddJsonFile("local.settings.json", true);
 
 var attachmentsBaseDir = config.GetValue<string>("AttachmentsDir");
+
 if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 {
     Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
@@ -45,32 +46,30 @@ var services = builder.Services;
 
 if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
 {
-    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+    var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY")
+        ?? throw new InvalidOperationException("ELASTIC_API_KEY must be provided in Production.");
 
     var esUri = new Uri("http://localhost:9200");
 
     services.AddLogging(loggingBuilder =>
     {
         var logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .Enrich.FromLogContext()
-            .WriteTo.Elasticsearch(
-                    [esUri],
-                    opts =>
-                    {
-                        // type = "logs", dataset = "worklogmanagement-api", namespace = "prod"
-                        opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
-                        opts.BootstrapMethod = BootstrapMethod.Silent;
-                    },
-                    transport =>
-                    {
-                        transport.Authentication(new ApiKey(
-                            !string.IsNullOrEmpty(apiKey)
-                                ? apiKey
-                                : throw new NotImplementedException("apiKey musn't be empty or null")
-                        ));
-                    })
-            .CreateLogger();
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("service.name", "worklogmanagement-api")
+        .Enrich.WithProperty("service.version", assemblyVersion)
+        .WriteTo.Elasticsearch(
+            [esUri],
+            opts =>
+            {
+                opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
+                opts.BootstrapMethod = BootstrapMethod.None;
+            },
+            transport => transport.Authentication(new ApiKey(apiKey!))
+        )
+        .CreateLogger();
 
         loggingBuilder.ClearProviders();
         loggingBuilder.AddSerilog(logger, dispose: true);
@@ -138,7 +137,13 @@ var app = builder.Build();
 app.UseCors();
 
 app.UsePathBase(config.GetValue<string>("PathBase"));
-app.UseHsts();
+
+
+if (!isDevelopment)
+{
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
 
 app.UseSwagger(c =>
 {
