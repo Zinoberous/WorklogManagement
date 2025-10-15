@@ -28,6 +28,7 @@ var config = builder.Configuration;
 config.AddJsonFile("local.settings.json", true);
 
 var attachmentsBaseDir = config.GetValue<string>("AttachmentsDir");
+
 if (!string.IsNullOrWhiteSpace(attachmentsBaseDir))
 {
     Configuration.SetAttachmentsBaseDir(attachmentsBaseDir);
@@ -51,24 +52,18 @@ services.AddLogging(loggingBuilder =>
     if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
     {
         var esUri = new Uri("http://localhost:9200");
-        var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+
+        var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY")
+            ?? throw new InvalidOperationException("ELASTIC_API_KEY must be provided in Production.");
 
         loggerConfig.WriteTo.Elasticsearch(
             [esUri],
             opts =>
             {
-                // type = "logs", dataset = "worklogmanagement-api", namespace = "prod"
                 opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
-                opts.BootstrapMethod = BootstrapMethod.Silent;
+                opts.BootstrapMethod = BootstrapMethod.None;
             },
-            transport =>
-            {
-                transport.Authentication(new ApiKey(
-                    !string.IsNullOrEmpty(apiKey)
-                        ? apiKey
-                        : throw new NotImplementedException("apiKey musn't be empty or null")
-                ));
-            });
+            transport => transport.Authentication(new ApiKey(apiKey!)));
     }
 
     loggingBuilder.ClearProviders();
@@ -130,7 +125,13 @@ var app = builder.Build();
 app.UseCors();
 
 app.UsePathBase(config.GetValue<string>("PathBase"));
-app.UseHsts();
+
+
+if (!isDevelopment)
+{
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
 
 app.UseSwagger(c =>
 {
