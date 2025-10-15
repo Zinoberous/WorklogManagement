@@ -47,14 +47,12 @@ services.AddLogging(loggingBuilder =>
     var loggerConfig = new LoggerConfiguration()
         .ReadFrom.Configuration(config);
 
-    var logger = loggerConfig.CreateLogger();
-
     if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
     {
         var esUri = new Uri("http://localhost:9200");
 
-        var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY")
-            ?? throw new InvalidOperationException("ELASTIC_API_KEY must be provided in Production.");
+        var elasticApiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+        ArgumentException.ThrowIfNullOrEmpty(elasticApiKey);
 
         loggerConfig.WriteTo.Elasticsearch(
             [esUri],
@@ -63,8 +61,10 @@ services.AddLogging(loggingBuilder =>
                 opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
                 opts.BootstrapMethod = BootstrapMethod.None;
             },
-            transport => transport.Authentication(new ApiKey(apiKey)));
+            transport => transport.Authentication(new ApiKey(elasticApiKey)));
     }
+
+    var logger = loggerConfig.CreateLogger();
 
     loggingBuilder.ClearProviders();
     loggingBuilder.AddSerilog(logger, dispose: true);
@@ -102,14 +102,11 @@ if (!isDevelopment)
 
 services.AddHttpClient();
 
-var conStr = config.GetConnectionString("WorklogManagement");
-if (string.IsNullOrEmpty(conStr))
-{
-    throw new NotImplementedException("Kein ConnectionString für 'WorklogManagement' angegeben.");
-}
+var connectionString = config.GetConnectionString("WorklogManagement");
+ArgumentException.ThrowIfNullOrEmpty(connectionString);
 
 services
-    .AddDbContext<WorklogManagementContext>(options => options.UseSqlServer(conStr))
+    .AddDbContext<WorklogManagementContext>(options => options.UseSqlServer(connectionString))
     .AddHealthChecks()
     .AddDbContextCheck<WorklogManagementContext>(
         name: "dbcontext",

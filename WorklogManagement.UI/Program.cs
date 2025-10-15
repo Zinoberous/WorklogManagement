@@ -45,8 +45,8 @@ services
         {
             var esUri = new Uri("http://localhost:9200");
 
-            var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY")
-                ?? throw new InvalidOperationException("ELASTIC_API_KEY must be provided in Production.");
+            var elasticApiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+            ArgumentException.ThrowIfNullOrEmpty(elasticApiKey);
 
             loggerConfig.WriteTo.Elasticsearch(
                 [esUri],
@@ -55,7 +55,7 @@ services
                     opts.DataStream = new("logs", "worklogmanagement-ui", "prod");
                     opts.BootstrapMethod = BootstrapMethod.None;
                 },
-                transport => transport.Authentication(new ApiKey(apiKey)));
+                transport => transport.Authentication(new ApiKey(elasticApiKey)));
         }
 
         var logger = loggerConfig.CreateLogger();
