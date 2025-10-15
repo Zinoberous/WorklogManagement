@@ -15,8 +15,10 @@ using WorklogManagement.API.WorkTimes;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Shared;
 
+var assemblyVersion = Assembly.Version;
+
 #if DEBUG
-Console.Title = $"WorklogManagement.API {Assembly.Version}";
+Console.Title = $"WorklogManagement.API {assemblyVersion}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,14 +56,17 @@ services.AddLogging(loggingBuilder =>
         var elasticApiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
         ArgumentException.ThrowIfNullOrEmpty(elasticApiKey);
 
-        loggerConfig.WriteTo.Elasticsearch(
-            [esUri],
-            opts =>
-            {
-                opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
-                opts.BootstrapMethod = BootstrapMethod.None;
-            },
-            transport => transport.Authentication(new ApiKey(elasticApiKey)));
+        loggerConfig
+            .Enrich.WithProperty("service.name", "worklogmanagement-api")
+            .Enrich.WithProperty("service.version", assemblyVersion)
+            .WriteTo.Elasticsearch(
+                [esUri],
+                opts =>
+                {
+                    opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
+                    opts.BootstrapMethod = BootstrapMethod.None;
+                },
+                transport => transport.Authentication(new ApiKey(elasticApiKey)));
     }
 
     var logger = loggerConfig.CreateLogger();

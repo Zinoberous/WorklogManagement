@@ -14,8 +14,10 @@ using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
 using WorklogManagement.UI.Services;
 
+var assemblyVersion = Assembly.Version;
+
 #if DEBUG
-Console.Title = $"WorklogManagement.UI {Assembly.Version}";
+Console.Title = $"WorklogManagement.UI {assemblyVersion}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,14 +50,17 @@ services
             var elasticApiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
             ArgumentException.ThrowIfNullOrEmpty(elasticApiKey);
 
-            loggerConfig.WriteTo.Elasticsearch(
-                [esUri],
-                opts =>
-                {
-                    opts.DataStream = new("logs", "worklogmanagement-ui", "prod");
-                    opts.BootstrapMethod = BootstrapMethod.None;
-                },
-                transport => transport.Authentication(new ApiKey(elasticApiKey)));
+            loggerConfig
+                .Enrich.WithProperty("service.name", "worklogmanagement-ui")
+                .Enrich.WithProperty("service.version", assemblyVersion)
+                .WriteTo.Elasticsearch(
+                    [esUri],
+                    opts =>
+                    {
+                        opts.DataStream = new("logs", "worklogmanagement-ui", "prod");
+                        opts.BootstrapMethod = BootstrapMethod.None;
+                    },
+                    transport => transport.Authentication(new ApiKey(elasticApiKey)));
         }
 
         var logger = loggerConfig.CreateLogger();
