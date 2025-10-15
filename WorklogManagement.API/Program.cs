@@ -63,7 +63,7 @@ services.AddLogging(loggingBuilder =>
                 opts.DataStream = new DataStreamName("logs", "worklogmanagement-api", "prod");
                 opts.BootstrapMethod = BootstrapMethod.None;
             },
-            transport => transport.Authentication(new ApiKey(apiKey!)));
+            transport => transport.Authentication(new ApiKey(apiKey)));
     }
 
     loggingBuilder.ClearProviders();
