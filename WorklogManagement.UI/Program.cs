@@ -44,24 +44,18 @@ services
         if (builder.Environment.IsProduction() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ELASTIC_API_KEY")))
         {
             var esUri = new Uri("http://localhost:9200");
-            var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY");
+
+            var apiKey = Environment.GetEnvironmentVariable("ELASTIC_API_KEY")
+                ?? throw new InvalidOperationException("ELASTIC_API_KEY must be provided in Production.");
 
             loggerConfig.WriteTo.Elasticsearch(
                 [esUri],
                 opts =>
                 {
-                    // type = "logs", dataset = "worklogmanagement-ui", namespace = "prod"
                     opts.DataStream = new("logs", "worklogmanagement-ui", "prod");
-                    opts.BootstrapMethod = BootstrapMethod.Silent;
+                    opts.BootstrapMethod = BootstrapMethod.None;
                 },
-                transport =>
-                {
-                    transport.Authentication(new ApiKey(
-                        !string.IsNullOrEmpty(apiKey)
-                            ? apiKey
-                            : throw new NotImplementedException("apiKey musn't be empty or null")
-                    ));
-                });
+                transport => transport.Authentication(new ApiKey(apiKey)));
         }
 
         var logger = loggerConfig.CreateLogger();
@@ -110,11 +104,10 @@ if (isDevelopment)
 else
 {
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UsePathBase(config.GetValue<string>("PathBase"));
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
