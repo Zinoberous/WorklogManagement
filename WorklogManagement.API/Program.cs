@@ -126,7 +126,6 @@ app.UseCors();
 
 app.UsePathBase(config.GetValue<string>("PathBase"));
 
-
 if (!isDevelopment)
 {
     app.UseHsts();
