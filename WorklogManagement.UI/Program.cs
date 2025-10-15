@@ -55,7 +55,7 @@ services
                     opts.DataStream = new("logs", "worklogmanagement-ui", "prod");
                     opts.BootstrapMethod = BootstrapMethod.None;
                 },
-                transport => transport.Authentication(new ApiKey(apiKey!)));
+                transport => transport.Authentication(new ApiKey(apiKey)));
         }
 
         var logger = loggerConfig.CreateLogger();
