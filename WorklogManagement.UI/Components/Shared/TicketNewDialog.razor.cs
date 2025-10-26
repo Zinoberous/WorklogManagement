@@ -17,7 +17,7 @@ public partial class TicketNewDialog
 
     private string Title { get; set; } = string.Empty;
 
-    private TicketStatus Status { get; set; } = TicketStatus.Todo;
+    private TicketStatus Status { get; set; } = TicketStatus.Running;
 
     private RefTicket? Ref { get; set; }
 
