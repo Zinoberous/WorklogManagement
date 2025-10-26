@@ -14,10 +14,8 @@ using WorklogManagement.UI.Components.Pages.TicketList;
 using WorklogManagement.UI.Components.Pages.Tracking;
 using WorklogManagement.UI.Services;
 
-var assemblyVersion = Assembly.Version;
-
 #if DEBUG
-Console.Title = $"WorklogManagement.UI {assemblyVersion}";
+Console.Title = $"WorklogManagement.UI {Assembly.Version}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +50,7 @@ services
 
             loggerConfig
                 .Enrich.WithProperty("service.name", "worklogmanagement-ui")
-                .Enrich.WithProperty("service.version", assemblyVersion)
+                .Enrich.WithProperty("service.version", Assembly.Version)
                 .WriteTo.Elasticsearch(
                     [esUri],
                     opts =>

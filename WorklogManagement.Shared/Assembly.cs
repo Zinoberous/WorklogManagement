@@ -8,5 +8,5 @@ namespace WorklogManagement.Shared;
 
 public static class Assembly
 {
-    public static string Version => FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).ProductVersion ?? "0.0.0";
+    public static string Version { get; } = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly()!.Location).ProductVersion ?? "0.0.0";
 }

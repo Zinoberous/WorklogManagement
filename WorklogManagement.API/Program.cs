@@ -15,10 +15,8 @@ using WorklogManagement.API.WorkTimes;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Shared;
 
-var assemblyVersion = Assembly.Version;
-
 #if DEBUG
-Console.Title = $"WorklogManagement.API {assemblyVersion}";
+Console.Title = $"WorklogManagement.API {Assembly.Version}";
 #endif
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,7 +56,7 @@ services.AddLogging(loggingBuilder =>
 
         loggerConfig
             .Enrich.WithProperty("service.name", "worklogmanagement-api")
-            .Enrich.WithProperty("service.version", assemblyVersion)
+            .Enrich.WithProperty("service.version", Assembly.Version)
             .WriteTo.Elasticsearch(
                 [esUri],
                 opts =>
