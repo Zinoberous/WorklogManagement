@@ -23,7 +23,7 @@ public partial class AttachmentPanel
 
     private async Task Add(UploadChangeEventArgs args)
     {
-        ICollection<Attachment> attachments = [];
+        ICollection<Attachment> attachments = [.. Attachments];
 
         foreach (var file in args.Files)
         {
