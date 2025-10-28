@@ -22,7 +22,7 @@
 
             var notes = timeCompensations
                 .Where(x => !string.IsNullOrWhiteSpace(x.Note) && !x.Note.Equals(CalendarEntryLabels[CalendarEntryType.TimeCompensation], StringComparison.OrdinalIgnoreCase))
-                .Select(x => $"{x.Expected:HH:mm} => {x.Note}")
+                .Select(x => $"{x.Expected.ToTimeString()} => {x.Note}")
                 .ToArray();
 
             var note = string.Join("\n", notes);
