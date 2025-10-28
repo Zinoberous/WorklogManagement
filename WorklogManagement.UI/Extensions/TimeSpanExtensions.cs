@@ -11,6 +11,7 @@ internal static class TimeSpanExtensions
         var totalHours = abs.Ticks / TimeSpan.TicksPerHour;
         var minutes = (int)((abs.Ticks % TimeSpan.TicksPerHour) / TimeSpan.TicksPerMinute);
 
-        return $"{sign}{totalHours}:{minutes:00}";
+        // Stunden und Minuten immer zweistellig (HH:mm)
+        return $"{sign}{totalHours:00}:{minutes:00}";
     }
 }
