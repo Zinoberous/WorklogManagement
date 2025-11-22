@@ -16,6 +16,7 @@ env:
   UI_PROJ: /srv/repos/WorklogManagement/WorklogManagement.UI
   API_OUT: /srv/publish/WorklogManagement/WorklogManagement.API
   UI_OUT: /srv/publish/WorklogManagement/WorklogManagement.UI
+  DOTNET_ROOT: /opt/dotnet
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   ASPNETCORE_ENVIRONMENT: CI
@@ -42,28 +43,28 @@ jobs:
           dotnet-version: 10.x.x
           cache: false
 
-      - name: dotnet --info
-        run: dotnet --info
+      - name: /opt/dotnet/dotnet --info
+        run: /opt/dotnet/dotnet --info
 
       - name: Restore API
         run: |
-          sudo dotnet restore "${API_PROJ}"
+          sudo /opt/dotnet/dotnet restore "${API_PROJ}"
           
       - name: Restore UI
         run: |
-          sudo dotnet restore "${UI_PROJ}"
+          sudo /opt/dotnet/dotnet restore "${UI_PROJ}"
 
       - name: Build API
         shell: bash
         run: |
           set -euo pipefail
-          sudo dotnet build "${API_PROJ}"
+          sudo /opt/dotnet/dotnet build "${API_PROJ}"
           
       - name: Build UI
         shell: bash
         run: |
           set -euo pipefail
-          sudo dotnet build "${UI_PROJ}"
+          sudo /opt/dotnet/dotnet build "${UI_PROJ}"
           
   deploy:
     runs-on: [self-hosted, Linux, X64]
@@ -85,13 +86,13 @@ jobs:
       shell: bash
       run: |
         set -euo pipefail
-        sudo dotnet publish "${API_PROJ}" -o "${API_OUT}"
+        sudo /opt/dotnet/dotnet publish "${API_PROJ}" -o "${API_OUT}"
         
     - name: Publish UI
       shell: bash
       run: |
         set -euo pipefail
-        sudo dotnet publish "${UI_PROJ}" -o "${UI_OUT}"
+        sudo /opt/dotnet/dotnet publish "${UI_PROJ}" -o "${UI_OUT}"
         
   restart:
     runs-on: [self-hosted, Linux, X64]
