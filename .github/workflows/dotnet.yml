@@ -39,7 +39,7 @@ jobs:
         env:
           DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.x.x
           cache: false
 
       - name: dotnet --info
@@ -132,6 +132,3 @@ jobs:
       if: always()
       run: |
         sudo systemctl status nginx --no-pager || true
-        
-
-
