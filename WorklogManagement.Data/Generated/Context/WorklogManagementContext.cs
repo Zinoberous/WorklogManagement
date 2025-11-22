@@ -1,3 +1,5 @@
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Models;
 
@@ -59,7 +61,7 @@ public partial class WorklogManagementContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_Ticket_Id");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())", "DF_Ticket_CreatedAt_GETUTCDATE");
             entity.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
@@ -99,7 +101,7 @@ public partial class WorklogManagementContext : DbContext
             entity.Property(e => e.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
-            entity.Property(e => e.StartedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.StartedAt).HasDefaultValueSql("(getutcdate())", "DF_TicketStatusLog_CreatedAt_GETUTCDATE");
 
             entity.HasOne(d => d.Ticket).WithMany(p => p.TicketStatusLogs).HasConstraintName("FK_TicketStatusLog_TicketId_Ticket_Id");
 

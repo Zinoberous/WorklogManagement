@@ -1,16 +1,17 @@
 ## Datenbankcontext und -modell generieren
 
-Paket-Manager-Konsole:
+Extras > NuGet-Paket-Manager > Paket-Manager-Konsole:
 
 WorklogManagement.Data als Startprojekt einstellen
 
+```
 cd .\WorklogManagement.Data
-
 Scaffold-DbContext -Connection "<ConnectionString>" -Provider "Microsoft.EntityFrameworkCore.SqlServer" -OutputDir ".\Generated\Models" -ContextDir ".\Generated\Context" -Namespace "WorklogManagement.Data.Models" -ContextNamespace "WorklogManagement.Data.Context" -Context "WorklogManagementContext" -DataAnnotations -NoOnConfiguring -Force
+```
 
 ## migration erzeugen
 
-- Aus WorklogManagement.UI alle dateien mit local.db löschen
+- Aus WorklogManagement.UI alle Dateien mit local.db löschen
 - Aus WorklogManagement.Data alles aus ./Migrations löschen
 - Paket-Manager-Konsole öffnen
 	- WorklogManagement.Data als Startprojekt auswählen
@@ -20,7 +21,7 @@ Scaffold-DbContext -Connection "<ConnectionString>" -Provider "Microsoft.EntityF
 	- dotnet ef database update --context WorklogManagementContext --startup-project ../WorklogManagement.UI
 
 *_InitialCreate.cs:
-```
+```C#
 migrationBuilder.InsertData(
     table: "WorkTimeType",
     columns: new[] { "Id", "Name" },

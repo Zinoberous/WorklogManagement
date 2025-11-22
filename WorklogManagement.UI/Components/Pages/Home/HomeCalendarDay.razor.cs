@@ -4,6 +4,7 @@ using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Extensions;
 
 namespace WorklogManagement.UI.Components.Pages.Home;
+
 public partial class HomeCalendarDay
 {
     [Parameter]
