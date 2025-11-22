@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 
 namespace WorklogManagement.UI.Components.Pages.TicketList;
+
 public partial class TicketListEntry
 {
     [Parameter]

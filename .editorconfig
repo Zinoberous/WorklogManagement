@@ -1,4 +1,6 @@
 # Vorlage: https://github.com/dotnet/roslyn/blob/main/.editorconfig
+# entfernt: Static fields are camelCase and start with s_
+# Anpassungen am Ende
 
 # EditorConfig is awesome: https://EditorConfig.org
 
@@ -91,7 +93,7 @@ dotnet_naming_rule.constants_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.constants_should_be_pascal_case.symbols = constants
 dotnet_naming_rule.constants_should_be_pascal_case.style = constant_style
 
-dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.applicable_kinds = field, local
 dotnet_naming_symbols.constants.required_modifiers = const
 
 dotnet_naming_style.constant_style.capitalization = pascal_case
@@ -308,6 +310,11 @@ dotnet_diagnostic.RS0058.severity = error
 dotnet_diagnostic.RS0059.severity = error
 dotnet_diagnostic.RS0060.severity = error
 dotnet_diagnostic.RS0061.severity = error
+
+# Anpassungen
+
+[*.{cs,vb}]
+dotnet_diagnostic.CA1873.severity = none
 
 [**/Generated/**/*.cs]
 dotnet_analyzer_diagnostic.severity = none
