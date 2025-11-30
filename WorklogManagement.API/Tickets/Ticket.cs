@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Context;
 using WorklogManagement.Shared.Enums;
 using DB = WorklogManagement.Data.Models;
@@ -97,10 +97,7 @@ public record Ticket : DTO.Ticket
                 await context.TicketStatusLogs.AddAsync(statusLog);
             }
 
-            if (ticket.TicketStatusLogs.Last().Note != StatusNote)
-            {
-                ticket.TicketStatusLogs.Last().Note = StatusNote;
-            }
+            ticket.TicketStatusLogs.Last().Note = StatusNote;
 
             await context.SaveChangesAsync();
         }

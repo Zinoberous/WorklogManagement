@@ -58,7 +58,16 @@ public partial class HomeCalendarDay
             background.Add("darkgray");
         }
 
-        return $"color: {color}; background: {(background.Count > 1 ? $"linear-gradient(to right, {string.Join(", ", background)})" : background.Count == 1 ? background.ElementAt(0) : "unset")};";
+        return $"color: {color}; background: {GetBackgroundStyle(background)};";
+    }
+
+    private static string GetBackgroundStyle(IEnumerable<string> background)
+    {
+        return background.Count() > 1
+            ? $"linear-gradient(to right, {string.Join(", ", background)})"
+            : background.Count() == 1
+                ? background.ElementAt(0)
+                : "unset";
     }
 
     private string GetWeekDayClassName()

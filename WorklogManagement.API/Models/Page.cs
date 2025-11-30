@@ -5,10 +5,7 @@ using DTO = WorklogManagement.Shared.Models;
 namespace WorklogManagement.API.Models;
 
 public record Page<TData> : DTO.Page<TData>
-    where TData : DTO.IDataModel
-{
-
-}
+    where TData : DTO.IDataModel;
 
 public record Page
 {

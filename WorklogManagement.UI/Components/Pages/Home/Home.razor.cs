@@ -1,4 +1,4 @@
-using WorklogManagement.UI.Components.Pages.Base;
+﻿using WorklogManagement.UI.Components.Pages.Base;
 
 namespace WorklogManagement.UI.Components.Pages.Home;
 
@@ -49,12 +49,11 @@ public partial class Home : BasePage<HomeViewModel>
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.WhenAll([
+        await Task.WhenAll(
             ViewModel.LoadOvertimeAsync(),
             ViewModel.LoadCalendarStatisticsAsync(),
             ViewModel.LoadWorkTimesAsync(),
             ViewModel.LoadAbsencesAsync(),
-            ViewModel.LoadHolidaysAsync(),
-        ]);
+            ViewModel.LoadHolidaysAsync());
     }
 }

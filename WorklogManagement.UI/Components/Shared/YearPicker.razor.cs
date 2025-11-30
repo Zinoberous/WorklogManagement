@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 
 namespace WorklogManagement.UI.Components.Shared;
@@ -29,17 +29,16 @@ public partial class YearPicker
 
     private RadzenTextBox _input = null!;
 
-    private bool _isOpen;
     private bool IsOpen
     {
-        get => _isOpen;
+        get;
         set
         {
-            if (_isOpen != value)
+            if (field != value)
             {
-                _isOpen = value;
+                field = value;
 
-                if (_isOpen)
+                if (field)
                 {
                     PageIndex = (Value - FirstYear) / ElementsPerPage;
                 }
@@ -47,12 +46,7 @@ public partial class YearPicker
         }
     }
 
-    private int _pageIndex;
-    private int PageIndex
-    {
-        get => _pageIndex;
-        set => _pageIndex = value;
-    }
+    private int PageIndex { get; set; }
 
     private int FirstYearOfPage => PageIndex * ElementsPerPage + FirstYear;
     private int LastYearOfPage => FirstYearOfPage + ElementsPerPage - FirstYear;

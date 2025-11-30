@@ -1,4 +1,4 @@
-using WorklogManagement.Shared.Enums;
+﻿using WorklogManagement.Shared.Enums;
 using WorklogManagement.Shared.Models;
 using WorklogManagement.UI.Components.Pages.Base;
 using WorklogManagement.UI.Services;
@@ -10,60 +10,30 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
     private readonly IDataService _dataService = dataService;
     private readonly IPopupService _popupService = popupService;
 
-    private bool _loadOvertime = true;
-    public bool LoadOvertime
-    {
-        get => _loadOvertime;
-        set => SetValue(ref _loadOvertime, value);
-    }
+    public bool LoadOvertime { get; set => SetValue(ref field, value); } = true;
 
-    private OvertimeInfo _overtime = new();
-    public OvertimeInfo Overtime
-    {
-        get => _overtime;
-        set => SetValue(ref _overtime, value);
-    }
+    public OvertimeInfo Overtime { get; set => SetValue(ref field, value); } = new();
 
-    private bool _loadCalendarStatistics = true;
-    public bool LoadCalendarStatistics
-    {
-        get => _loadCalendarStatistics;
-        set => SetValue(ref _loadCalendarStatistics, value);
-    }
+    public bool LoadCalendarStatistics { get; set => SetValue(ref field, value); } = true;
 
-    private IDictionary<CalendarEntryType, int> _calendarStatistics = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
-    public IDictionary<CalendarEntryType, int> CalendarStatistics
-    {
-        get => _calendarStatistics;
-        set => SetValue(ref _calendarStatistics, value);
-    }
+    public IDictionary<CalendarEntryType, int> CalendarStatistics { get; set => SetValue(ref field, value); } = Enum.GetValues<CalendarEntryType>().ToDictionary(x => x, _ => 0);
 
-    private int _selectedYear = DateTimeOffset.Now.Year;
-    public int SelectedYear
-    {
-        get => _selectedYear;
-        set => SetValue(ref _selectedYear, value);
-    }
+    public int SelectedYear { get; set => SetValue(ref field, value); } = DateTimeOffset.Now.Year;
 
     public async Task OnSelectedYearChanged()
     {
-        await Task.WhenAll([
+        await Task.WhenAll(
             LoadCalendarStatisticsAsync(),
             LoadWorkTimesAsync(),
             LoadAbsencesAsync(),
-            LoadHolidaysAsync(),
-        ]);
+            LoadHolidaysAsync());
     }
 
     public DateOnly LoadDataFrom => new(SelectedYear - 1, 12, 1);
+
     public DateOnly LoadDataTo => new(SelectedYear + 1, 1, 31);
 
-    private string _selectedFederalState = "DE-HE";
-    public string SelectedFederalState
-    {
-        get => _selectedFederalState;
-        set => SetValue(ref _selectedFederalState, value);
-    }
+    public string SelectedFederalState { get; set => SetValue(ref field, value); } = "DE-HE";
 
     public async Task OnSelectedFederalStateChanged()
     {
@@ -72,65 +42,47 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
 
     public bool LoadCalendar => LoadWorkTimes || LoadAbsences || LoadHolidays;
 
-    private bool _loadWorkTimes = true;
     public bool LoadWorkTimes
     {
-        get => _loadWorkTimes;
+        get => field;
         set
         {
-            if (SetValue(ref _loadWorkTimes, value))
+            if (SetValue(ref field, value))
             {
                 OnPropertyChanged(nameof(LoadCalendar));
             }
         }
-    }
+    } = true;
 
-    private IEnumerable<WorkTime> _workTimes = [];
-    public IEnumerable<WorkTime> WorkTimes
-    {
-        get => _workTimes;
-        set => SetValue(ref _workTimes, value);
-    }
+    public IEnumerable<WorkTime> WorkTimes { get; set => SetValue(ref field, value); } = [];
 
-    private bool _loadAbsences = true;
     public bool LoadAbsences
     {
-        get => _loadAbsences;
+        get => field;
         set
         {
-            if (SetValue(ref _loadAbsences, value))
+            if (SetValue(ref field, value))
             {
                 OnPropertyChanged(nameof(LoadCalendar));
             }
         }
-    }
+    } = true;
 
-    private IEnumerable<Absence> _absences = [];
-    public IEnumerable<Absence> Absences
-    {
-        get => _absences;
-        set => SetValue(ref _absences, value);
-    }
+    public IEnumerable<Absence> Absences { get; set => SetValue(ref field, value); } = [];
 
-    private bool _loadHolidays = true;
     public bool LoadHolidays
     {
-        get => _loadHolidays;
+        get => field;
         set
         {
-            if (SetValue(ref _loadHolidays, value))
+            if (SetValue(ref field, value))
             {
                 OnPropertyChanged(nameof(LoadCalendar));
             }
         }
-    }
+    } = true;
 
-    private IEnumerable<Holiday> _holidays = [];
-    public IEnumerable<Holiday> Holidays
-    {
-        get => _holidays;
-        set => SetValue(ref _holidays, value);
-    }
+    public IEnumerable<Holiday> Holidays { get; set => SetValue(ref field, value); } = [];
 
     public async Task LoadOvertimeAsync()
     {

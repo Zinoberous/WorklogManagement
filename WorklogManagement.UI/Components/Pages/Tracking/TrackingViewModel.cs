@@ -14,18 +14,17 @@ public class TrackingViewModel(
     private readonly IPopupService _popupService = popupService;
     private readonly INavigationService _navigationService = navigationService;
 
-    private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
     public DateOnly SelectedDate
     {
-        get => _selectedDate;
+        get;
         set
         {
-            if (SetValue(ref _selectedDate, value))
+            if (SetValue(ref field, value))
             {
                 _ = OnSelectedDateChanged();
             }
         }
-    }
+    } = DateOnly.FromDateTime(DateTime.Today);
 
     public async Task OnSelectedDateChanged()
     {
@@ -33,18 +32,17 @@ public class TrackingViewModel(
         await LoadWorklogsAsync();
     }
 
-    private string _search = string.Empty;
     public string Search
     {
-        get => _search;
+        get;
         set
         {
-            if (SetValue(ref _search, string.IsNullOrWhiteSpace(value) ? string.Empty : value))
+            if (SetValue(ref field, string.IsNullOrWhiteSpace(value) ? string.Empty : value))
             {
                 _ = OnSearchChanged();
             }
         }
-    }
+    } = string.Empty;
 
     private async Task OnSearchChanged()
     {
@@ -52,19 +50,13 @@ public class TrackingViewModel(
         await LoadWorklogsAsync();
     }
 
-    private bool _loadWorklogs = true;
-    public bool LoadWorklogs
-    {
-        get => _loadWorklogs;
-        set => SetValue(ref _loadWorklogs, value);
-    }
+    public bool LoadWorklogs { get; set => SetValue(ref field, value); } = true;
 
-    private IEnumerable<Worklog> _worklogs = [];
     public IEnumerable<Worklog> Worklogs
     {
-        get => _worklogs.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id);
-        set => SetValue(ref _worklogs, value);
-    }
+        get => field.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id);
+        set => SetValue(ref field, value);
+    } = [];
 
     public async Task InitAsync(DateOnly? dateFilter, string? search)
     {
@@ -93,7 +85,7 @@ public class TrackingViewModel(
             }
             else
             {
-                Worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $@"Date == ""{_selectedDate:yyyy-MM-dd}""")).Items];
+                Worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $@"Date == ""{SelectedDate:yyyy-MM-dd}""")).Items];
             }
         }
         catch
