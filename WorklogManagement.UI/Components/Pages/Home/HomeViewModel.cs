@@ -70,7 +70,17 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
 
     public IEnumerable<Absence> Absences { get; set => SetValue(ref field, value); } = [];
 
-    public bool LoadHolidays { get; set { if (SetValue(ref field, value)) { OnPropertyChanged(nameof(LoadCalendar)); } } } = true;
+    public bool LoadHolidays
+    {
+        get => field;
+        set
+        {
+            if (SetValue(ref field, value))
+            {
+                OnPropertyChanged(nameof(LoadCalendar));
+            }
+        }
+    } = true;
 
     public IEnumerable<Holiday> Holidays { get; set => SetValue(ref field, value); } = [];
 
