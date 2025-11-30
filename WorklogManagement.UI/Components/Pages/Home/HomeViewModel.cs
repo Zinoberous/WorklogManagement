@@ -42,7 +42,17 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
 
     public bool LoadCalendar => LoadWorkTimes || LoadAbsences || LoadHolidays;
 
-    public bool LoadWorkTimes { get; set { if (SetValue(ref field, value)) { OnPropertyChanged(nameof(LoadCalendar)); } } } = true;
+    public bool LoadWorkTimes
+    {
+        get => field;
+        set
+        {
+            if (SetValue(ref field, value))
+            {
+                OnPropertyChanged(nameof(LoadCalendar));
+            }
+        }
+    } = true;
 
     public IEnumerable<WorkTime> WorkTimes { get; set => SetValue(ref field, value); } = [];
 
