@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WorklogManagement.API.Models;
 using WorklogManagement.Data.Context;
 using DB = WorklogManagement.Data.Models;
@@ -7,21 +7,23 @@ namespace WorklogManagement.API.Worklogs;
 
 internal static class WorklogEndpoints
 {
+    private const string IdEndpointPattern = "/{id}";
+
     internal static IEndpointRouteBuilder RegisterWorklogEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/worklogs").WithTags("Worklogs");
 
         group.MapGet("", GetWorklogsAsync);
-        group.MapGet("/{id}", GetWorklogByIdAsync);
+        group.MapGet(IdEndpointPattern, GetWorklogByIdAsync);
         group.MapPost("", SaveWorklogAsync);
-        group.MapDelete("/{id}", DeleteWorklogAsync);
+        group.MapDelete(IdEndpointPattern, DeleteWorklogAsync);
 
         var attachmentGroup = group.MapGroup("/ticketAttachments").WithTags("TicketAttachments");
 
         attachmentGroup.MapGet("", GetAttachmentsAsync);
-        attachmentGroup.MapGet("/{id}", GetAttachmentByIdAsync);
+        attachmentGroup.MapGet(IdEndpointPattern, GetAttachmentByIdAsync);
         attachmentGroup.MapPost("", SaveAttachmentAsync);
-        attachmentGroup.MapDelete("/{id}", DeleteAttachmentAsync);
+        attachmentGroup.MapDelete(IdEndpointPattern, DeleteAttachmentAsync);
 
         return app;
     }

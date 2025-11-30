@@ -13,13 +13,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     private Ticket _ticket = null!;
 
-    private bool _isLoading = true;
-
-    public bool IsLoading
-    {
-        get => _isLoading;
-        set => SetValue(ref _isLoading, value);
-    }
+    public bool IsLoading { get; set => SetValue(ref field, value); } = true;
 
     public string Title
     {
@@ -44,12 +38,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         });
     }
 
-    private bool _isOpenAttachmentsDialog = false;
-    public bool IsOpenAttachmentsDialog
-    {
-        get => _isOpenAttachmentsDialog;
-        set => SetValue(ref _isOpenAttachmentsDialog, value);
-    }
+    public bool IsOpenAttachmentsDialog { get; set => SetValue(ref field, value); } = false;
 
     public void OpenAttachmentsDialog() => IsOpenAttachmentsDialog = true;
 
@@ -65,30 +54,19 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         set => _ = SaveTicketAsync(_ticket with { StatusNote = value });
     }
 
-    private bool _isOpenStatusNoteDialog = false;
-    public bool IsOpenStatusNoteDialog
-    {
-        get => _isOpenStatusNoteDialog;
-        set => SetValue(ref _isOpenStatusNoteDialog, value);
-    }
+    public bool IsOpenStatusNoteDialog { get; set => SetValue(ref field, value); } = false;
 
-    public void OpenStatusNoteDialog() => _isOpenStatusNoteDialog = true;
+    public void OpenStatusNoteDialog() => IsOpenStatusNoteDialog = true;
 
-    public TimeSpan TimeSpent => TimeSpan.FromTicks(_worklogs.Sum(x => x.TimeSpent.Ticks));
+    public TimeSpan TimeSpent => TimeSpan.FromTicks(Worklogs.Sum(x => x.TimeSpent.Ticks));
 
-    private IEnumerable<Worklog> _worklogs = [];
     public IEnumerable<Worklog> Worklogs
     {
-        get => _worklogs.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id);
-        set => SetValue(ref _worklogs, value);
-    }
+        get => field.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id);
+        set => SetValue(ref field, value);
+    } = [];
 
-    private bool _isOpenWorklogsDialog = false;
-    public bool IsOpenWorklogsDialog
-    {
-        get => _isOpenWorklogsDialog;
-        set => SetValue(ref _isOpenWorklogsDialog, value);
-    }
+    public bool IsOpenWorklogsDialog { get; set => SetValue(ref field, value); } = false;
 
     public void OpenWorklogsDialog() => IsOpenWorklogsDialog = true;
 
@@ -110,10 +88,9 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
         try
         {
-            await Task.WhenAll([
+            await Task.WhenAll(
                 LoadTicketAsync(ticketId),
-                LoadWorklogsAsync(ticketId)
-            ]);
+                LoadWorklogsAsync(ticketId));
         }
         finally
         {
@@ -183,7 +160,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
             return false;
         }
 
-        Worklogs = [.. _worklogs.Where(x => x.Id != worklog.Id).Append(savedWorklog)];
+        Worklogs = [.. Worklogs.Where(x => x.Id != worklog.Id).Append(savedWorklog)];
 
         return true;
     }
@@ -195,7 +172,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
             return false;
         }
 
-        Worklogs = [.. _worklogs.Where(x => x.Id != worklog.Id)];
+        Worklogs = [.. Worklogs.Where(x => x.Id != worklog.Id)];
 
         try
         {

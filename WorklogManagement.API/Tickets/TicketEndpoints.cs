@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using WorklogManagement.API.Models;
 using WorklogManagement.Data.Context;
@@ -8,26 +8,28 @@ namespace WorklogManagement.API.Tickets;
 
 internal static class TicketEndpoints
 {
+    private const string IdEndpointPattern = "/{id}";
+
     internal static IEndpointRouteBuilder RegisterTicketEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/tickets").WithTags("Tickets");
 
         group.MapGet("", GetTicketsAsync);
-        group.MapGet("/{id}", GetTicketByIdAsync);
+        group.MapGet(IdEndpointPattern, GetTicketByIdAsync);
         group.MapPost("", SaveTicketAsync);
-        group.MapDelete("/{id}", DeleteTicketAsync);
+        group.MapDelete(IdEndpointPattern, DeleteTicketAsync);
 
         var attachmentGroup = group.MapGroup("/ticketAttachments").WithTags("TicketAttachments");
 
         attachmentGroup.MapGet("", GetAttachmentsAsync);
-        attachmentGroup.MapGet("/{id}", GetAttachmentByIdAsync);
+        attachmentGroup.MapGet(IdEndpointPattern, GetAttachmentByIdAsync);
         attachmentGroup.MapPost("", SaveAttachmentAsync);
-        attachmentGroup.MapDelete("/{id}", DeleteAttachmentAsync);
+        attachmentGroup.MapDelete(IdEndpointPattern, DeleteAttachmentAsync);
 
         var statusLogGroup = group.MapGroup("/ticketStatusLogs").WithTags("TicketStatusLogs");
 
         statusLogGroup.MapGet("", GetStatusLogsAsync);
-        statusLogGroup.MapGet("/{id}", GetStatusLogByIdAsync);
+        statusLogGroup.MapGet(IdEndpointPattern, GetStatusLogByIdAsync);
         statusLogGroup.MapPost("", SaveStatusLogAsync);
 
         return app;

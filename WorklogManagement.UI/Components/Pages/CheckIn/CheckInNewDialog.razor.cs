@@ -18,15 +18,11 @@ public partial class CheckInNewDialog
 
     private IEnumerable<string> TypeOptions => [
         .. Constant.WorkTimeLabels.Values.Concat(Constant.AbsenceLabels.Values)
-            .Where(value => !UsedTypeOptions.Contains(value))
-    ];
+            .Where(value => !UsedTypeOptions.Contains(value))];
 
-    private string? _selectedType;
-    private string SelectedType
-    {
-        get => _selectedType ?? TypeOptions.First();
-        set => _selectedType = value;
-    }
+    private string DefaultSelectedType => TypeOptions.First();
+
+    private string SelectedType { get => field ?? DefaultSelectedType; set => field = value; }
 
     private string @TypeStyle => $"color: black; background-color: {Constant.CalendarEntryColor[SelectedType ?? string.Empty]}";
 
@@ -127,7 +123,7 @@ public partial class CheckInNewDialog
 
     private void Reset()
     {
-        _selectedType = null;
+        SelectedType = DefaultSelectedType;
         Actual = TimeSpan.FromHours(8);
         Expected = TimeSpan.FromHours(8);
         Note = null;

@@ -12,12 +12,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
     private readonly INavigationService _navigationService = navigationService;
     private readonly IPopupService _popupService = popupService;
 
-    private bool _isOpenNewDialog = false;
-    public bool IsOpenNewDialog
-    {
-        get => _isOpenNewDialog;
-        set => SetValue(ref _isOpenNewDialog, value);
-    }
+    public bool IsOpenNewDialog { get; set => SetValue(ref field, value); } = false;
 
     public void OpenNewDialog() => IsOpenNewDialog = true;
 
@@ -31,18 +26,17 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         .Concat(Constant.AbsenceLabels.Values)
         .Count() == UsedTypes.Count();
 
-    private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.Today);
     public DateOnly SelectedDate
     {
-        get => _selectedDate;
+        get;
         set
         {
-            if (SetValue(ref _selectedDate, value))
+            if (SetValue(ref field, value))
             {
                 _ = OnSelectedDateChanged();
             }
         }
-    }
+    } = DateOnly.FromDateTime(DateTime.Today);
 
     public async Task OnSelectedDateChanged()
     {
@@ -51,40 +45,15 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         await LoadCalendarEntriesAsync();
     }
 
-    private IEnumerable<DateOnly> _datesWithWorkTimes = [];
-    public IEnumerable<DateOnly> DatesWithWorkTimes
-    {
-        get => _datesWithWorkTimes;
-        set => SetValue(ref _datesWithWorkTimes, value);
-    }
+    public IEnumerable<DateOnly> DatesWithWorkTimes { get; set => SetValue(ref field, value); } = [];
 
-    private IEnumerable<DateOnly> _datesWithAbsences = [];
-    public IEnumerable<DateOnly> DatesWithAbsences
-    {
-        get => _datesWithAbsences;
-        set => SetValue(ref _datesWithAbsences, value);
-    }
+    public IEnumerable<DateOnly> DatesWithAbsences { get; set => SetValue(ref field, value); } = [];
 
-    private bool _loadCalendarEntries = true;
-    public bool LoadCalendarEntries
-    {
-        get => _loadCalendarEntries;
-        set => SetValue(ref _loadCalendarEntries, value);
-    }
+    public bool LoadCalendarEntries { get; set => SetValue(ref field, value); } = true;
 
-    private IEnumerable<WorkTime> _workTimes = [];
-    public IEnumerable<WorkTime> WorkTimes
-    {
-        get => _workTimes;
-        set => SetValue(ref _workTimes, value);
-    }
+    public IEnumerable<WorkTime> WorkTimes { get; set => SetValue(ref field, value); } = [];
 
-    private IEnumerable<Absence> _absences = [];
-    public IEnumerable<Absence> Absences
-    {
-        get => _absences;
-        set => SetValue(ref _absences, value);
-    }
+    public IEnumerable<Absence> Absences { get; set => SetValue(ref field, value); } = [];
 
     public async Task InitAsync(DateOnly? initialDate = null)
     {
@@ -93,11 +62,10 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             SelectedDate = initialDate.Value;
         }
 
-        await Task.WhenAll([
+        await Task.WhenAll(
             LoadDatesWithWorkTimesAsync(),
             LoadDatesWithAbsencesAsync(),
-            LoadCalendarEntriesAsync()
-        ]);
+            LoadCalendarEntriesAsync());
     }
 
     public async Task LoadDatesWithWorkTimesAsync()

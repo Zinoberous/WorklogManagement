@@ -12,46 +12,30 @@ public class TicketBoardViewModel(IDataService dataService, TimeProvider timePro
     private readonly IPopupService _popupService = popupService;
     private readonly INavigationService _navigationService = navigationService;
 
-    private bool _isOpenNewDialog = false;
-    public bool IsOpenNewDialog
-    {
-        get => _isOpenNewDialog;
-        set => SetValue(ref _isOpenNewDialog, value);
-    }
+    public bool IsOpenNewDialog { get; set => SetValue(ref field, value); } = false;
 
     public void OpenNewDialog() => IsOpenNewDialog = true;
 
-    private string _search = string.Empty;
     public string Search
     {
-        get => _search;
+        get;
         set
         {
-            if (SetValue(ref _search, value))
+            if (SetValue(ref field, value))
             {
                 OnSearchChanged();
             }
         }
-    }
+    } = string.Empty;
 
     private void OnSearchChanged()
     {
         _navigationService.UpdateQuery("search", Search);
     }
 
-    private bool _isLoading = true;
-    public bool IsLoading
-    {
-        get => _isLoading;
-        set => SetValue(ref _isLoading, value);
-    }
+    public bool IsLoading { get; set => SetValue(ref field, value); } = true;
 
-    private IEnumerable<Ticket> _allTickets = [];
-    private IEnumerable<Ticket> AllTickets
-    {
-        get => _allTickets;
-        set => SetValue(ref _allTickets, value);
-    }
+    private IEnumerable<Ticket> AllTickets { get; set => SetValue(ref field, value); } = [];
 
     public IEnumerable<Ticket> Tickets => AllTickets.Where(x => string.IsNullOrWhiteSpace(Search) || x.Title.Contains(Search, StringComparison.OrdinalIgnoreCase));
 

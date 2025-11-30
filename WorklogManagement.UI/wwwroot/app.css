@@ -3,7 +3,6 @@
     --sidebar-width: 55px;
     --scrollbar-width: 16px;
     --footer-height: 55px;
-    /*--rz-row-gap: .5rem;*/
     --confirm-zindex: calc(var(--rz-dialog-zindex) + 10);
 }
 

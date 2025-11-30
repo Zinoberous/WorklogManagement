@@ -13,16 +13,15 @@ public partial class Accordion
 
     private string ClassValue => $"accordion {AccordionClass} {Class}".Trim();
 
-    private string _accordionClass = string.Empty;
     private string AccordionClass
     {
-        get => _accordionClass;
+        get;
         set
         {
-            _accordionClass = value;
+            field = value;
             StateHasChanged();
         }
-    }
+    } = string.Empty;
 
     [Parameter]
     public string? Style { get; set; }

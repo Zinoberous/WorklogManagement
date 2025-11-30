@@ -13,18 +13,23 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
     private readonly ILocalStorageService _localStorageService = localStorageService;
     private readonly INavigationService _navigationService = navigationService;
 
-    private bool _isOpenNewDialog = false;
-    public bool IsOpenNewDialog
-    {
-        get => _isOpenNewDialog;
-        set => SetValue(ref _isOpenNewDialog, value);
-    }
+    public bool IsOpenNewDialog { get; set => SetValue(ref field, value); } = false;
 
     public void OpenNewDialog() => IsOpenNewDialog = true;
 
-    public IDictionary<TicketStatus, string> StatusFilterOptions => Enum.GetValues<TicketStatus>().ToDictionary(x => x, x => x.ToString());
+    public static IDictionary<TicketStatus, string> StatusFilterOptions => Enum.GetValues<TicketStatus>().ToDictionary(x => x, x => x.ToString());
 
-    private IList<TicketStatus> _statusFilter = [
+    public IList<TicketStatus> StatusFilter
+    {
+        get;
+        set
+        {
+            if (SetValue(ref field, [.. value.Order()]))
+            {
+                _ = OnSelectedStatusFilterChanged();
+            }
+        }
+    } = [
         TicketStatus.Todo,
         TicketStatus.Running,
         TicketStatus.Paused,
@@ -34,18 +39,6 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
         TicketStatus.Continuous,
     ];
 
-    public IList<TicketStatus> StatusFilter
-    {
-        get => _statusFilter;
-        set
-        {
-            if (SetValue(ref _statusFilter, [.. value.Order()]))
-            {
-                _ = OnSelectedStatusFilterChanged();
-            }
-        }
-    }
-
     public async Task OnSelectedStatusFilterChanged()
     {
         _navigationService.UpdateQuery("status", string.Join(",", StatusFilter));
@@ -53,18 +46,17 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
         await LoadPageAsync();
     }
 
-    private string _search = string.Empty;
     public string Search
     {
-        get => _search;
+        get;
         set
         {
-            if (SetValue(ref _search, value))
+            if (SetValue(ref field, value))
             {
                 _ = OnSearchChanged();
             }
         }
-    }
+    } = string.Empty;
 
     private async Task OnSearchChanged()
     {
@@ -72,45 +64,33 @@ public class TicketListViewModel(IDataService dataService, IPopupService popupSe
         await LoadPageAsync();
     }
 
-    private int _pageSize = 50;
     public int PageSize
     {
-        get => _pageSize;
+        get;
         set
         {
-            if (SetValue(ref _pageSize, value))
+            if (SetValue(ref field, value))
             {
                 _ = LoadPageAsync();
             }
         }
-    }
+    } = 50;
 
-    private int _pageIndex = 0;
     public int PageIndex
     {
-        get => _pageIndex;
+        get;
         set
         {
-            if (SetValue(ref _pageIndex, value))
+            if (SetValue(ref field, value))
             {
                 _ = LoadPageAsync();
             }
         }
-    }
+    } = 0;
 
-    private bool _loadPage = true;
-    public bool LoadPage
-    {
-        get => _loadPage;
-        set => SetValue(ref _loadPage, value);
-    }
+    public bool LoadPage { get; set => SetValue(ref field, value); } = true;
 
-    private Page<Ticket> _page = Page<Ticket>.Empty;
-    public Page<Ticket> Page
-    {
-        get => _page;
-        set => SetValue(ref _page, value);
-    }
+    public Page<Ticket> Page { get; set => SetValue(ref field, value); } = Page<Ticket>.Empty;
 
     public async Task InitAsync(string? statusFilter, string? search)
     {

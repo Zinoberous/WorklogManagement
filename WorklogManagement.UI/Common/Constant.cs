@@ -37,15 +37,17 @@ internal static class Constant
         { AbsenceLabels[AbsenceType.Ill], "lightcoral" },
     };
 
+    private const string Black = "black";
+
     internal static readonly Dictionary<TicketStatus, string> TicketStatusColor = new()
     {
-        { TicketStatus.Todo, "black" },
-        { TicketStatus.Running, "black" },
-        { TicketStatus.Paused, "black" },
-        { TicketStatus.Blocked, "black" },
-        { TicketStatus.Done, "black" },
+        { TicketStatus.Todo, Black },
+        { TicketStatus.Running, Black },
+        { TicketStatus.Paused, Black },
+        { TicketStatus.Blocked, Black },
+        { TicketStatus.Done, Black },
         { TicketStatus.Canceled, "white" },
-        { TicketStatus.Continuous, "black" },
+        { TicketStatus.Continuous, Black },
     };
 
     internal static readonly Dictionary<TicketStatus, string> TicketStatusBgColor = new()

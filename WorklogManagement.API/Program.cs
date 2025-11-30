@@ -221,4 +221,4 @@ app.RegisterAbsenceEndpoints();
 app.RegisterTicketEndpoints();
 app.RegisterWorklogEndpoints();
 
-app.Run();
+await app.RunAsync();
