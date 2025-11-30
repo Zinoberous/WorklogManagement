@@ -56,7 +56,17 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
 
     public IEnumerable<WorkTime> WorkTimes { get; set => SetValue(ref field, value); } = [];
 
-    public bool LoadAbsences { get; set { if (SetValue(ref field, value)) { OnPropertyChanged(nameof(LoadCalendar)); } } } = true;
+    public bool LoadAbsences
+    {
+        get => field;
+        set
+        {
+            if (SetValue(ref field, value))
+            {
+                OnPropertyChanged(nameof(LoadCalendar));
+            }
+        }
+    } = true;
 
     public IEnumerable<Absence> Absences { get; set => SetValue(ref field, value); } = [];
 
