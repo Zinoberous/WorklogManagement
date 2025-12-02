@@ -6,10 +6,8 @@
 <div class="checkin">
     <Header>
         <RadzenButton Click="@ViewModel.OpenNewDialog" Disabled="@ViewModel.CreateNewDisabled">Erstellen</RadzenButton>
-
         <DatePicker @bind-Value="ViewModel.SelectedDate" DateRender="@DateRender" />
     </Header>
-
     <Body>
         <AsyncContent IsLoading="@ViewModel.LoadCalendarEntries">
             <FlexCol>

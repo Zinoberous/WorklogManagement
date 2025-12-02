@@ -69,7 +69,7 @@ public partial class TicketNewDialog
     private void Reset()
     {
         Title = string.Empty;
-        Status = TicketStatus.Todo;
+        Status = TicketStatus.Running;
         Ref = null;
         Description = null;
         Attachments = [];

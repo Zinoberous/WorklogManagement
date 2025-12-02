@@ -1,17 +1,13 @@
-@if (Expected.HasValue)
-{
-    <div Style="display: flex; gap: 5px; align-items: center;">
-        <div>
-            <DurationPicker @bind-Value="ActualValue" />
-        </div>
+<div Style="display: flex; gap: 5px; align-items: center;">
+    <div>
+        <DurationPicker @bind-Value="ActualValue" />
+    </div>
+    @if (Expected.HasValue)
+    {
         <span style="width: 5px;">&#47;</span>
         <div style="position: relative;">
             <span style="position: absolute; z-index: 10; top: -15px; left: 20px;">von</span>
             <DurationPicker @bind-Value="ExpectedValue" />
         </div>
-    </div>
-}
-else
-{
-    <DurationPicker @bind-Value="ActualValue" Style="width: 185px" />
-}
+    }
+</div>

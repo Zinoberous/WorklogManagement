@@ -14,7 +14,15 @@ public partial class CheckInNewDialog
     public EventCallback<bool> IsOpenChanged { get; set; }
 
     [Parameter]
-    public IEnumerable<string> UsedTypeOptions { get; set; } = [];
+    public IEnumerable<string> UsedTypeOptions
+    {
+        get;
+        set
+        {
+            field = value;
+            SelectedType = DefaultSelectedType;
+        }
+    } = [];
 
     private IEnumerable<string> TypeOptions => [
         .. Constant.WorkTimeLabels.Values.Concat(Constant.AbsenceLabels.Values)
