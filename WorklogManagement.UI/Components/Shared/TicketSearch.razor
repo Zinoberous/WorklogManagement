@@ -15,14 +15,6 @@
 @code {
     private RenderFragment<dynamic> Template = (dynamic data) => @<div style="display: flex; justify-content: space-between;">
         #@data.Id - @data.Title
-        <div
-            style=@($@"
-                color: {Constants.TicketStatusColor[data.Status]};
-                background-color: {Constants.TicketStatusBgColor[data.Status]};
-                padding: 1px;
-                border-radius: 3px;")
-        >
-            @data.Status
-        </div>
+        <TicketStatusEntry Status="@data.Status" />
     </div>;
 }

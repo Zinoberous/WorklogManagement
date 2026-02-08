@@ -45,7 +45,7 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
     public TicketStatus Status
     {
         get => _ticket.Status;
-        set => _ = SaveTicketAsync(_ticket with { Status = value });
+        set => _ = SaveTicketAsync(_ticket with { Status = value, StatusNote = null });
     }
 
     public string? StatusNote
@@ -70,6 +70,16 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public void OpenWorklogsDialog() => IsOpenWorklogsDialog = true;
 
+    public IEnumerable<Ticket> SubTickets
+    {
+        get;
+        set => SetValue(ref field, value);
+    } = [];
+
+    public bool IsOpenSubTicketsDialog { get; set => SetValue(ref field, value); } = false;
+
+    public void OpenSubTicketsDialog() => IsOpenSubTicketsDialog = true;
+
     public Ticket? Ref
     {
         get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
@@ -86,11 +96,17 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
     {
         IsLoading = true;
 
+        IsOpenAttachmentsDialog = false;
+        IsOpenStatusNoteDialog = false;
+        IsOpenWorklogsDialog = false;
+        IsOpenSubTicketsDialog = false;
+
         try
         {
             await Task.WhenAll(
                 LoadTicketAsync(ticketId),
-                LoadWorklogsAsync(ticketId));
+                LoadWorklogsAsync(ticketId),
+                LoadSubTicketsAsync(ticketId));
         }
         finally
         {
@@ -106,6 +122,11 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
     private async Task LoadWorklogsAsync(int ticketId)
     {
         Worklogs = [.. (await _dataService.GetWorklogsAsync(0, 0, $"TicketId == {ticketId}")).Items];
+    }
+
+    private async Task LoadSubTicketsAsync(int ticketId)
+    {
+        SubTickets = [.. (await _dataService.GetTicketsAsync(0, 0, $"RefId == {ticketId}")).Items];
     }
 
     private async Task SaveTicketAsync(Ticket ticket)

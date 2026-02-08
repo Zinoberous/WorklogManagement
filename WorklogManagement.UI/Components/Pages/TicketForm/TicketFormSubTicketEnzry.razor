@@ -1,0 +1,11 @@
+﻿<FlexCol Style="gap: 0;">
+    <FlexRow>
+        <div style="width: 50px; text-align: end; line-height: initial;">
+            <a href="tickets/@Ticket.Id">#@Ticket.Id</a>
+        </div>
+        <FlexFill>
+            <RadzenTextBox @bind-value="Ticket.Title" ReadOnly />
+        </FlexFill>
+        <TicketStatusEntry Status="@Ticket.Status" />
+    </FlexRow>
+</FlexCol>

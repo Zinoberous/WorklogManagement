@@ -58,7 +58,7 @@ public partial class TicketListEntry
         get => Ticket.Status;
         set
         {
-            _ = UpdateTicketAsync(Ticket with { Status = value, StatusStartedAt = DateTime.UtcNow });
+            _ = UpdateTicketAsync(Ticket with { Status = value, StatusNote = null, StatusStartedAt = DateTime.UtcNow });
         }
     }
 

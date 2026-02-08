@@ -13,7 +13,7 @@
                     </FlexFill>
                     <span style="display: flex; cursor: pointer;" @onclick="ViewModel.OpenAttachmentsDialog">
                         <RadzenIcon Icon="attach_file" />
-                        @ViewModel.Attachments.Count()
+                        <span style="position: relative; top: 4px; left: -4px;">@ViewModel.Attachments.Count()</span>
                     </span>
                     <TicketStatusDropDown @bind-Value="ViewModel.Status" />
                     @if (string.IsNullOrEmpty(ViewModel.StatusNote))
@@ -26,6 +26,10 @@
                     }
                     @* TODO: open ticket status log dialog <RadzenIcon Icon="history" /> *@
                     <RadzenIcon Icon="alarm_on" @onclick="ViewModel.OpenWorklogsDialog" title="@TimeSpent" />
+                    <span style="display: flex; cursor: pointer;" @onclick="ViewModel.OpenSubTicketsDialog">
+                        <RadzenIcon Icon="library_add_check" />
+                        <span style="position: relative; top: 5px;">@ViewModel.SubTickets.Count()</span>
+                    </span>
                     <RadzenIcon Icon="delete" @onclick="ViewModel.DeleteTicketAsync" />
                 </FlexRow>
                 <FlexRow>
@@ -56,13 +60,23 @@
             <Dialog @bind-IsOpen="@ViewModel.IsOpenStatusNoteDialog" Title="Anmerkung zum Status">
                 <Editor @bind-Value="ViewModel.StatusNote" Placeholder="Statusanmerkung:" />
             </Dialog>
-            @* TODO: Ticket status log *@
+            @* TODO: ticket status log dialog *@
             <Dialog @bind-IsOpen="ViewModel.IsOpenWorklogsDialog" Title="@TimeSpent">
                 <FlexCol>
                     <RadzenButton Text="Hinzufügen" Click="() => ViewModel.SaveWorklogAsync()" Style="width: fit-content;" />
                     @foreach (var worklog in ViewModel.Worklogs)
                     {
                         <TicketFormWorklogEntry @key="worklog.Id" Worklog="@worklog" OnEdit="@ViewModel.SaveWorklogAsync" OnDelete="@(() => ViewModel.DeleteWorklogAsync(worklog))" />
+                    }
+                    @* leerer Editor, dient dazu die Breite vom Dialog einheitlich zu halten *@
+                    <Editor style="visibility: hidden; height: 0;" />
+                </FlexCol>
+            </Dialog>
+            <Dialog @bind-IsOpen="ViewModel.IsOpenSubTicketsDialog" Title="Untertickets">
+                <FlexCol>
+                    @foreach (var ticket in ViewModel.SubTickets)
+                    {
+                        <TicketFormSubTicketEnzry @key="ticket.Id" Ticket="@ticket" />
                     }
                     @* leerer Editor, dient dazu die Breite vom Dialog einheitlich zu halten *@
                     <Editor style="visibility: hidden; height: 0;" />

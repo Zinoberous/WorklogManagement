@@ -30,7 +30,7 @@ public partial class CheckInNewDialog
 
     private string DefaultSelectedType => TypeOptions.First();
 
-    private string SelectedType { get => field ?? DefaultSelectedType; set => field = value; }
+    private string SelectedType { get => field ?? DefaultSelectedType; set; }
 
     private string @TypeStyle => $"color: black; background-color: {Constants.CalendarEntryColor[SelectedType ?? string.Empty]}";
 

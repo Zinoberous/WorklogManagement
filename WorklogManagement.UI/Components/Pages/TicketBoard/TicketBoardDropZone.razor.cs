@@ -45,6 +45,8 @@ public partial class TicketBoardDropZone
         if (ticket.Status != status)
         {
             ticket.Status = status;
+            ticket.StatusNote = null;
+
             await OnEdit.InvokeAsync(ticket);
         }
     }
