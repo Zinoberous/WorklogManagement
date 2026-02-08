@@ -44,7 +44,7 @@ public class HomeViewModel(IDataService dataService, IPopupService popupService)
 
     public bool LoadWorkTimes
     {
-        get => field;
+        get;
         set
         {
             if (SetValue(ref field, value))

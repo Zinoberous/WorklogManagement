@@ -8,12 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="@(Configuration.GetValue<string>("PathBase"))" />
     <ResourcePreloader />
-    <RadzenTheme Theme="material-dark" @rendermode="InteractiveServer" />
+    <RadzenTheme Theme="material-dark" @rendermode="RenderMode.InteractiveServer" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["WorklogManagement.UI.styles.css"]" />
     <ImportMap />
     <link rel="icon" href="favicon.ico" />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <HeadOutlet @rendermode="RenderMode.InteractiveServer" />
 </head>
 
 <body>

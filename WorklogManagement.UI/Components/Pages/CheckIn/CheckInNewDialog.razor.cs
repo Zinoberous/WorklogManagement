@@ -25,18 +25,18 @@ public partial class CheckInNewDialog
     } = [];
 
     private IEnumerable<string> TypeOptions => [
-        .. Constant.WorkTimeLabels.Values.Concat(Constant.AbsenceLabels.Values)
+        .. Constants.WorkTimeLabels.Values.Concat(Constants.AbsenceLabels.Values)
             .Where(value => !UsedTypeOptions.Contains(value))];
 
     private string DefaultSelectedType => TypeOptions.First();
 
     private string SelectedType { get => field ?? DefaultSelectedType; set => field = value; }
 
-    private string @TypeStyle => $"color: black; background-color: {Constant.CalendarEntryColor[SelectedType ?? string.Empty]}";
+    private string @TypeStyle => $"color: black; background-color: {Constants.CalendarEntryColor[SelectedType ?? string.Empty]}";
 
     private void TypeRender(DropDownItemRenderEventArgs<string> args)
     {
-        var type = args.Item.ToString();
+        var type = args.Item!.ToString();
 
         if (type == SelectedType)
         {
@@ -44,7 +44,7 @@ public partial class CheckInNewDialog
         }
         else if (!string.IsNullOrWhiteSpace(type))
         {
-            args.Attributes.Add("style", $"color: black; background-color: {Constant.CalendarEntryColor[type]};");
+            args.Attributes.Add("style", $"color: black; background-color: {Constants.CalendarEntryColor[type]};");
         }
     }
 
@@ -73,11 +73,11 @@ public partial class CheckInNewDialog
     {
         var saved = false;
 
-        if (Constant.WorkTimeLabels.ContainsValue(SelectedType))
+        if (Constants.WorkTimeLabels.ContainsValue(SelectedType))
         {
             WorkTime workTime = new()
             {
-                Type = Constant.WorkTimeLabels.First(x => x.Value == SelectedType).Key,
+                Type = Constants.WorkTimeLabels.First(x => x.Value == SelectedType).Key,
                 Date = Date,
                 Actual = Actual,
                 Expected = Expected,
@@ -92,7 +92,7 @@ public partial class CheckInNewDialog
         {
             Absence absence = new()
             {
-                Type = Constant.AbsenceLabels.First(x => x.Value == SelectedType).Key,
+                Type = Constants.AbsenceLabels.First(x => x.Value == SelectedType).Key,
                 Date = Date,
                 Duration = Actual,
                 Note = string.IsNullOrWhiteSpace(Note)

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using WorklogManagement.UI.Common;
 
 namespace WorklogManagement.UI.Components.Pages.CheckIn;
@@ -8,7 +8,7 @@ public partial class CheckInEntry
     [Parameter]
     public string? Type { get; set; }
 
-    private string @TypeStyle => $"color: black; background-color: {Constant.CalendarEntryColor[Type ?? string.Empty]}";
+    private string @TypeStyle => $"color: black; background-color: {Constants.CalendarEntryColor[Type ?? string.Empty]}";
 
     [Parameter]
     public TimeSpan Actual { get; set; }

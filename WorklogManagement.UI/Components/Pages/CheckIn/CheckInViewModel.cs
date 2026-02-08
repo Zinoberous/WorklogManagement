@@ -17,13 +17,13 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
     public void OpenNewDialog() => IsOpenNewDialog = true;
 
     public IEnumerable<string> UsedTypes => [
-        .. WorkTimes.Select(x => Constant.WorkTimeLabels[x.Type]),
-        .. Absences.Select(x => Constant.AbsenceLabels[x.Type])
+        .. WorkTimes.Select(x => Constants.WorkTimeLabels[x.Type]),
+        .. Absences.Select(x => Constants.AbsenceLabels[x.Type])
     ];
 
     public bool CreateNewDisabled =>
-        Constant.WorkTimeLabels.Values
-        .Concat(Constant.AbsenceLabels.Values)
+        Constants.WorkTimeLabels.Values
+        .Concat(Constants.AbsenceLabels.Values)
         .Count() == UsedTypes.Count();
 
     public DateOnly SelectedDate
@@ -132,7 +132,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         // nur wenn neuer Eintrag
         if (savedWorkTime.Id != workTime.Id)
         {
-            _popupService.Success($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
+            _popupService.Success($"{Constants.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
         }
 
         WorkTimes = [.. WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime)];
@@ -165,7 +165,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             DatesWithWorkTimes = [.. DatesWithWorkTimes.Where(x => x != SelectedDate)];
         }
 
-        _popupService.Info($"{Constant.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht!");
+        _popupService.Info($"{Constants.WorkTimeLabels[workTime.Type]}-Eintrag wurde gelöscht!");
 
         return true;
     }
@@ -187,7 +187,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
         // nur wenn neuer Eintrag
         if (savedAbsence.Id != absence.Id)
         {
-            _popupService.Success($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
+            _popupService.Success($"{Constants.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
         }
 
         Absences = [.. Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence)];
@@ -220,7 +220,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             DatesWithAbsences = [.. DatesWithAbsences.Where(x => x != SelectedDate)];
         }
 
-        _popupService.Info($"{Constant.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht!");
+        _popupService.Info($"{Constants.AbsenceLabels[absence.Type]}-Eintrag wurde gelöscht!");
 
         return true;
     }

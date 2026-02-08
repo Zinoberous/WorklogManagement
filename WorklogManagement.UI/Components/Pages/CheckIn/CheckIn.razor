@@ -21,7 +21,7 @@
                 {
                     <CheckInEntry
                         @key="workTime.Id"
-                        Type="@WorkTimeLabels[workTime.Type]"
+                        Type="@Constants.WorkTimeLabels[workTime.Type]"
                         Actual="@workTime.Actual"
                         ActualChanged="@(actual => ViewModel.SaveWorkTimeAsync(workTime with { Actual = actual }))"
                         Expected="@workTime.Expected"
@@ -35,7 +35,7 @@
                 {
                     <CheckInEntry
                         @key="absence.Id"
-                        Type="@AbsenceLabels[absence.Type]"
+                        Type="@Constants.AbsenceLabels[absence.Type]"
                         Actual="@absence.Duration"
                         ActualChanged="@(duration => ViewModel.SaveAbsenceAsync(absence with { Duration = duration }))"
                         Note="@absence.Note"

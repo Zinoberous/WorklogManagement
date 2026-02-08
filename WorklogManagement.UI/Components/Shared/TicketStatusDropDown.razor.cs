@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using WorklogManagement.Shared.Enums;
 using WorklogManagement.UI.Common;
@@ -20,7 +20,7 @@ public partial class TicketStatusDropDown
     private IDictionary<TicketStatus, string> TicketStatusChangeOptions
         => TicketStatusService.GetNextStatusOptions(Value).ToDictionary(x => x, x => x.ToString());
 
-    private string StatusStyle => $"color: {Constant.TicketStatusColor[Value]}; background-color: {Constant.TicketStatusBgColor[Value]}";
+    private string StatusStyle => $"color: {Constants.TicketStatusColor[Value]}; background-color: {Constants.TicketStatusBgColor[Value]}";
 
     private void StatusRender(DropDownItemRenderEventArgs<TicketStatus> args)
     {
@@ -34,7 +34,7 @@ public partial class TicketStatusDropDown
             }
             else
             {
-                args.Attributes.Add("style", $"color: {Constant.TicketStatusColor[status]}; background-color: {Constant.TicketStatusBgColor[status]};");
+                args.Attributes.Add("style", $"color: {Constants.TicketStatusColor[status]}; background-color: {Constants.TicketStatusBgColor[status]};");
             }
         }
     }

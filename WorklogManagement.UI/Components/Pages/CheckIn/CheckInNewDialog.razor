@@ -4,7 +4,7 @@
             <FlexFill>
                 <RadzenDropDown @bind-Value="SelectedType" Data="@TypeOptions" ItemRender="@TypeRender" Style="@TypeStyle" />
             </FlexFill>
-            @if (WorkTimeLabels.Values.Contains(SelectedType))
+            @if (Constants.WorkTimeLabels.Values.Contains(SelectedType))
             {
                 <CheckInDurationPicker @bind-Actual="Actual" @bind-Expected="Expected" />
             }

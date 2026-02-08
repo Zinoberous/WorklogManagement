@@ -25,7 +25,7 @@ public partial class AttachmentPanel
     {
         ICollection<Attachment> attachments = [.. Attachments];
 
-        foreach (var file in args.Files)
+        foreach (var file in args.Files!)
         {
             using var stream = file.OpenReadStream();
 

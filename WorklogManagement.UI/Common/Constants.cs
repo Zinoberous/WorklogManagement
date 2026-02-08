@@ -2,7 +2,7 @@
 
 namespace WorklogManagement.UI.Common;
 
-internal static class Constant
+internal static class Constants
 {
     internal static readonly Dictionary<WorkTimeType, string> WorkTimeLabels = new()
     {

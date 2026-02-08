@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using WorklogManagement.Shared.Enums;
@@ -23,7 +23,7 @@ public partial class TicketBoardDropZone
 
     private static bool ItemSelector(Ticket item, RadzenDropZone<Ticket> zone)
     {
-        return item.Status == (TicketStatus)zone.Value;
+        return item.Status == (TicketStatus)zone.Value!;
     }
 
     private static void OnItemRender(RadzenDropZoneItemRenderEventArgs<Ticket> args)
@@ -34,13 +34,13 @@ public partial class TicketBoardDropZone
 
     private bool CanDrop(RadzenDropZoneItemEventArgs<Ticket> args)
     {
-        return TicketStatusService.GetNextStatusOptions(args.Item.Status).Contains((TicketStatus)args.ToZone.Value);
+        return TicketStatusService.GetNextStatusOptions(args.Item!.Status).Contains((TicketStatus)args.ToZone!.Value!);
     }
 
     private async Task OnDrop(RadzenDropZoneItemEventArgs<Ticket> args)
     {
-        var status = (TicketStatus)args.ToZone.Value;
-        var ticket = Tickets.Single(t => t.Id == args.Item.Id);
+        var status = (TicketStatus)args.ToZone!.Value!;
+        var ticket = Tickets.Single(t => t.Id == args.Item!.Id);
 
         if (ticket.Status != status)
         {
