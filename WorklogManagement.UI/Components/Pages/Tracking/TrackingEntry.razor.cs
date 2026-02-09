@@ -25,8 +25,8 @@ public partial class TrackingEntry
 
     private Ticket Ticket
     {
-        get => new() { Id = Worklog.TicketId, Title = Worklog.TicketTitle };
-        set => _ = UpdateWorklogAsync(Worklog with { TicketId = value.Id, TicketTitle = value.Title });
+        get => new() { Id = Worklog.Ticket.Id, Title = Worklog.Ticket.Title, Status = Worklog.Ticket.Status };
+        set => _ = UpdateWorklogAsync(Worklog with { Ticket = new() { Id = value.Id, Title = value.Title, Status = value.Status } });
     }
 
     private TimeSpan TimeSpent

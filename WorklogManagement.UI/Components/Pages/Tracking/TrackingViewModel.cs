@@ -115,8 +115,12 @@ public class TrackingViewModel(
                 worklog = new()
                 {
                     Date = SelectedDate,
-                    TicketId = defaultTicket.Id,
-                    TicketTitle = defaultTicket.Title,
+                    Ticket = new()
+                    {
+                        Id = defaultTicket.Id,
+                        Title = defaultTicket.Title,
+                        Status = defaultTicket.Status,
+                    },
                     TimeSpent = TimeSpan.Zero,
                 };
             }

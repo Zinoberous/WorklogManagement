@@ -23,8 +23,8 @@ public partial class TicketNewDialog
 
     private Ticket? RefTicketSearch
     {
-        get => Ref is not null ? new Ticket { Id = Ref.Id, Title = Ref.Title } : null;
-        set => Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null;
+        get => Ref is not null ? new Ticket { Id = Ref.Id, Title = Ref.Title, Status = Ref.Status } : null;
+        set => Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title, Status = value.Status } : null;
     }
 
     private string? Description { get; set; }

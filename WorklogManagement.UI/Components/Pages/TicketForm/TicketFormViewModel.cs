@@ -82,8 +82,8 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
 
     public Ticket? Ref
     {
-        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title } : null;
-        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title } : null });
+        get => _ticket.Ref is not null ? new Ticket { Id = _ticket.Ref.Id, Title = _ticket.Ref.Title, Status = _ticket.Ref.Status } : null;
+        set => _ = SaveTicketAsync(_ticket with { Ref = value is not null ? new RefTicket { Id = value.Id, Title = value.Title, Status = value.Status } : null });
     }
 
     public string? Description
@@ -164,8 +164,12 @@ public class TicketFormViewModel(IDataService dataService, INavigationService na
         worklog ??= new Worklog
         {
             Date = DateOnly.FromDateTime(DateTimeOffset.Now.Date),
-            TicketId = _ticket.Id,
-            TicketTitle = _ticket.Title,
+            Ticket = new()
+            {
+                Id = _ticket.Id,
+                Title = _ticket.Title,
+                Status = _ticket.Status,
+            },
             TimeSpent = TimeSpan.Zero,
         };
 

@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WorklogManagement.Data.Context;
+using WorklogManagement.Shared.Enums;
 using DB = WorklogManagement.Data.Models;
 using DTO = WorklogManagement.Shared.Models;
 
@@ -29,8 +30,12 @@ public record Worklog : DTO.Worklog
         {
             Id = worklog.Id,
             Date = worklog.Date,
-            TicketId = worklog.TicketId,
-            TicketTitle = worklog.Ticket.Title,
+            Ticket = new()
+            {
+                Id = worklog.TicketId,
+                Title = worklog.Ticket.Title,
+                Status = (TicketStatus)worklog.Ticket.TicketStatusId
+            },
             Description = worklog.Description,
             TimeSpent = worklog.TimeSpent,
             Attachments = [.. worklog.WorklogAttachments.Select(WorklogAttachment.Map)]
@@ -46,7 +51,7 @@ public record Worklog : DTO.Worklog
             worklog = new()
             {
                 Date = Date,
-                TicketId = TicketId,
+                TicketId = Ticket.Id,
                 Description = Description,
                 TimeSpent = TimeSpent
             };
@@ -60,7 +65,7 @@ public record Worklog : DTO.Worklog
         else
         {
             worklog.Date = Date;
-            worklog.TicketId = TicketId;
+            worklog.TicketId = Ticket.Id;
             worklog.Description = Description;
             worklog.TimeSpent = TimeSpent;
 

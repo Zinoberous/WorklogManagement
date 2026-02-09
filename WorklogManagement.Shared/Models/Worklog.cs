@@ -1,4 +1,4 @@
-namespace WorklogManagement.Shared.Models;
+﻿namespace WorklogManagement.Shared.Models;
 
 public record Worklog : IDataModel
 {
@@ -12,9 +12,7 @@ public record Worklog : IDataModel
 
     // TODO: uri ticket
 
-    public required int TicketId { get; init; }
-
-    public required string TicketTitle { get; init; }
+    public required RefTicket Ticket { get; init; }
 
     public string? Description { get; init; }
 

@@ -32,7 +32,9 @@ public record Ticket : DTO.Ticket
         return new()
         {
             Id = ticket.Id,
-            Ref = ticket.Ref is null ? null : new() { Id = ticket.Ref.Id, Title = ticket.Ref.Title },
+            Ref = ticket.Ref is not null
+                ? new() { Id = ticket.Ref.Id, Title = ticket.Ref.Title, Status = (TicketStatus)ticket.Ref.TicketStatusId }
+                : null,
             Title = ticket.Title,
             Description = ticket.Description,
             Status = (TicketStatus)ticket.TicketStatusId,
