@@ -35,7 +35,7 @@ public interface IDataService
 
     Task<Ticket> GetTicketAsync(int id, CancellationToken cancellationToken = default);
 
-    Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null, CancellationToken cancellationToken = default);
+    Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null, string? sortBy = null, CancellationToken cancellationToken = default);
 
     Task<Ticket> SaveTicketAsync(Ticket ticket, CancellationToken cancellationToken = default);
 
@@ -161,7 +161,7 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         return await ExecuteWithDataStateAsync<Ticket>(HttpMethod.Get, $"tickets/{id}", cancellationToken: cancellationToken);
     }
 
-    public async Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null, CancellationToken cancellationToken = default)
+    public async Task<Page<Ticket>> GetTicketsAsync(int pageSize, int pageIndex, string? filter = null, string? sortBy = null, CancellationToken cancellationToken = default)
     {
         Dictionary<string, string> queryParams = new()
         {
@@ -172,6 +172,11 @@ public class DataService(ILoggerService<DataService> logger, IHttpClientFactory 
         if (!string.IsNullOrWhiteSpace(filter))
         {
             queryParams.Add("filter", filter);
+        }
+
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            queryParams.Add("sortBy", sortBy);
         }
 
         return await ExecuteWithDataStateAsync<Page<Ticket>>(HttpMethod.Get, "tickets", queryParams, cancellationToken: cancellationToken);

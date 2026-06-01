@@ -39,8 +39,8 @@ public partial class TicketSearch
     private async Task Search(string? searchText)
     {
         Tickets = string.IsNullOrWhiteSpace(searchText)
-            ? (await DataService.GetTicketsAsync(0, 0, $"id in (1, 2) or status == {(int)TicketStatus.Running}")).Items
-            : (await DataService.GetTicketsAsync(0, 0, $@"Title.Contains(""{searchText}"")")).Items;
+            ? (await DataService.GetTicketsAsync(0, 0, $"id == 1 or status == {(int)TicketStatus.Running}")).Items
+            : (await DataService.GetTicketsAsync(0, 0, $@"Title.Contains(""{searchText}"")", "Id desc")).Items;
 
         await InvokeAsync(StateHasChanged);
     }
