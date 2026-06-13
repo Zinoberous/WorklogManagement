@@ -51,9 +51,9 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
 
     public bool LoadCalendarEntries { get; set => SetValue(ref field, value); } = true;
 
-    public IEnumerable<WorkTime> WorkTimes { get; set => SetValue(ref field, value); } = [];
+    public IEnumerable<WorkTime> WorkTimes { get; set => SetValue(ref field, value.OrderBy(x => x.Type)); } = [];
 
-    public IEnumerable<Absence> Absences { get; set => SetValue(ref field, value); } = [];
+    public IEnumerable<Absence> Absences { get; set => SetValue(ref field, value.OrderBy(x => x.Type)); } = [];
 
     public async Task InitAsync(DateOnly? initialDate = null)
     {
@@ -135,7 +135,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             _popupService.Success($"{Constants.WorkTimeLabels[workTime.Type]}-Eintrag wurde gespeichert");
         }
 
-        WorkTimes = [.. WorkTimes.Where(x => x.Id != savedWorkTime.Id).Append(savedWorkTime)];
+        WorkTimes = [.. WorkTimes.Select(x => x.Id == savedWorkTime.Id ? savedWorkTime : x)];
         DatesWithWorkTimes = [.. DatesWithWorkTimes.Append(SelectedDate).Distinct()];
 
         return true;
@@ -190,7 +190,7 @@ public class CheckInViewModel(IDataService dataService, INavigationService navig
             _popupService.Success($"{Constants.AbsenceLabels[absence.Type]}-Eintrag wurde gespeichert");
         }
 
-        Absences = [.. Absences.Where(x => x.Id != savedAbsence.Id).Append(savedAbsence)];
+        Absences = [.. Absences.Select(x => x.Id == savedAbsence.Id ? savedAbsence : x)];
         DatesWithAbsences = [.. DatesWithAbsences.Append(SelectedDate).Distinct()];
 
         return true;

@@ -61,6 +61,11 @@ internal static class Constants
         { TicketStatus.Continuous, "lightblue" },
     };
 
+    internal static readonly IEnumerable<TicketStatus> TicketStatusDone = [
+        TicketStatus.Done,
+        TicketStatus.Canceled,
+    ];
+
     internal static readonly Dictionary<string, string> FederalStates = new()
     {
         { "DE-BW", "Baden-Württemberg" },
